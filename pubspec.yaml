@@ -11,6 +11,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_locales: ^3.0.1
+
+  # firebase core
+  firebase_core: ^2.27.1
 
 
   cupertino_icons: ^1.0.6
@@ -22,16 +26,18 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
+  generate: true
 
   uses-material-design: true
 
   assets:
      - assets/images/
-     - images/svg/
+     - assets/svg/
+     - assets/locales/
 
 
 
   fonts:
-     - family: Raleway
+     - family: Lato
        fonts:
-         - asset: assets/fonts/Raleway-Medium.ttf
+         - asset: assets/fonts/Lato-Regular.ttf
