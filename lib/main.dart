@@ -1,12 +1,19 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
-import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/chat/pages/rooms_screen.dart';
+import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
+import 'package:smart_real_estate/features/client/splash/screen/splash_screen.dart';
 
+import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
+import 'features/client/home/pages/home_screen.dart';
+import 'features/client/onBoarding/pages/onBoarding_screen.dart';
+import 'features/client/welcome/pages/welcome_select_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -16,9 +23,20 @@ Future<void> main() async {
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(['en', 'ar']); // get last saved language
+
   /// 2. initialize firebase
   _initializeFirebase();
 
+  /// 3. for buttery icons and notifications to be fixable in colors
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
+    ),);
+
+  /// 4. Initialize SharedPreferences
+  await SharedPrefManager.init();
 
   runApp(const MyApp());
 }
@@ -40,7 +58,7 @@ class MyApp extends StatelessWidget {
         localizationsDelegates: Locales.delegates,
         supportedLocales: Locales.supportedLocales,
         locale: locale,
-        home: const Home(),
+        home: const RootScreen(),
       ),
     );
   }
@@ -51,27 +69,5 @@ _initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-}
-class Home extends StatefulWidget {
-  const Home({super.key});
-
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(height: 300,),
-            Text("hello world", style: fontLargeBold)
-          ],
-        ),
-      ),
-    );
-  }
 }
 

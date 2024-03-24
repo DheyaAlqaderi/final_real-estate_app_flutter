@@ -15,6 +15,21 @@ dependencies:
 
   # firebase core
   firebase_core: ^2.27.1
+  #state management
+  flutter_bloc: ^8.1.4
+  #make request to api
+  retrofit: ^4.1.0
+  # json_annotation:
+  json_annotation: ^4.8.1
+  #cached image
+  cached_network_image: ^3.2.0
+  # svg imsges
+  flutter_svg: ^2.0.9
+  # for saving data
+  shared_preferences: ^2.1.1
+  # for bottom navigation
+  google_nav_bar: ^5.0.6
+  line_icons: ^2.0.3
 
 
   cupertino_icons: ^1.0.6
@@ -24,6 +39,12 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^3.0.0
+  retrofit_generator: ^8.1.0
+  floor_generator: ^1.4.2
+  build_runner: ^2.4.8
+  json_serializable: ^6.7.1
+  injectable_generator: ^2.1.6
+
 
 flutter:
   generate: true

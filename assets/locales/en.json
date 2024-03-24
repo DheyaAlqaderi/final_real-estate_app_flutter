@@ -1,4 +1,27 @@
 {
+  "title": "Flutter Demo Home Page",
+
+  "on_boarding_title_1": "Find the Best Place\nto Stay at a Good Price",
+  "on_boarding_title_2": "Sell Your Property Quickly\nwith Just One Click",
+  "on_boarding_title_3": "Find the Perfect Option for\nYour Future Home",
+
+  "on_boarding_desc_1": "Filter by furniture, location, type, and price",
+  "on_boarding_desc_2": "Get certified buyers for your properties through an easy-to-manage dashboard!",
+  "on_boarding_desc_3": "Get certified buyers for your properties through an easy-to-manage dashboard!",
+  "skip": "skip",
+  "continue": "continue",
+  "next": "next",
+
+  "welcome": "Welcome to the smart Real-estate",
+  "please_welcome" : "Please enter your details to register.",
+  "join_as_client": "Join as a Client",
+  "join_as_owner": "Join as a Promoter",
+
   "home": "Home",
-  "title": "Flutter Demo Home Page"
+  "chat_box": "Rooms",
+  "favorite": "Favorite",
+  "profile": "Profile",
+
+  "welcome_home": "Welcome!\n Let's start exploring",
+  "search_hint": "Search for ...."
 }
