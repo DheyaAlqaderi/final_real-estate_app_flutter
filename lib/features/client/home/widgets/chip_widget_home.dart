@@ -33,6 +33,6 @@ class _ChipWidgetHomeState extends State<ChipWidgetHome> {
             : Theme.of(context).cardColor,
         onPressed: widget.onChipClick
       ),
-    );;
+    );
   }
 }

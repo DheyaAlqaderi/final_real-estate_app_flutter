@@ -13,12 +13,16 @@ dependencies:
     sdk: flutter
   flutter_locales: ^3.0.1
 
-  # firebase core
+  # firebase
   firebase_core: ^2.27.1
+  cloud_firestore: ^4.15.10
+  firebase_auth: ^4.18.0
+  firebase_storage: ^11.6.11
   #state management
   flutter_bloc: ^8.1.4
   #make request to api
   retrofit: ^4.1.0
+  dio: ^5.4.1
   # json_annotation:
   json_annotation: ^4.8.1
   #cached image
@@ -30,6 +34,17 @@ dependencies:
   # for bottom navigation
   google_nav_bar: ^5.0.6
   line_icons: ^2.0.3
+  # for auto scroll widget
+  carousel_slider: ^4.2.1
+  smooth_page_indicator: ^1.1.0
+  #comparing dart objects
+  equatable: ^2.0.5
+  #service locator
+  get_it: ^7.6.7
+  #dateFormat
+  intl: ^0.18.0
+  #Database
+  floor: ^1.4.2
 
 
   cupertino_icons: ^1.0.6
@@ -47,8 +62,6 @@ dev_dependencies:
 
 
 flutter:
-  generate: true
-
   uses-material-design: true
 
   assets:

@@ -23,5 +23,27 @@
   "profile": "Profile",
 
   "welcome_home": "Welcome!\n Let's start exploring",
-  "search_hint": "Search for ...."
+  "search_hint": "Search for ....",
+  "property_types": "Property types",
+  "show_all": "Show all",
+  "featured_property": "Featured properties",
+  "top_agent": "Top R-E Agent",
+  "discover_property": "Discover near properties",
+
+  "create_account": "Create Account",
+  "login": "Login",
+  "did_forgot_password": "Did You Forgot Password ?",
+  "or": "or",
+  "password": "Password",
+  "email": "Email",
+  "name": "Name",
+  "phone": "Phone",
+  "write_email": "Write your email",
+  "write_name": "Write your name",
+  "write_phone": "Write your phone",
+  "please_phone": "Please enter a phone number.",
+  "please_email": "Please enter an email address.",
+  "please_name": "Please enter your name.",
+  "accept_policy": "Agree to all terms"
+
 }
