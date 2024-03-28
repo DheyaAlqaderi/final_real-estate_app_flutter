@@ -1,17 +1,24 @@
 
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
 import 'package:smart_real_estate/features/client/chat/pages/rooms_screen.dart';
+import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
+import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/banners/banners_cubit.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/main_category/subCategory/main_category_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/client/splash/screen/splash_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
+import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'features/client/home/pages/home_screen.dart';
 import 'features/client/onBoarding/pages/onBoarding_screen.dart';
 import 'features/client/welcome/pages/welcome_select_screen.dart';
@@ -50,16 +57,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return LocaleBuilder(
-      builder: (locale) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: AppConstants.appName,
-        theme: light,
-        darkTheme: dark,
-        localizationsDelegates: Locales.delegates,
-        supportedLocales: Locales.supportedLocales,
-        locale: locale,
-        home: const RootScreen(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MainCategoryCubit>(
+          create: (_) => MainCategoryCubit(HomeRepository(HomeApiService(Dio()))),
+        ),
+        BlocProvider<BannersCubit>(
+          create: (_) => BannersCubit(HomeRepository(HomeApiService(Dio()))),
+        ),
+        BlocProvider<SubCategoryCubit>(
+          create: (_) => SubCategoryCubit(HomeRepository(HomeApiService(Dio()))),
+        ),
+      ],
+      child: LocaleBuilder(
+        builder: (locale) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: AppConstants.appName,
+          theme: light,
+          darkTheme: dark,
+          localizationsDelegates: Locales.delegates,
+          supportedLocales: Locales.supportedLocales,
+          locale: locale,
+          home: const RootScreen(),
+        ),
       ),
     );
   }

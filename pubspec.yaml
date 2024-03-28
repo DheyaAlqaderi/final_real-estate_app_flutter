@@ -15,9 +15,9 @@ dependencies:
 
   # firebase
   firebase_core: ^2.27.1
-  cloud_firestore: ^4.15.10
-  firebase_auth: ^4.18.0
-  firebase_storage: ^11.6.11
+#  cloud_firestore: ^4.15.10
+#  firebase_auth: ^4.18.0
+#  firebase_storage: ^11.6.11
   #state management
   flutter_bloc: ^8.1.4
   #make request to api

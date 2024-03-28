@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:smart_real_estate/features/client/home/data/models/category/category_model.dart';
 
 
 class ChipWidgetHome extends StatefulWidget {
-  const ChipWidgetHome({super.key, required this.realEstateProperties, required this.chipSelected, required this.onChipClick, this.index});
+  const ChipWidgetHome({super.key, required this.categoryModel, required this.chipSelected, required this.onChipClick, this.index});
 
-  final List<String> realEstateProperties;
+  final CategoryModel categoryModel;
   final List<bool> chipSelected;
   final VoidCallback onChipClick;
   final index;
@@ -20,7 +21,7 @@ class _ChipWidgetHomeState extends State<ChipWidgetHome> {
       height: 40,
       child: ActionChip(
         label: Text(
-          widget.realEstateProperties[widget.index],
+          widget.categoryModel.results[widget.index].name.toString(),
           style: TextStyle(color: widget.chipSelected[widget.index]
               ? Colors.white
               : Theme.of(context).colorScheme.onSurface),

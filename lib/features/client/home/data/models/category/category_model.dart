@@ -1,7 +1,7 @@
 class CategoryModel {
-  final int count;
-  final String next;
-  final String previous;
+  final int? count;
+  final String? next;
+  final String? previous;
   final List<Category> results;
 
   CategoryModel({
@@ -17,9 +17,9 @@ class CategoryModel {
     resultsList.map((e) => Category.fromJson(e)).toList();
 
     return CategoryModel(
-      count: json['count'] as int,
-      next: json['next'] as String,
-      previous: json['previous'] as String,
+      count: json['count'],
+      next: json['next'],
+      previous: json['previous'],
       results: categories,
     );
   }
@@ -35,13 +35,13 @@ class CategoryModel {
 class Category {
   final int id;
   final List<CategoryImage> image;
-  final bool have_children;
-  final String name;
-  final int lft;
-  final int rght;
-  final int tree_id;
-  final int level;
-  final dynamic parent;
+  final bool? have_children;
+  final String? name;
+  final int? lft;
+  final int? rght;
+  final int? tree_id;
+  final int? level;
+  final int? parent;
 
   Category({
     required this.id,
@@ -61,14 +61,14 @@ class Category {
     imagesList.map((e) => CategoryImage.fromJson(e)).toList();
 
     return Category(
-      id: json['id'] as int,
+      id: json['id'],
       image: images,
-      have_children: json['have_children'] as bool,
-      name: json['name'] as String,
-      lft: json['lft'] as int,
-      rght: json['rght'] as int,
-      tree_id: json['tree_id'] as int,
-      level: json['level'] as int,
+      have_children: json['have_children'] ,
+      name: json['name'],
+      lft: json['lft'] ,
+      rght: json['rght'],
+      tree_id: json['tree_id'] ,
+      level: json['level'] ,
       parent: json['parent'],
     );
   }
@@ -87,8 +87,8 @@ class Category {
 }
 
 class CategoryImage {
-  final String image;
-  final int id;
+  final String? image;
+  final int? id;
 
   CategoryImage({
     required this.image,
@@ -97,8 +97,8 @@ class CategoryImage {
 
   factory CategoryImage.fromJson(Map<String, dynamic> json) {
     return CategoryImage(
-      image: json['image'] as String,
-      id: json['id'] as int,
+      image: json['image'] ,
+      id: json['id'],
     );
   }
 

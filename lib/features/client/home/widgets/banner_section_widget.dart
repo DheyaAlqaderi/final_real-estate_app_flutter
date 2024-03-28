@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import '../data/models/banner/banner_model.dart';
 
 class BannerSectionWidget extends StatefulWidget {
@@ -27,9 +28,9 @@ class _BannerSectionWidgetState extends State<BannerSectionWidget> {
             itemCount: widget.bannerList.length,
             itemBuilder: (context, index, realIndex) {
               return promotionWidget(
-                widget.bannerList[index].imageUrl,
-                widget.bannerList[index].title,
-                widget.bannerList[index].description,
+                widget.bannerList[index].image.toString(),
+                widget.bannerList[index].title.toString(),
+                widget.bannerList[index].description.toString(),
                 index,
               );
             },
@@ -66,7 +67,7 @@ class _BannerSectionWidgetState extends State<BannerSectionWidget> {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(image),
+                  image: CachedNetworkImageProvider(image),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: const BorderRadius.only(

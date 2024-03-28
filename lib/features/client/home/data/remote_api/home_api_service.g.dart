@@ -13,7 +13,7 @@ class _HomeApiService implements HomeApiService {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://0.0.0.0:8000/';
+    baseUrl ??= 'http://192.168.0.86:8000/';
   }
 
   final Dio _dio;
@@ -21,9 +21,17 @@ class _HomeApiService implements HomeApiService {
   String? baseUrl;
 
   @override
-  Future<CategoryModel> getMainCategories() async {
+  Future<CategoryModel> getCategories(
+    int page,
+    int pageSize,
+    int parent,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'page_size': pageSize,
+      r'parent': parent,
+    };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
@@ -34,7 +42,7 @@ class _HomeApiService implements HomeApiService {
     )
             .compose(
               _dio.options,
-              '/api/categorie',
+              'api/categorie',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -44,6 +52,35 @@ class _HomeApiService implements HomeApiService {
               baseUrl,
             ))));
     final value = CategoryModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<List<BannerModel>> getBanners() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<List<BannerModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/banners',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var value = _result.data!
+        .map((dynamic i) => BannerModel.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 
