@@ -9,12 +9,16 @@ class Images {
   static const String onBoardingTwo = 'assets/images/onBording_two.png';
   static const String welcomeSelectClient = 'assets/svg/welcome_image_client.svg';
   static const String halfCircle = "assets/svg/blue_half_circle.svg";
+  static const String qurterCircle = "assets/svg/qurter_circle.svg";
+  static const String qurterWithCurveCircle = "assets/svg/querter_curve_circle.svg";
   static const String filterIcon = "assets/svg/filter_icon.svg";
   static const String mePicture = "assets/images/me.jpg";
   static const String heartIcon = "assets/svg/heart_icon.svg";
   static const String bothAuthImage = "assets/images/both_login_signup.png";
   static const String facebookIcon = "assets/svg/facebook-icon.svg";
   static const String googleIcon = "assets/svg/google-icon.svg";
+  static const String errorNetwork = "assets/images/network-error.png";
+
 
 
 

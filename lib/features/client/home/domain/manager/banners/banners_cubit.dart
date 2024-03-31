@@ -22,4 +22,23 @@ class BannersCubit extends Cubit<BannersState>{
       emit(ErrorBannersState(e.toString()));
     }
   }
+
+  Future<void> getBannersWithCategory(
+      {required int categoryId}
+      ) async {
+    // Emit loading state
+    emit(LoadingBannersState());
+    try {
+      // Perform login operation
+      final response = await _getBanners.getBannersWithCategory(
+          categoryId: categoryId
+      );
+      // Emit success state with response data
+      emit(SuccessBannersState(response));
+
+    } catch (e) {
+      // Emit error state with error message
+      emit(ErrorBannersState(e.toString()));
+    }
+  }
 }

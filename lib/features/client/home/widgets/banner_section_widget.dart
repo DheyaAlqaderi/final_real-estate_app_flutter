@@ -20,30 +20,34 @@ class _BannerSectionWidgetState extends State<BannerSectionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Column(
-        children: [
-          CarouselSlider.builder(
-            carouselController: controller,
-            itemCount: widget.bannerList.length,
-            itemBuilder: (context, index, realIndex) {
-              return promotionWidget(
-                widget.bannerList[index].image.toString(),
-                widget.bannerList[index].title.toString(),
-                widget.bannerList[index].description.toString(),
-                index,
-              );
-            },
-            options: CarouselOptions(
-              autoPlay: true,
-              enableInfiniteScroll: false,
-              autoPlayAnimationDuration: const Duration(seconds: 2),
-              enlargeCenterPage: true,
+    if (widget.bannerList.isEmpty) {
+      return const SizedBox(); // Return an empty SizedBox if there are no banners
+    } else {
+      return SizedBox(
+        child: Column(
+          children: [
+            CarouselSlider.builder(
+              carouselController: controller,
+              itemCount: widget.bannerList.length,
+              itemBuilder: (context, index, realIndex) {
+                return promotionWidget(
+                  widget.bannerList[index].image.toString(),
+                  widget.bannerList[index].title.toString(),
+                  widget.bannerList[index].description.toString(),
+                  index,
+                );
+              },
+              options: CarouselOptions(
+                autoPlay: true,
+                enableInfiniteScroll: false,
+                autoPlayAnimationDuration: const Duration(seconds: 2),
+                enlargeCenterPage: true,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 
   Widget promotionWidget(String image, String title, String description,

@@ -1,5 +1,7 @@
 import 'package:retrofit/retrofit.dart';
 import 'package:smart_real_estate/features/client/home/data/models/banner/banner_model.dart';
+import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
+import 'package:smart_real_estate/features/client/home/data/models/state/state_model.dart';
 
 import '../../../../../core/constant/app_constants.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +14,7 @@ part 'home_api_service.g.dart';
 abstract class HomeApiService{
   factory HomeApiService(Dio dio, {String baseUrl}) = _HomeApiService;
 
+  /// categories
   @GET('api/categorie')
   Future<CategoryModel> getCategories(
     @Query("page") int page,
@@ -19,7 +22,33 @@ abstract class HomeApiService{
     @Query("parent") int parent,
   );
 
+
+
+  /// banners
   @GET('api/banners')
   Future<List<BannerModel>> getBanners();
 
+  @GET('api/banners')
+  Future<List<BannerModel>> getBannerWithCategory(
+      @Query("category") int categoryId,
+      );
+
+
+
+  /// feature property
+  @GET('api/property')
+  Future<PropertyModel> getFeaturedProperties(
+      @Query("is_featured") bool isFeatured,
+      );
+
+  @GET('api/property')
+  Future<PropertyModel> getFeaturedPropertiesWithCategory(
+      @Query("main_category") int categoryId,
+      @Query("is_featured") bool isFeatured,
+      );
+
+
+  /// get states address
+  @GET('api/address/state')
+  Future<List<StateModel>> getHighStates();
 }

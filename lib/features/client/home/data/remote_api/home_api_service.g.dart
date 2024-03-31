@@ -84,6 +84,124 @@ class _HomeApiService implements HomeApiService {
     return value;
   }
 
+  @override
+  Future<List<BannerModel>> getBannerWithCategory(int categoryId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'category': categoryId};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<List<BannerModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/banners',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var value = _result.data!
+        .map((dynamic i) => BannerModel.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
+  @override
+  Future<PropertyModel> getFeaturedProperties(bool isFeatured) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'is_featured': isFeatured};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/property',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = PropertyModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PropertyModel> getFeaturedPropertiesWithCategory(
+    int categoryId,
+    bool isFeatured,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'main_category': categoryId,
+      r'is_featured': isFeatured,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/property',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = PropertyModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<List<StateModel>> getHighStates() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<List<StateModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/address/state',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var value = _result.data!
+        .map((dynamic i) => StateModel.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

@@ -24,6 +24,7 @@
 
   "welcome_home": "Welcome!\n Let's start exploring",
   "search_hint": "Search for ....",
+  "search_state": "Search ...",
   "property_types": "Property types",
   "show_all": "Show all",
   "featured_property": "Featured properties",
@@ -44,6 +45,13 @@
   "please_phone": "Please enter a phone number.",
   "please_email": "Please enter an email address.",
   "please_name": "Please enter your name.",
-  "accept_policy": "Agree to all terms"
+  "accept_policy": "Agree to all terms",
+
+
+  "high_places": "High Places",
+  "find_all_places": "Find the best tips for a place to live",
+  "found_no": "Found {no} properties",
+  "for_sale": "for Sale",
+  "for_rent": "for rent"
 
 }

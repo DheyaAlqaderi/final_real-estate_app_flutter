@@ -5,17 +5,17 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 
 import '../data/models/category/category_model.dart';
 
-class SubcategoryWidget extends StatefulWidget {
-  const SubcategoryWidget({super.key, required this.categoryList, required this.onTap});
+class SubcategorySectionWidget extends StatefulWidget {
+  const SubcategorySectionWidget({super.key, required this.categoryList, required this.onTap});
 
   final CategoryModel categoryList;
   final Function(int) onTap;
 
   @override
-  State<SubcategoryWidget> createState() => _SubCategoryWidgetState();
+  State<SubcategorySectionWidget> createState() => _SubCategoryWidgetState();
 }
 
-class _SubCategoryWidgetState extends State<SubcategoryWidget> {
+class _SubCategoryWidgetState extends State<SubcategorySectionWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

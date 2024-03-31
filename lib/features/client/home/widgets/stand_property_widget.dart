@@ -1,19 +1,31 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/styles.dart';
+import '../data/models/property/property_model.dart';
 
 class StandPropertyWidget extends StatefulWidget {
-  const StandPropertyWidget({super.key});
+  const StandPropertyWidget({super.key, required this.propertyModel, required this.index});
+  final PropertyModel propertyModel;
+  final int index;
 
   @override
   State<StandPropertyWidget> createState() => _StandPropertyWidgetState();
 }
 
 class _StandPropertyWidgetState extends State<StandPropertyWidget> {
-  bool isSelected = false;
+  late bool isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected= widget.propertyModel.results![widget.index].inFavorite!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -41,8 +53,10 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                 height: 150.0,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    image: const DecorationImage(
-                        image: AssetImage(Images.onBoardingOne),
+                    image:  DecorationImage(
+                        image: CachedNetworkImageProvider(
+                          "${AppConstants.baseUrl2}${widget.propertyModel.results![widget.index].image![0].image}",
+                        ),
                         fit: BoxFit.cover
                     )
                 ),
@@ -103,7 +117,7 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: Text(
-                              "100000000000000",
+                              widget.propertyModel.results![widget.index].price!,
                                style: fontSmall.copyWith(color: Theme.of(context).colorScheme.secondary)
                             ),
                           ),
@@ -124,21 +138,23 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                       padding: Locales.isDirectionRTL(context)
                           ?const EdgeInsets.only(right: 15.0,top: 5.0, bottom: 5.0)
                           :const EdgeInsets.only(right: 15.0,top: 5.0, bottom: 5.0),
-                      child: const Text("house land", style: fontSmallBold,),
+                      child: Text(
+                        widget.propertyModel.results![widget.index].name!,
+                        style: fontSmallBold,),
                     )),
                 const SizedBox(height: 2.0,),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
                   child: Locales.isDirectionRTL(context)
-                      ? const Row(
+                      ? Row(
                       children: [
-                        Icon(Icons.location_on_outlined, size: 10,),
+                        const Icon(Icons.location_on_outlined, size: 10,),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
                           child: SizedBox(
                             width: 120,
                             child: Text(
-                              "شارع الخمسين خل بهارات ياسين",
+                              widget.propertyModel.results![widget.index].address.toString(),
                               style: fontSmall,
                               textDirection: TextDirection.rtl,
                               maxLines: 2,
@@ -148,14 +164,14 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                         ),
                       ]
                   )
-                      : const Row(
+                      : Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
                           child: SizedBox(
                             width: 130,
                             child: Text(
-                              "شارع الخمسين خل بهارات ياسين",
+                              widget.propertyModel.results![widget.index].address.toString(),
                               style: fontSmall,
                               maxLines: 2,
                               textDirection: TextDirection.rtl,
@@ -163,7 +179,7 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                             ),
                           ),
                         ),
-                        Icon(Icons.location_on_outlined, size: 10,),
+                        const Icon(Icons.location_on_outlined, size: 10,),
                       ]
                   )
                 )

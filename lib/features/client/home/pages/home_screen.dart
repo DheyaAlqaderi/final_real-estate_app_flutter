@@ -6,18 +6,28 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/category_property/pages/category_property_screen.dart';
+import 'package:smart_real_estate/features/client/high_places/pages/all_high_places_screen.dart';
+import 'package:smart_real_estate/features/client/high_places/pages/high_state_screen.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/banners/banners_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/banners/banners_state.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/featured_property/featured_cubit.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/featured_property/featured_state.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_cubit.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_state.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
-import '../data/models/banner/banner_model.dart';
-import '../domain/manager/main_category/subCategory/main_category_cubit.dart';
+import '../../category_property/domain/manager/property_cubit/property_cubit.dart';
+import '../../category_property/domain/manager/property_cubit/property_state.dart';
+import '../domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import '../domain/manager/main_category/subCategory/subCategory_state.dart';
 import '../widgets/appBar_home_widget.dart';
 import '../widgets/banner_section_widget.dart';
 import '../widgets/chip_widget_home.dart';
+import '../widgets/error_widget.dart';
 import '../widgets/featured_property_widget.dart';
+import '../widgets/high_places_widget.dart';
 import '../widgets/search_filter_widget.dart';
 import '../widgets/stand_property_widget.dart';
 import '../widgets/title_section_widget.dart';
@@ -32,30 +42,68 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String? clickedChip;
   late List<bool> chipSelected;
-  late List<bool> defaultChipSelected = List.generate(1, (index) => false);
-  late List<BannerModel> bannerList;
-  late int categoryId;
+  late List<bool> defaultChipSelected;
+  int categoryId=0;
 
   @override
   void initState() {
     super.initState();
     chipSelected = List.generate(10, (index) => false);
+    defaultChipSelected = List.generate(1, (index) => false);
     setState(() {
       categoryId = 0;
       defaultChipSelected[0] = true;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final mainCategoryCubit = context.read<MainCategoryCubit>();
-      final bannersCubit = context.read<BannersCubit>();
-      final subCategoryCubit = context.read<SubCategoryCubit>();
-
-
-      Future.wait([
-        mainCategoryCubit.getMainCategory(),
-        subCategoryCubit.getSubCategory(parentId: categoryId),
-        bannersCubit.getBanners()
-      ]);
+      _fetchData();
     });
+  }
+
+  void _fetchData() async{
+    final mainCategory = context.read<MainCategoryCubit>();
+    final subCategory = context.read<SubCategoryCubit>();
+    final banners = context.read<BannersCubit>();
+    final highStateCubit = context.read<HighStateCubit>();
+    final featureCubit = context.read<FeaturedCubit>();
+    final getPropertyCubit = context.read<PropertyCubit>();
+
+
+      await Future.wait([
+        mainCategory.getMainCategory(),
+        subCategory.getSubCategory(parentId: categoryId),
+        banners.getBanners(),
+        highStateCubit.getHighStates(),
+        featureCubit.getFeatured(),
+        getPropertyCubit.getPropertyByMainCategory(mainCategory: 0)
+      ]);
+
+
+  }
+  void _fetchDataRefresh() async{
+    final mainCategory = context.read<MainCategoryCubit>();
+    final banners = context.read<BannersCubit>();
+    final subCategoryCubit = context.read<SubCategoryCubit>();
+    final highStateCubit = context.read<HighStateCubit>();
+    final featureCubit = context.read<FeaturedCubit>();
+
+    if(categoryId == 0){
+      await Future.wait([
+        mainCategory.getMainCategory(),
+        banners.getBanners(),
+        highStateCubit.getHighStates(),
+        featureCubit.getFeatured(),
+      ]);
+    }else{
+      await Future.wait([
+        mainCategory.getMainCategory(),
+        banners.getBannersWithCategory(categoryId: categoryId),
+        subCategoryCubit.getSubCategory(parentId: categoryId),
+        highStateCubit.getHighStates(),
+        featureCubit.getFeaturedWithCategory(categoryId: categoryId)
+      ]);
+    }
+
+
   }
 
   @override
@@ -73,15 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: double.infinity,
             child: RefreshIndicator(
               onRefresh: () async {
-                final mainCategory = context.read<MainCategoryCubit>();
-                final banners = context.read<BannersCubit>();
-                final subCategoryCubit = context.read<SubCategoryCubit>();
-
-                await Future.wait([
-                  mainCategory.getMainCategory(),
-                  banners.getBanners(),
-                  subCategoryCubit.getSubCategory(parentId: categoryId)
-                ]);
+                _fetchDataRefresh();
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -97,9 +137,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 20,),
                       _buildMainCategoriesRowList(),
                       const SizedBox(height: 25,),
-                      _buildHomePageSectionsBasedOnMainCategory(),
-                      const SizedBox(height: 15,),
+                      _buildHomePageSectionsBanners(),
+                      _buildHomePageSectionsSubCategories(),
                       _buildFeaturedProperties(),
+                      const SizedBox(height: 15,),
+                      _buildHighPlaces(),
                       const SizedBox(height: 15,),
                       _buildTopRealEstateAgents(),
                       const SizedBox(height: 15,),
@@ -232,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         if(!defaultChipSelected[0]){
                           context.read<BannersCubit>().getBanners();
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
-
+                          context.read<FeaturedCubit>().getFeatured();
                         }
 
                         setState(() {
@@ -268,8 +310,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         // Check if the current chip is already selected
                         if (!chipSelected[index]) {
                           // If not selected, make the request
-                          context.read<BannersCubit>().getBanners();
+                          context.read<BannersCubit>().getBannersWithCategory(categoryId: categoryId);
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
+                          // context.read<FeaturedCubit>().getFeatured();
+                          context.read<FeaturedCubit>().getFeaturedWithCategory(categoryId: categoryId);
                         }
 
                         setState(() {
@@ -295,7 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         } else if (state is ErrorMainCategoryState) {
-          return Center(child: Text(state.error));
+          return InternetErrorWidget(description: state.error,onRetry: () async { _fetchData(); },);
         } else {
           return const SizedBox();
         }
@@ -303,114 +347,199 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHomePageSectionsBasedOnMainCategory() {
-    return Column(
-      children: [
-        BlocBuilder<BannersCubit, BannersState>(
-          builder: (context, state) {
-            if (state is LoadingBannersState) {
-              return Container(
-                width: 310.0,
-                height: 180,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Theme.of(context).cardColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).shadowColor.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+  Widget _buildHomePageSectionsBanners() {
+    return BlocBuilder<BannersCubit, BannersState>(
+      builder: (context, state) {
+        if (state is LoadingBannersState) {
+          return Container(
+            width: 310.0,
+            height: 180,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Theme.of(context).cardColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).shadowColor.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          );
+        } else if (state is SuccessBannersState) {
+          return BannerSectionWidget(
+            bannerList: state.bannerModel,
+            onTapBanner: (index) {
+              if (kDebugMode) {
+                print(state.bannerModel[index].id);
+              }
+            },
+          );
+        } else if (state is ErrorBannersState) {
+          return const Center(child: SizedBox());
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
+  }
+
+  Widget _buildHomePageSectionsSubCategories() {
+    return BlocBuilder<SubCategoryCubit, SubCategoryState>(
+      builder: (context, state) {
+        if (state is LoadingSubCategoryState) {
+          return const SizedBox();
+        } else if (state is SuccessSubCategoryState) {
+          final categoryModel = state.categoryModel;
+          final hasCategories = categoryModel.results.isNotEmpty;
+          return Column(
+            children: [
+              if (hasCategories)
+                Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    TitleSectionWidget(
+                      titleSection: Locales.string(context, "property_types"),
+                      titleButton: Locales.string(context, "show_all"),
+                      tap: () {
+                        if (kDebugMode) {
+                          print("hello");
+                        }
+                      },
                     ),
                   ],
                 ),
-              );
-            } else if (state is SuccessBannersState) {
-              return BannerSectionWidget(
-                bannerList: state.bannerModel,
-                onTapBanner: (index) {
-                  if (kDebugMode) {
-                    print(state.bannerModel[index].id);
-                  }
+              SubcategorySectionWidget(
+                categoryList: categoryModel,
+                onTap: (index) {
+                  // Handle onTap event
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CategoryPropertyScreen(
+                              id: state.categoryModel.results[index].id,
+                            haveChildren: state.categoryModel.results[index].have_children!,
+                          )
+                      )
+                  );
                 },
-              );
-            } else if (state is ErrorBannersState) {
-              return Center(child: Text(state.error));
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-
-        BlocBuilder<SubCategoryCubit, SubCategoryState>(
-          builder: (context, state) {
-            if (state is LoadingSubCategoryState) {
-              return const SizedBox();
-            } else if (state is SuccessSubCategoryState) {
-              final categoryModel = state.categoryModel;
-              final hasCategories = categoryModel.results.isNotEmpty;
-              return Column(
-                children: [
-                  if (hasCategories)
-                    Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        TitleSectionWidget(
-                          titleSection: Locales.string(context, "property_types"),
-                          titleButton: Locales.string(context, "show_all"),
-                          tap: () {
-                            if (kDebugMode) {
-                              print("hello");
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  SubcategoryWidget(
-                    categoryList: categoryModel,
-                    onTap: (index) {
-                      // Handle onTap event
-                    },
-                  ),
-                ],
-              );
-            } else if (state is ErrorSubCategoryState) {
-              return Center(child: Text(state.error));
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-      ],
+              ),
+            ],
+          );
+        } else if (state is ErrorSubCategoryState) {
+          return const Center(child: SizedBox());
+        } else {
+          return const SizedBox();
+        }
+      },
     );
   }
 
   Widget _buildFeaturedProperties() {
-    return Column(
-      children: [
-        const SizedBox(height: 15,),
-        TitleSectionWidget(
-          titleSection: Locales.string(context, "featured_property"),
-          titleButton: Locales.string(context, "show_all"),
-          tap: () {
-            if (kDebugMode) {
-              print("hello");
-            }
-          },
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(
-              4,
-                  (index) => const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.5),
-                child: FeaturedPropertyWidget(),
+    return BlocBuilder<FeaturedCubit, FeaturedState>(
+      builder: (context, state) {
+        if (state is InitFeaturedState) {
+          return const CircularProgressIndicator();
+        } else if (state is SuccessFeaturedState) {
+          if (state.propertyModel.results!.isEmpty) {
+            // If the results list is empty, return an empty SizedBox
+            return const SizedBox();
+          } else {
+            // If the results list is not empty, return the Column with TitleSectionWidget
+            return Column(
+              children: [
+                const SizedBox(height: 15,),
+                TitleSectionWidget(
+                  titleSection: Locales.string(context, "featured_property"),
+                  titleButton: Locales.string(context, "show_all"),
+                  tap: () {
+                    if (kDebugMode) {
+                      print("hello");
+                    }
+                  },
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(
+                      state.propertyModel.results!.length,
+                          (index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                        child: FeaturedPropertyWidget(
+                          index: index,
+                          propertyModel: state.propertyModel,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+        } else if (state is ErrorFeaturedState) {
+          return const Center(child: SizedBox());
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
+  }
+
+  Widget _buildHighPlaces() {
+    return BlocBuilder<HighStateCubit, HighStateState>(
+      builder: (context, state) {
+        if (state is LoadingHighStateState) {
+          return const SizedBox();
+        } else if (state is SuccessHighStateState) {
+          return Column(
+            children: [
+              const SizedBox(height: 15,),
+              TitleSectionWidget(
+                titleSection: Locales.string(context, "high_places"),
+                titleButton: Locales.string(context, "show_all"),
+                tap: () {
+                  if (kDebugMode) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AllHighPlacesScreen(stateModel: state.stateModel,)),
+                    );
+                  }
+                },
               ),
-            ),
-          ),
-        ),
-      ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    state.stateModel.length,
+                        (index) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                      child: HighPlacesWidget(
+                          image: propertyImageList[index],
+                          name: state.stateModel[index].name,
+                        onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HighStateScreen(
+                                id: state.stateModel[index].id,
+                                name: state.stateModel[index].name,
+                              ))
+                            );
+                        },
+                      )
+                      ,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else if (state is ErrorHighStateState) {
+          return const Center(child: SizedBox());
+        } else {
+          return const SizedBox();
+        }
+      },
     );
   }
 
@@ -445,14 +574,29 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
         ),
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.start,
-          spacing: 30.0,
-          runSpacing: 10.0,
-          children: List.generate(
-            16,
-                (index) => const StandPropertyWidget(),
-          ),
+        BlocBuilder<PropertyCubit, PropertyState>(
+          builder: (context, state) {
+            if (state is LoadingPropertyState) {
+              return const SizedBox();
+            } else if (state is SuccessPropertyState) {
+              return Wrap(
+                crossAxisAlignment: WrapCrossAlignment.start,
+                spacing: 30.0,
+                runSpacing: 10.0,
+                children: List.generate(
+                  state.propertyModel.results!.length,
+                      (index) => StandPropertyWidget(
+                    index: index,
+                    propertyModel: state.propertyModel,
+                  ),
+                ),
+              );
+            } else if (state is ErrorPropertyState) {
+              return const Center(child: SizedBox());
+            } else {
+              return const SizedBox();
+            }
+          },
         ),
       ],
     );
@@ -468,6 +612,10 @@ class _HomeScreenState extends State<HomeScreen> {
     'seven',
   ];
   List<String> propertyImageList = [
+    Images.onBoardingOne,
+    Images.onBoardingOne,
+    Images.onBoardingOne,
+    Images.onBoardingOne,
     Images.onBoardingOne,
     Images.onBoardingOne,
     Images.onBoardingOne,
