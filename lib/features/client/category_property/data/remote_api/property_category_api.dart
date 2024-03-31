@@ -1,10 +1,10 @@
 import 'package:retrofit/retrofit.dart';
-import 'package:smart_real_estate/features/client/home/data/models/banner/banner_model.dart';
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
-import 'package:smart_real_estate/features/client/home/data/models/state/state_model.dart';
 
 import '../../../../../core/constant/app_constants.dart';
 import 'package:dio/dio.dart';
+
+import '../../../home/data/models/category/category_model.dart';
 
 
 part 'property_category_api.g.dart';
@@ -26,6 +26,20 @@ abstract class PropertyCategoryApi{
       @Query("page") int page,
       @Query("page_size") int pageSize,
       @Query("main_category") int category,
+      );
+
+  @GET('api/property')
+  Future<PropertyModel> getPropertyByAllCategory(
+      @Query("page") int page,
+      @Query("page_size") int pageSize,
+      );
+
+  /// categories
+  @GET('api/categorie')
+  Future<CategoryModel> getCategories(
+      @Query("page") int page,
+      @Query("page_size") int pageSize,
+      @Query("parent") int parent,
       );
 
 }

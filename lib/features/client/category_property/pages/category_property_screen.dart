@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
+import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_state.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/widget/subCategory_widget.dart';
-import 'package:smart_real_estate/features/client/home/domain/manager/main_category/subCategory/subCategory_cubit.dart';
 
 import '../../../../core/utils/images.dart';
-import '../../home/domain/manager/main_category/subCategory/subCategory_state.dart';
 import '../../home/widgets/stand_property_widget.dart';
+import '../domain/manager/main_category/main_property_category_cubit.dart';
 import '../domain/manager/property_cubit/property_state.dart';
 
 class CategoryPropertyScreen extends StatefulWidget {
@@ -28,18 +29,18 @@ class _CategoryPropertyScreenState extends State<CategoryPropertyScreen> {
 
     if(widget.haveChildren){
       WidgetsBinding.instance.addPostFrameCallback((_) async{
-        final subCategory = context.read<SubCategoryCubit>();
-        final getPropertyByMainCategory = context.read<PropertyCubit>();
+        final subCategory = context.read<PropertySubCategoryCubit>();
+        final getPropertyByMainCategory = context.read<MainPropertyCategoryCubit>();
 
         await Future.wait([
           subCategory.getSubCategory(parentId: widget.id),
-          getPropertyByMainCategory.getPropertyByMainCategory(mainCategory: widget.id)
+          getPropertyByMainCategory.getMainCategory(parentId: widget.id)
         ]);
 
       });
     } else{
       WidgetsBinding.instance.addPostFrameCallback((_) async{
-        final subCategory = context.read<SubCategoryCubit>();
+        final subCategory = context.read<PropertySubCategoryCubit>();
         final getPropertyBySubCategory = context.read<PropertyCubit>();
         await Future.wait([
           subCategory.getSubCategory(parentId: widget.id),
@@ -117,7 +118,7 @@ class _CategoryPropertyScreenState extends State<CategoryPropertyScreen> {
                       ),
 
                       const SizedBox(height: 20,),
-                      BlocBuilder<SubCategoryCubit, SubCategoryState>(
+                      BlocBuilder<PropertySubCategoryCubit, PropertySubCategoryState>(
                         builder: (context, state) {
                           if (state is LoadingSubCategoryState) {
                             return const SizedBox();

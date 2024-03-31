@@ -6,11 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
-import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
 import 'package:smart_real_estate/features/client/category_property/data/remote_api/property_category_api.dart';
+import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/main_property_category_cubit.dart';
+import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
-import 'package:smart_real_estate/features/client/chat/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
 import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/banners/banners_cubit.dart';
@@ -18,18 +18,11 @@ import 'package:smart_real_estate/features/client/home/domain/manager/featured_p
 import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
-import 'package:smart_real_estate/features/client/splash/screen/splash_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
-import 'features/client/category_property/pages/category_property_screen.dart';
-import 'features/client/high_places/pages/all_high_places_screen.dart';
-import 'features/client/high_places/pages/high_state_screen.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
-import 'features/client/home/pages/home_screen.dart';
-import 'features/client/onBoarding/pages/onBoarding_screen.dart';
-import 'features/client/welcome/pages/welcome_select_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -84,6 +77,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<PropertyCubit>(
           create: (_) => PropertyCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+        ),
+        BlocProvider<MainPropertyCategoryCubit>(
+          create: (_) => MainPropertyCategoryCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+        ),
+        BlocProvider<PropertySubCategoryCubit>(
+          create: (_) => PropertySubCategoryCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
         ),
       ],
       child: LocaleBuilder(

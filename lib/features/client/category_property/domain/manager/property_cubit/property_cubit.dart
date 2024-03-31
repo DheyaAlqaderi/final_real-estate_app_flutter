@@ -51,4 +51,25 @@ class PropertyCubit extends Cubit<PropertyState>{
       emit(ErrorPropertyState(e.toString()));
     }
   }
+
+
+  Future<void> getPropertyByAllCategory({
+    int pageNumber = 1,
+    int pageSize = 200
+  }) async {
+    // Emit loading state
+    emit(LoadingPropertyState());
+    try {
+      // Perform login operation
+      final response = await _getProperty.getPropertyByAllCategory(
+          pageSize: pageSize,
+          pageNumber: pageNumber);
+      // Emit success state with response data
+      emit(SuccessPropertyState(response));
+
+    } catch (e) {
+      // Emit error state with error message
+      emit(ErrorPropertyState(e.toString()));
+    }
+  }
 }

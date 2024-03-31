@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? clickedChip;
   late List<bool> chipSelected;
   late List<bool> defaultChipSelected;
-  int categoryId=0;
+  late int categoryId;
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
         banners.getBanners(),
         highStateCubit.getHighStates(),
         featureCubit.getFeatured(),
-        getPropertyCubit.getPropertyByMainCategory(mainCategory: 0)
+        getPropertyCubit.getPropertyByAllCategory()
       ]);
 
 
@@ -85,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final subCategoryCubit = context.read<SubCategoryCubit>();
     final highStateCubit = context.read<HighStateCubit>();
     final featureCubit = context.read<FeaturedCubit>();
+    final getPropertyCubit = context.read<PropertyCubit>();
 
     if(categoryId == 0){
       await Future.wait([
@@ -92,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
         banners.getBanners(),
         highStateCubit.getHighStates(),
         featureCubit.getFeatured(),
+        getPropertyCubit.getPropertyByAllCategory()
       ]);
     }else{
       await Future.wait([
@@ -99,7 +101,9 @@ class _HomeScreenState extends State<HomeScreen> {
         banners.getBannersWithCategory(categoryId: categoryId),
         subCategoryCubit.getSubCategory(parentId: categoryId),
         highStateCubit.getHighStates(),
-        featureCubit.getFeaturedWithCategory(categoryId: categoryId)
+        featureCubit.getFeaturedWithCategory(categoryId: categoryId),
+        getPropertyCubit.getPropertyByMainCategory(mainCategory: categoryId)
+
       ]);
     }
 
@@ -275,6 +279,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.read<BannersCubit>().getBanners();
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
                           context.read<FeaturedCubit>().getFeatured();
+                          context.read<PropertyCubit>().getPropertyByAllCategory();
+
                         }
 
                         setState(() {
@@ -314,6 +320,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
                           // context.read<FeaturedCubit>().getFeatured();
                           context.read<FeaturedCubit>().getFeaturedWithCategory(categoryId: categoryId);
+                          context.read<PropertyCubit>().getPropertyByMainCategory(mainCategory: categoryId);
+
                         }
 
                         setState(() {
@@ -564,42 +572,60 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildDiscoverNearProperties() {
     return Column(
       children: [
-        const SizedBox(height: 10,),
-        TitleSectionWidget(
-          titleSection: Locales.string(context, "discover_property"),
-          titleButton: Locales.string(context, "show_all"),
-          tap: () {
-            if (kDebugMode) {
-              print("hello");
-            }
-          },
-        ),
         BlocBuilder<PropertyCubit, PropertyState>(
           builder: (context, state) {
             if (state is LoadingPropertyState) {
+              // Return a SizedBox if data is loading
               return const SizedBox();
             } else if (state is SuccessPropertyState) {
-              return Wrap(
-                crossAxisAlignment: WrapCrossAlignment.start,
-                spacing: 30.0,
-                runSpacing: 10.0,
-                children: List.generate(
-                  state.propertyModel.results!.length,
-                      (index) => StandPropertyWidget(
-                    index: index,
-                    propertyModel: state.propertyModel,
+              // If there is data available, show the title section and property widgets
+              return Column(
+                children: [
+                  // Use Visibility widget to conditionally show/hide the title section
+                  Visibility(
+                    visible: state.propertyModel.results!.isNotEmpty,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        TitleSectionWidget(
+                          titleSection: Locales.string(context, "discover_property"),
+                          titleButton: Locales.string(context, "show_all"),
+                          tap: () {
+                            if (kDebugMode) {
+                              print("hello");
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  // Show property widgets using Wrap
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.start,
+                    spacing: 30.0,
+                    runSpacing: 10.0,
+                    children: List.generate(
+                      state.propertyModel.results!.length,
+                          (index) => StandPropertyWidget(
+                        index: index,
+                        propertyModel: state.propertyModel,
+                      ),
+                    ),
+                  ),
+                ],
               );
             } else if (state is ErrorPropertyState) {
+              // Handle error state
               return const Center(child: SizedBox());
             } else {
+              // Return a SizedBox for other states
               return const SizedBox();
             }
           },
         ),
       ],
     );
+
   }
 
   List<String> propertyTitleList = [
