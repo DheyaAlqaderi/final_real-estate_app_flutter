@@ -9,7 +9,7 @@ class MainPropertyCategoryCubit extends Cubit<MainPropertyCategoryState>{
 
   MainPropertyCategoryCubit(this._getCategory) : super(InitMainCategoryState());
 
-  Future<void> getMainCategory({
+  Future<void> getPropertyByMainCategory({
   int pageSize = 200,
   int pageNumber = 1,
   int parentId = 0}) async {

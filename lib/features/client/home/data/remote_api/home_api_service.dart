@@ -51,4 +51,20 @@ abstract class HomeApiService{
   /// get states address
   @GET('api/address/state')
   Future<List<StateModel>> getHighStates();
+
+
+
+  /// get properties
+  @GET('api/property')
+  Future<PropertyModel> getPropertyByMainCategory(
+      @Query("page") int page,
+      @Query("page_size") int pageSize,
+      @Query("main_category") int category,
+      );
+
+  @GET('api/property')
+  Future<PropertyModel> getPropertyByAllCategory(
+      @Query("page") int page,
+      @Query("page_size") int pageSize,
+      );
 }

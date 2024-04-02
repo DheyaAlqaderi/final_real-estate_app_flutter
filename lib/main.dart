@@ -11,17 +11,21 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
+import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
+import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
 import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/banners/banners_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/featured_property/featured_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/subCategory/subCategory_cubit.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
+import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'firebase_options.dart';
 
@@ -60,6 +64,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+
+        /// home page
         BlocProvider<MainCategoryCubit>(
           create: (_) => MainCategoryCubit(HomeRepository(HomeApiService(Dio()))),
         ),
@@ -75,14 +81,24 @@ class MyApp extends StatelessWidget {
         BlocProvider<FeaturedCubit>(
           create: (_) => FeaturedCubit(HomeRepository(HomeApiService(Dio()))),
         ),
-        BlocProvider<PropertyCubit>(
-          create: (_) => PropertyCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+        BlocProvider<PropertyHomeCubit>(
+          create: (_) => PropertyHomeCubit(HomeRepository(HomeApiService(Dio()))),
         ),
+
+        /// category page
         BlocProvider<MainPropertyCategoryCubit>(
           create: (_) => MainPropertyCategoryCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
         ),
         BlocProvider<PropertySubCategoryCubit>(
           create: (_) => PropertySubCategoryCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+        ),
+        BlocProvider<PropertyCubit>(
+          create: (_) => PropertyCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+        ),
+
+        /// high state page
+        BlocProvider<PropertyStateCubit>(
+          create: (_) => PropertyStateCubit(HighPlacesRepo(HighStateApi(Dio()))),
         ),
       ],
       child: LocaleBuilder(
@@ -106,5 +122,6 @@ _initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
 }
 

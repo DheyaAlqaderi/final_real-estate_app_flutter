@@ -34,8 +34,7 @@ class HomeRepository{
 
 
   /// get banners
-  Future<List<BannerModel>> getBanners(
-      ) async{
+  Future<List<BannerModel>> getBanners() async{
 
     try{
       final response = await _homeApiService.getBanners();
@@ -119,5 +118,53 @@ class HomeRepository{
       throw Exception("$e");
     }
   }
+
+
+
+  /// get properties by main categories id
+  Future<PropertyModel> getPropertyByMainCategory({
+    required int pageSize,
+    required int pageNumber,
+    required int mainCategory}) async{
+
+    try{
+      final response = await _homeApiService.getPropertyByMainCategory(
+          pageNumber, pageSize, mainCategory);
+
+      if (kDebugMode) {
+        print("home mainCategory property success");
+      }
+      return response;
+    } catch(e){
+      if (kDebugMode) {
+        print("error ${e.hashCode}");
+      }
+      throw Exception("$e");
+    }
+  }
+
+  /// get properties by all Category
+  Future<PropertyModel> getPropertyByAllCategory({
+    required int pageSize,
+    required int pageNumber,
+  }) async{
+
+    try{
+      final response = await _homeApiService.getPropertyByAllCategory(
+          pageNumber,
+          pageSize);
+
+      if (kDebugMode) {
+        print("home All Category properties success");
+      }
+      return response;
+    } catch(e){
+      if (kDebugMode) {
+        print("error ${e.hashCode}");
+      }
+      throw Exception("$e");
+    }
+  }
+
 
 }

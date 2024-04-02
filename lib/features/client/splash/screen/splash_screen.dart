@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/onBoarding/pages/onBoarding_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
@@ -78,6 +79,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 fit: BoxFit.cover,
               )
           ),
+
+          Center(
+            child: Image.asset(Images.logo,),
+          )
         ],
       ),
     );

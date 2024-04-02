@@ -17,11 +17,11 @@ import 'package:smart_real_estate/features/client/home/domain/manager/high_state
 import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_state.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_state.dart';
+import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
-import '../../category_property/domain/manager/property_cubit/property_cubit.dart';
-import '../../category_property/domain/manager/property_cubit/property_state.dart';
 import '../domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import '../domain/manager/main_category/subCategory/subCategory_state.dart';
+import '../domain/manager/property_home_cubit/property_home_cubit.dart';
 import '../widgets/appBar_home_widget.dart';
 import '../widgets/banner_section_widget.dart';
 import '../widgets/chip_widget_home.dart';
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final banners = context.read<BannersCubit>();
     final highStateCubit = context.read<HighStateCubit>();
     final featureCubit = context.read<FeaturedCubit>();
-    final getPropertyCubit = context.read<PropertyCubit>();
+    final getPropertyCubit = context.read<PropertyHomeCubit>();
 
 
       await Future.wait([
@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final subCategoryCubit = context.read<SubCategoryCubit>();
     final highStateCubit = context.read<HighStateCubit>();
     final featureCubit = context.read<FeaturedCubit>();
-    final getPropertyCubit = context.read<PropertyCubit>();
+    final getPropertyCubit = context.read<PropertyHomeCubit>();
 
     if(categoryId == 0){
       await Future.wait([
@@ -279,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.read<BannersCubit>().getBanners();
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
                           context.read<FeaturedCubit>().getFeatured();
-                          context.read<PropertyCubit>().getPropertyByAllCategory();
+                          context.read<PropertyHomeCubit>().getPropertyByAllCategory();
 
                         }
 
@@ -320,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
                           // context.read<FeaturedCubit>().getFeatured();
                           context.read<FeaturedCubit>().getFeaturedWithCategory(categoryId: categoryId);
-                          context.read<PropertyCubit>().getPropertyByMainCategory(mainCategory: categoryId);
+                          context.read<PropertyHomeCubit>().getPropertyByMainCategory(mainCategory: categoryId);
 
                         }
 
@@ -422,6 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 categoryList: categoryModel,
                 onTap: (index) {
                   // Handle onTap event
+                  print(state.categoryModel.results[index].id.toString());
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -529,8 +530,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => HighStateScreen(
-                                id: state.stateModel[index].id,
-                                name: state.stateModel[index].name,
+                                stateId: state.stateModel[index].id,
+                                name: state.stateModel[index].name.toString(),
                               ))
                             );
                         },
@@ -572,12 +573,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildDiscoverNearProperties() {
     return Column(
       children: [
-        BlocBuilder<PropertyCubit, PropertyState>(
+        BlocBuilder<PropertyHomeCubit, PropertyHomeState>(
           builder: (context, state) {
-            if (state is LoadingPropertyState) {
+            if (state is LoadingPropertyHomeState) {
               // Return a SizedBox if data is loading
               return const SizedBox();
-            } else if (state is SuccessPropertyState) {
+            } else if (state is SuccessPropertyHomeState) {
               // If there is data available, show the title section and property widgets
               return Column(
                 children: [
@@ -614,7 +615,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               );
-            } else if (state is ErrorPropertyState) {
+            } else if (state is ErrorPropertyHomeState) {
               // Handle error state
               return const Center(child: SizedBox());
             } else {

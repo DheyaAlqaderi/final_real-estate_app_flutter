@@ -9,7 +9,7 @@ class PropertyRepo{
   final PropertyCategoryApi _propertyCategoryApi;
   PropertyRepo(this._propertyCategoryApi);
 
-  /// get categories
+  /// get properties by main categories id
   Future<PropertyModel> getPropertyByMainCategory({
     required int pageSize,
     required int pageNumber,
@@ -55,7 +55,7 @@ class PropertyRepo{
     }
   }
 
-  /// get properties by main Category id
+  /// get properties by all Category
   Future<PropertyModel> getPropertyByAllCategory({
     required int pageSize,
     required int pageNumber,
@@ -67,7 +67,7 @@ class PropertyRepo{
           pageSize);
 
       if (kDebugMode) {
-        print("subCategory property success");
+        print("All Category properties success");
       }
       return response;
     } catch(e){

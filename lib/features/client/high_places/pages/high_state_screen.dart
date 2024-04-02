@@ -1,133 +1,163 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/featured_property_widget.dart';
 
+import '../domain/manager/property_state_cubit/property_state_cubit.dart';
+
 class HighStateScreen extends StatefulWidget {
-  const HighStateScreen({super.key,  this.id, this.name});
-  final id;
-  final name;
+  const HighStateScreen({super.key,  required this.stateId, required this.name});
+  final stateId;
+  final String name;
   @override
   State<HighStateScreen> createState() => _HighStateScreenState();
 }
 
 class _HighStateScreenState extends State<HighStateScreen> {
-  int no = 1000;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final propertyState = context.read<PropertyStateCubit>();
+
+      await Future.wait([
+        propertyState.getPropertyByState(stateId: widget.stateId),
+
+      ]);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // image section
-              _imagesSectionWidget(widget.id),
-              const SizedBox(height: 15.0,),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: 10.0),
-                child: Text(widget.name.toString() , style: fontLargeBold,),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: 10.0),
-                child: Text("عقاراتنا الموصى بها في ${widget.name}", style: fontMedium,),
-              ),
-              const SizedBox(height: 15.0,),
-              InkWell(
-                onTap: (){
-
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  child: Container(
-                    height: 70.0,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Theme.of(context).cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
-                          spreadRadius: 2, // Spread radius of the shadow
-                          blurRadius: 4, // Blur radius of the shadow
-                          offset: const Offset(0, 2), // Offset of the shadow
-                        ),
-                      ],
-                    ),
-
-                    child: Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(Icons.search),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            Locales.string(context, "search_state"),
-                            style: fontMedium.copyWith(color: Colors.grey),
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0,),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: 10.0),
-                child: Row(
+      body: BlocBuilder<PropertyStateCubit, PropertyStateState>(
+        builder: (context, state){
+          if(state is SuccessPropertyStateState){
+            return SafeArea(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Theme.of(context).cardColor
-                      ),
-                      child:  Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Center(
-                          child: Text(
-                            Locales.string(context, "found_no").replaceAll("{no}", no.toString()),
-                            style: fontMediumBold,
+                    // image section
+                    _imagesSectionWidget(widget.stateId),
+                    const SizedBox(height: 15.0,),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 10.0),
+                      child: Text(widget.name.toString() , style: fontLargeBold,),
+                    ),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 10.0),
+                      child: Text("عقاراتنا الموصى بها في ${widget.name}", style: fontMedium,),
+                    ),
+                    const SizedBox(height: 15.0,),
+                    InkWell(
+                      onTap: (){
+
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                        child: Container(
+                          height: 70.0,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Theme.of(context).cardColor,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
+                                spreadRadius: 2, // Spread radius of the shadow
+                                blurRadius: 4, // Blur radius of the shadow
+                                offset: const Offset(0, 2), // Offset of the shadow
+                              ),
+                            ],
+                          ),
+
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.search),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  Locales.string(context, "search_state"),
+                                  style: fontMedium.copyWith(color: Colors.grey),
+                                ),
+                              ),
+
+                            ],
                           ),
                         ),
                       ),
                     ),
-                    const Spacer(flex: 2,),
+                    const SizedBox(height: 20.0,),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 10.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 40.0,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Theme.of(context).cardColor
+                            ),
+                            child:  Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Center(
+                                child: Text(
+                                  Locales.string(context, "found_no").replaceAll("{no}", state.propertyModel.results!.length.toString()),
+                                  style: fontMediumBold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(flex: 2,),
+                        ],
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: List.generate(
+                            state.propertyModel.results!.length,
+                                (index) =>  Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                              child: Center(
+                                child: FeaturedPropertyWidget(
+                                  propertyModel: state.propertyModel,
+                                  index: index,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+
                   ],
                 ),
               ),
+            );
+          } else if(state is LoadingPropertyStateState){
+            return const CircularProgressIndicator();
+          } else if(state is ErrorPropertyStateState){
+            return Center(child: Text("error: ${state.error}"),);
+          } else{
+            return const SizedBox();
+          }
+        },
 
-              // Padding(
-              //   padding: const EdgeInsets.all(10.0),
-              //   child: SingleChildScrollView(
-              //     scrollDirection: Axis.vertical,
-              //     child: Column(
-              //       children: List.generate(
-              //         4,
-              //             (index) => const Padding(
-              //           padding: EdgeInsets.symmetric(horizontal: 2.5),
-              //           child: FeaturedPropertyWidget(
-              //
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // )
-
-
-
-
-            ],
-          ),
-        ),
-      ),
+      )
     );
   }
 

@@ -92,8 +92,8 @@ class _AllHighPlacesScreenState extends State<AllHighPlacesScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) =>  HighStateScreen(
-                                name: widget.stateModel[id].name,
-                                id: widget.stateModel[id].id,
+                                name: widget.stateModel[id].name.toString(),
+                                stateId: widget.stateModel[id].id,
                               ))
                           );
                         }

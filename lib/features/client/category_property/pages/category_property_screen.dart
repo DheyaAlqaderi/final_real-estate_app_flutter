@@ -9,7 +9,6 @@ import 'package:smart_real_estate/features/client/category_property/widget/subCa
 
 import '../../../../core/utils/images.dart';
 import '../../home/widgets/stand_property_widget.dart';
-import '../domain/manager/main_category/main_property_category_cubit.dart';
 import '../domain/manager/property_cubit/property_state.dart';
 
 class CategoryPropertyScreen extends StatefulWidget {
@@ -30,11 +29,11 @@ class _CategoryPropertyScreenState extends State<CategoryPropertyScreen> {
     if(widget.haveChildren){
       WidgetsBinding.instance.addPostFrameCallback((_) async{
         final subCategory = context.read<PropertySubCategoryCubit>();
-        final getPropertyByMainCategory = context.read<MainPropertyCategoryCubit>();
+        final getPropertyByMainCategory = context.read<PropertyCubit>();
 
         await Future.wait([
           subCategory.getSubCategory(parentId: widget.id),
-          getPropertyByMainCategory.getMainCategory(parentId: widget.id)
+          getPropertyByMainCategory.getPropertyByMainCategory(mainCategory: widget.id)
         ]);
 
       });
@@ -133,6 +132,12 @@ class _CategoryPropertyScreenState extends State<CategoryPropertyScreen> {
                                     (index) =>  SubCategoryCircleWidget(
                                       categoryModel: state.categoryModel,
                                       index: index,
+                                      onTap: () async{
+
+                                        await context.read<PropertyCubit>()
+                                            .getPropertyBySubCategory(
+                                            subCategory: state.categoryModel.results[index].id);
+                                      },
                                     ),
                               ),
                             ): const SizedBox();
