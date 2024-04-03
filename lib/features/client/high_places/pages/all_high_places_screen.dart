@@ -93,7 +93,7 @@ class _AllHighPlacesScreenState extends State<AllHighPlacesScreen> {
                               context,
                               MaterialPageRoute(builder: (context) =>  HighStateScreen(
                                 name: widget.stateModel[id].name.toString(),
-                                stateId: widget.stateModel[id].id,
+                                stateId: widget.stateModel[id].id!,
                               ))
                           );
                         }

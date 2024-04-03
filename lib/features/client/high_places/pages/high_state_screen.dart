@@ -7,11 +7,12 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/featured_property_widget.dart';
 
+import '../../property_details/presentation/pages/property_details_screen.dart';
 import '../domain/manager/property_state_cubit/property_state_cubit.dart';
 
 class HighStateScreen extends StatefulWidget {
   const HighStateScreen({super.key,  required this.stateId, required this.name});
-  final stateId;
+  final int stateId;
   final String name;
   @override
   State<HighStateScreen> createState() => _HighStateScreenState();
@@ -136,6 +137,13 @@ class _HighStateScreenState extends State<HighStateScreen> {
                                 child: FeaturedPropertyWidget(
                                   propertyModel: state.propertyModel,
                                   index: index,
+                                  onTap: (){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PropertyDetailsScreen(id: state.propertyModel.results![index].id)));
+                                  },
                                 ),
                               ),
                             ),

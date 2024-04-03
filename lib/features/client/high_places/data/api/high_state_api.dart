@@ -14,7 +14,7 @@ abstract class HighStateApi{
   /// get properties by state id
   @GET('api/property/by-state')
   Future<PropertyModel> getPropertyByState(
-      @Query("page") int page,
+      @Query("page") int propertyId,
       @Query("page_size") int pageSize,
       @Query("state") int state,
       );

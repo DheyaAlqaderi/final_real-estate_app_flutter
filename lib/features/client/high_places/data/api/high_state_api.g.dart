@@ -22,13 +22,13 @@ class _HighStateApi implements HighStateApi {
 
   @override
   Future<PropertyModel> getPropertyByState(
-    int page,
+    int propertyId,
     int pageSize,
     int state,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'page': page,
+      r'page': propertyId,
       r'page_size': pageSize,
       r'state': state,
     };

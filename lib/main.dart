@@ -20,6 +20,10 @@ import 'package:smart_real_estate/features/client/home/domain/manager/featured_p
 import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_cubit.dart';
+import 'package:smart_real_estate/features/client/property_details/data/remote_api/property_details_api.dart';
+import 'package:smart_real_estate/features/client/property_details/domain/repo/property_details_repo.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
@@ -35,7 +39,7 @@ Future<void> main() async {
 
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
-  await Locales.init(['ar']); // get last saved language
+  await Locales.init([ 'ar']); // get last saved language
 
   /// 2. initialize firebase
   _initializeFirebase();
@@ -99,6 +103,11 @@ class MyApp extends StatelessWidget {
         /// high state page
         BlocProvider<PropertyStateCubit>(
           create: (_) => PropertyStateCubit(HighPlacesRepo(HighStateApi(Dio()))),
+        ),
+
+        /// property details page
+        BlocProvider<PropertyDetailsCubit>(
+          create: (_) => PropertyDetailsCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
       ],
       child: LocaleBuilder(

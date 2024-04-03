@@ -9,6 +9,7 @@ import 'package:smart_real_estate/features/client/category_property/widget/subCa
 
 import '../../../../core/utils/images.dart';
 import '../../home/widgets/stand_property_widget.dart';
+import '../../property_details/presentation/pages/property_details_screen.dart';
 import '../domain/manager/property_cubit/property_state.dart';
 
 class CategoryPropertyScreen extends StatefulWidget {
@@ -166,6 +167,14 @@ class _CategoryPropertyScreenState extends State<CategoryPropertyScreen> {
                                     (index) => StandPropertyWidget(
                                       index: index,
                                       propertyModel: state.propertyModel,
+                                      onTap: (){
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => PropertyDetailsScreen(id: state.propertyModel.results![index].id)
+                                            )
+                                        );
+                                      },
                                     ),
                               ),
                             );

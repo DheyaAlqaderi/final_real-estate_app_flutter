@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +20,7 @@ import 'package:smart_real_estate/features/client/home/domain/manager/main_categ
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_state.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
+import '../../property_details/presentation/pages/property_details_screen.dart';
 import '../domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import '../domain/manager/main_category/subCategory/subCategory_state.dart';
 import '../domain/manager/property_home_cubit/property_home_cubit.dart';
@@ -120,37 +122,39 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 0,
             child: SvgPicture.asset(Images.halfCircle),
           ),
-          SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                _fetchDataRefresh();
-              },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildAppBarSection(),
-                      const SizedBox(height: 20,),
-                      _buildGreetingSection(),
-                      const SizedBox(height: 20,),
-                      _buildSearchBarAndFilter(),
-                      const SizedBox(height: 20,),
-                      _buildMainCategoriesRowList(),
-                      const SizedBox(height: 25,),
-                      _buildHomePageSectionsBanners(),
-                      _buildHomePageSectionsSubCategories(),
-                      _buildFeaturedProperties(),
-                      const SizedBox(height: 15,),
-                      _buildHighPlaces(),
-                      const SizedBox(height: 15,),
-                      _buildTopRealEstateAgents(),
-                      const SizedBox(height: 15,),
-                      _buildDiscoverNearProperties(),
-                    ],
+          SafeArea(
+            child: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  _fetchDataRefresh();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildAppBarSection(),
+                        const SizedBox(height: 20,),
+                        _buildGreetingSection(),
+                        const SizedBox(height: 20,),
+                        _buildSearchBarAndFilter(),
+                        const SizedBox(height: 20,),
+                        _buildMainCategoriesRowList(),
+                        const SizedBox(height: 25,),
+                        _buildHomePageSectionsBanners(),
+                        _buildHomePageSectionsSubCategories(),
+                        _buildFeaturedProperties(),
+                        const SizedBox(height: 15,),
+                        _buildHighPlaces(),
+                        const SizedBox(height: 15,),
+                        _buildTopRealEstateAgents(),
+                        const SizedBox(height: 15,),
+                        _buildDiscoverNearProperties(),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -478,6 +482,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: FeaturedPropertyWidget(
                           index: index,
                           propertyModel: state.propertyModel,
+                          onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PropertyDetailsScreen(id: state.propertyModel.results![index].id)));
+                          },
                         ),
                       ),
                     ),
@@ -530,7 +541,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => HighStateScreen(
-                                stateId: state.stateModel[index].id,
+                                stateId: state.stateModel[index].id!,
                                 name: state.stateModel[index].name.toString(),
                               ))
                             );
@@ -610,6 +621,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           (index) => StandPropertyWidget(
                         index: index,
                         propertyModel: state.propertyModel,
+                            onTap: (){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PropertyDetailsScreen(id: state.propertyModel.results![index].id))
+                              );
+                            },
                       ),
                     ),
                   ),
