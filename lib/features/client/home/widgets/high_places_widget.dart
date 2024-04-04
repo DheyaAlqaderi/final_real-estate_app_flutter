@@ -44,8 +44,8 @@ class _HighPlacesWidgetState extends State<HighPlacesWidget> {
                   width: 50.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50.0),
-                    image: const DecorationImage(
-                      image: CachedNetworkImageProvider(AppConstants.noImageUrl),
+                    image:  DecorationImage(
+                      image: CachedNetworkImageProvider("${AppConstants.baseUrl2}${widget.image}"),
                       fit: BoxFit.cover,
                     )
                   ),

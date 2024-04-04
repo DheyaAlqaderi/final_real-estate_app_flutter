@@ -38,15 +38,11 @@ class _WelcomeSelectScreenState extends State<WelcomeSelectScreen> {
               textAlign: TextAlign.center,
               style: fontMedium
             ),
-
-            Container(
+            const Padding(padding: EdgeInsets.all(10)),
+            SizedBox(
               width: 223,
               height: 210,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(Images.logoText),
-                ),
-              ),
+              child: SvgPicture.asset(Images.logo, fit: BoxFit.cover, color: Theme.of(context).primaryColor,),
             ),
 
             const Padding(padding: EdgeInsets.all(9.5)),

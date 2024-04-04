@@ -1,10 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/utils/images.dart';
+import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/widgets/image_section_widget.dart';
 
+import '../../../home/widgets/high_places_widget.dart';
 import '../manager/property_details/property_details_state.dart';
+import '../widgets/address_details_widget.dart';
+import '../widgets/feature_attribute_widget.dart';
+import '../widgets/property_details_description_widget.dart';
 
 
 class PropertyDetailsScreen extends StatefulWidget {
@@ -50,7 +59,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Display property image and some details
+
+                  /// Display property image and some details
                   ImageSectionPropertyDetailsWidget(
                     isFavorite: propertyDetails.inFavorite!,
                     imagesModel: imageList,
@@ -58,7 +68,117 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     categoryName: propertyDetails.category?.name ?? "",
                   ),
 
-                  // Displaying property rest details
+                  /// Displaying property rest details
+                  PropertyDetailsDescriptionWidget(
+                    name: propertyDetails.name!,
+                    description: propertyDetails.description!,
+                    address: propertyDetails.address?.line1 ?? "",
+                    isForSale: propertyDetails.forSale!,
+                    price: propertyDetails.price,
+                    date: propertyDetails.timeCreated,
+                  ),
+
+                  /// Displaying property Features and Attribute
+                  const SizedBox(height: 5.0,),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(
+                          propertyDetails.propertyValue!.length ,
+                            (index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 7),
+                              child: FeatureAttributeWidget(
+                                attributeName: propertyDetails.propertyValue![index].value!.attribute!.name!,
+                                attributeValue: propertyDetails.propertyValue![index].value!.value!,
+                              ),
+                            );
+                            }
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 5.0,),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(
+                          propertyDetails.featureProperty!.length ,
+                              (index) {
+                            return HighPlacesWidget(
+                              onTap: (){
+
+                              },
+                              name: propertyDetails.featureProperty![index].feature!.name!,
+                              image: propertyDetails.featureProperty![index].image![0].image,
+                            );
+                          }
+                      ),
+                    ),
+                  ),
+
+                  /// display property promoter details
+                  const SizedBox(height: 10.0,),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      height: 85.0,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const SizedBox(width: 7.0,),
+                              Container(
+                                height: 50.0,
+                                width: 50.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: CachedNetworkImageProvider("${AppConstants.baseUrl2}${propertyDetails.user!.image}"),
+                                    fit: BoxFit.cover,
+                                  )
+                                ),
+                              ),
+                              const SizedBox(width: 7.0,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(propertyDetails.user!.name.toString(), style: fontMediumBold,),
+                                  Text(propertyDetails.user!.email.toString(), style: fontSmall,)
+                                ],
+                              ),
+                            ],
+                          ),
+
+
+                          Row(
+                            children: [
+                              SvgPicture.asset(Images.chatIcon),
+                              const SizedBox(width: 7.0,),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                    ),
+                  ),
+
+                  /// display GoogleMap and address details
+                  const SizedBox(height: 10.0,),
+                  AddressDetailsWidget(
+                    addressLine: propertyDetails.address!.line1.toString(),
+                    // lat: propertyDetails.address.latitude!,
+                  ),
+
+                  /// display reviews and Rating
+                  const SizedBox(height: 10.0,),
+
 
 
                   Text('ID: ${propertyDetails.id}'),

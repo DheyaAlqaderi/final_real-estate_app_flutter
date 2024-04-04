@@ -52,6 +52,8 @@
   "find_all_places": "Find the best tips for a place to live",
   "found_no": "Found {no} properties",
   "for_sale": "for Sale",
-  "for_rent": "for rent"
+  "for_rent": "for rent",
+
+  "location": "Location"
 
 }

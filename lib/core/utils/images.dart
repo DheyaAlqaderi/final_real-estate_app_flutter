@@ -2,7 +2,7 @@
 class Images {
   static const String home = 'assets/image/home_icon.png';
   static const String logoText = "assets/images/logo_text.jpg";
-  static const String logo = 'assets/images/logo.png';
+  static const String logo = 'assets/svg/logo.svg';
   static const String logoSvg = 'assets/svg/logo.svg';
 
   static const String splashImage = 'assets/images/splash_image.png';
@@ -20,6 +20,8 @@ class Images {
   static const String facebookIcon = "assets/svg/facebook-icon.svg";
   static const String googleIcon = "assets/svg/google-icon.svg";
   static const String errorNetwork = "assets/images/network-error.png";
+  static const String chatIcon = "assets/svg/chat_icon.svg";
+
 
 
 
