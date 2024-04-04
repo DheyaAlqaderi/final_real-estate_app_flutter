@@ -27,9 +27,9 @@ class PropertyDetailsDescriptionWidget extends StatefulWidget {
 
 class _PropertyDetailsDescriptionWidgetState extends State<PropertyDetailsDescriptionWidget> {
 
-  int calculateDaysDifference(String dateString) {
+  String calculateTimeDifference(String dateString) {
     // Parse the input date string into a DateTime object
-    DateTime inputDate = DateFormat('yyyy-MM-dd').parse(dateString);
+    DateTime inputDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ").parse(dateString);
 
     // Get the current date
     DateTime currentDate = DateTime.now();
@@ -37,9 +37,25 @@ class _PropertyDetailsDescriptionWidgetState extends State<PropertyDetailsDescri
     // Calculate the difference between the current date and the input date
     Duration difference = currentDate.difference(inputDate);
 
-    // Return the difference in terms of days
-    return difference.inDays;
+    // Convert the difference into hours
+    int hoursDifference = difference.inHours;
+
+    if (hoursDifference < 24) {
+      return Locales.string(context, "hours_ago").replaceAll("{no}", hoursDifference.toString());
+    } else if (hoursDifference < 24 * 30) {
+      int daysDifference = difference.inDays;
+      return Locales.string(context, "days_ago").replaceAll("{no}", daysDifference.toString());
+    } else if (hoursDifference < 24 * 30 * 12) {
+      int monthsDifference = currentDate.month - inputDate.month + (currentDate.year - inputDate.year) * 12;
+      return Locales.string(context, "month_ago").replaceAll("{no}", monthsDifference.toString());
+    } else {
+      int yearsDifference = currentDate.year - inputDate.year;
+      return Locales.string(context, "years_ago").replaceAll("{no}", yearsDifference.toString());
+    }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +70,7 @@ class _PropertyDetailsDescriptionWidgetState extends State<PropertyDetailsDescri
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(widget.address, style: fontMedium,),
-              Text("منذ ${calculateDaysDifference(widget.date)} أيام  " , style: fontMedium,),
+              Text(calculateTimeDifference(widget.date.toString()) , style: fontSmall,),
             ],
           ),
           const SizedBox(height: 7.0),
@@ -65,7 +81,7 @@ class _PropertyDetailsDescriptionWidgetState extends State<PropertyDetailsDescri
                 children: [
                   Text(widget.price, style: fontMediumBold,),
                   const SizedBox(width: 7.0,),
-                  const Text("كل شهر" , style: fontMedium,)
+                  const Text("كل شهر" , style: fontSmall,)
                 ],
               ),
 
@@ -93,7 +109,7 @@ class _PropertyDetailsDescriptionWidgetState extends State<PropertyDetailsDescri
             color: Theme.of(context).cardColor,
           ),
           const SizedBox(height: 7.0),
-          Text(widget.description, style: fontMedium,),
+          Text(widget.description, style: fontMedium.copyWith(color: Colors.grey),),
 
         ],
       ),

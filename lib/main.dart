@@ -23,6 +23,7 @@ import 'package:smart_real_estate/features/client/home/domain/manager/property_h
 import 'package:smart_real_estate/features/client/property_details/data/remote_api/property_details_api.dart';
 import 'package:smart_real_estate/features/client/property_details/domain/repo/property_details_repo.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
@@ -109,6 +110,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<PropertyDetailsCubit>(
           create: (_) => PropertyDetailsCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
+        BlocProvider<ReviewsPropertyCubit>(
+          create: (_) => ReviewsPropertyCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+        ),
       ],
       child: LocaleBuilder(
         builder: (locale) => MaterialApp(
@@ -119,7 +123,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const RootScreen(),
+          home: const PropertyDetailsScreen(id: 1),
         ),
       ),
     );

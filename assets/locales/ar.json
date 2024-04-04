@@ -53,5 +53,14 @@
   "for_sale": "للبيع",
   "for_rent": "للأيجار",
 
-  "location": "الموقع"
+  "location": "الموقع",
+  "review": "التعليقات",
+  "review_no": "التعليقات {no} من ",
+  "days_ago": " منذ {no} أيام",
+  "hours_ago": " منذ {no} ساعات",
+  "month_ago": " منذ {no} شهر",
+  "years_ago": " منذ {no} سنة",
+  "display_all_reviews": "عرض جميع التقييمات"
+
+
 }

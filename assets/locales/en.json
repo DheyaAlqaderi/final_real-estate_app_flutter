@@ -54,6 +54,14 @@
   "for_sale": "for Sale",
   "for_rent": "for rent",
 
-  "location": "Location"
+  "location": "Location",
+  "review": "Reviews",
+  "review_no": "Reviews {no} from ",
+
+  "days_ago": "{no} days ago",
+  "hours_ago": "{no} hours ago",
+  "month_ago": "{no} months ago",
+  "years_ago": "{no} years ago",
+  "display_all_reviews": "Display all Reviews"
 
 }

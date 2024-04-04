@@ -5,6 +5,8 @@ import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/property_details_model.dart';
 
+import '../model/review_model.dart';
+
 part 'property_details_api.g.dart';
 
 @RestApi(baseUrl: AppConstants.baseUrl)
@@ -18,4 +20,11 @@ abstract class PropertyDetailsApi{
     @Path("propertyId") int propertyId,
     @Header("Authorization") String token,
   );
+
+  /// get Reviews of property id
+  @GET('api/property/{propertyId}/reviews/')
+  Future<ReviewModel> getReviewsPropertyById(
+      @Path("propertyId") int propertyId,
+      @Query("prop") int propertyId2
+      );
 }

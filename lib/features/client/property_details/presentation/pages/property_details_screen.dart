@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,13 +8,16 @@ import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/widgets/image_section_widget.dart';
 
 import '../../../home/widgets/high_places_widget.dart';
 import '../manager/property_details/property_details_state.dart';
+import '../manager/reviews/reviews_state.dart';
 import '../widgets/address_details_widget.dart';
 import '../widgets/feature_attribute_widget.dart';
 import '../widgets/property_details_description_widget.dart';
+import '../widgets/property_review_rating_widget.dart';
 
 
 class PropertyDetailsScreen extends StatefulWidget {
@@ -34,8 +38,10 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final propertyDetails = context.read<PropertyDetailsCubit>();
+      final getReviews = context.read<ReviewsPropertyCubit>();
       await Future.wait([
         propertyDetails.getPropertyDetails(widget.id!, "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
+        getReviews.getReviewsProperty(widget.id!)
       ]);
     });
   }
@@ -178,68 +184,31 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
 
                   /// display reviews and Rating
                   const SizedBox(height: 10.0,),
+                  BlocBuilder<ReviewsPropertyCubit, ReviewsPropertyState>(
+                    builder: (context, state) {
+                      if (state is ReviewsPropertyLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is ReviewsPropertyLoaded) {
+                        final reviews = state.reviewModel.results;
+                        if (kDebugMode) {
+                          print("success");
+                        }
+                        return PropertyReviewAndRatingWidget(
+                          rating: propertyDetails.rate!,
+                          reviewModel: state.reviewModel,
+                        );
+                      } else if (state is ReviewsPropertyError) {
+                        return Center(
+                          child: Text(state.message),
+                        );
+                      } else {
+                        return const SizedBox(); // Return an empty widget if state is not recognized
+                      }
+                    },
+                  ),
 
-
-
-                  Text('ID: ${propertyDetails.id}'),
-                  Text('Name: ${propertyDetails.name}'),
-                  Text('Description: ${propertyDetails.inFavorite}'),
-                  Text('Price: ${propertyDetails.price}'),
-                  Text('Size: ${propertyDetails.size}'),
-                  Text('Rate: ${propertyDetails.rate}'),
-                  Text('Active: ${propertyDetails.isActive}'),
-                  Text('Deleted: ${propertyDetails.isDeleted}'),
-                  Text('Time Created: ${propertyDetails.timeCreated}'),
-                  Text('Unique Number: ${propertyDetails.uniqueNumber}'),
-                  Text('For Sale: ${propertyDetails.forSale}'),
-                  Text('Featured: ${propertyDetails.isFeatured}'),
-
-                  // Displaying address
-                  Text('Address: ${propertyDetails.address?.line1 ?? ""}'),
-
-                  // Displaying category
-                  Text('Category Name: ${propertyDetails.category?.name ?? ""}'),
-
-                  // Displaying user
-                  if (propertyDetails.user != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('User Info:'),
-                        Text('   Email: ${propertyDetails.user!.email ?? ""}'),
-                        Text('   Phone Number: ${propertyDetails.user!.phoneNumber ?? ""}'),
-                        Text('   Username: ${propertyDetails.user!.username ?? ""}'),
-                        Text('   Name: ${propertyDetails.user!.name ?? ""}'),
-                      ],
-                    ),
-
-                  // Displaying feature property
-                  const Text('Feature Properties:'),
-                  if (propertyDetails.featureProperty != null)
-                    for (var featureProperty in propertyDetails.featureProperty!)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('   Feature ID: ${featureProperty.feature?.id ?? ""}'),
-                          Text('   Feature Name: ${featureProperty.feature?.name ?? ""}'),
-                          Text('   Feature Image: ${featureProperty.image?.first.image ?? ""}'),
-                        ],
-                      ),
-
-                  // Displaying property values
-                  const Text('Property Values:'),
-                  if (propertyDetails.propertyValue != null)
-                    for (var propertyValue in propertyDetails.propertyValue!)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('   Value ID: ${propertyValue.value?.id ?? ""}'),
-                          Text('   Attribute Name: ${propertyValue.value?.attribute?.name ?? ""}'),
-                          Text('   Value: ${propertyValue.value?.value ?? ""}'),
-                        ],
-                      ),
-
-                  // Additional sections if needed
                 ],
               );
             } else if (state is PropertyDetailsError) {
