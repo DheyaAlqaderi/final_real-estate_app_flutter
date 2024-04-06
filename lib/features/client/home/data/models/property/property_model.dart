@@ -39,7 +39,7 @@ class PropertyModel {
 
 class PropertyResult {
   final int? id;
-  // final int? rate;
+  // final double? rate;
   final bool? inFavorite;
   final List<PropertyImage>? image;
   final String? name;
@@ -86,7 +86,7 @@ class PropertyResult {
     }
     return PropertyResult(
       id: json['id'] ,
-      // rate: json['rate'] ,
+      // rate: json['rate_review'] ,
       inFavorite: json['in_favorite'],
       image: image,
       name: json['name'] ,
@@ -108,7 +108,7 @@ class PropertyResult {
   Map<String, dynamic>? toJson() {
     return {
       'id': id,
-      // 'rate': rate,
+      // 'rate_review': rate,
       'in_favorite': inFavorite,
       'image': image?.map((img) => img.toJson()).toList(),
       'name': name,

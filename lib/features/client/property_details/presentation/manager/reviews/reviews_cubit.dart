@@ -14,7 +14,18 @@ class ReviewsPropertyCubit extends Cubit<ReviewsPropertyState> {
       final reviewModel = await _repository.getReviewsPropertyById(propertyId);
       emit(ReviewsPropertyLoaded(reviewModel));
     } catch (e) {
-      emit(ReviewsPropertyError('Failed to fetch property reviews'));
+      emit(ReviewsPropertyError('Failed to fetch property reviews $e'));
     }
   }
+
+  Future<void> fetchReviewsPropertyByRateNo(int propertyId, int rateReview) async {
+    emit(ReviewsPropertyLoading());
+    try {
+      final reviewModel = await _repository.getReviewsPropertyByRateNo(propertyId, rateReview);
+      emit(ReviewsPropertyLoaded(reviewModel));
+    } catch (e) {
+      emit(ReviewsPropertyError('Failed to fetch reviews: $e'));
+    }
+  }
+
 }

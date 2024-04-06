@@ -6,10 +6,12 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 
+import '../../../data/model/address_state_model.dart';
+
 class AddressDetailsWidget extends StatefulWidget {
   const AddressDetailsWidget({super.key, required this.addressLine, /*required this.lat, required this.long*/});
 
-  final String addressLine;
+  final Address addressLine;
   // final double lat;
   // final double long;
 
@@ -55,7 +57,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.addressLine, style: fontMedium,),
+                  Text(widget.addressLine.line1.toString(), style: fontMedium,),
                 ],
               ),
             ],
@@ -89,7 +91,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
 
   void _onMapCreated(GoogleMapController controller) {
     _controller = controller;
-    _addMarker(const LatLng(14.5678337, 43.2232772), 'Marker Title', 'Marker Description');
+    _addMarker(LatLng(widget.addressLine.latitude!, widget.addressLine.longitude!), 'Marker Title', 'Marker Description');
 
   }
 

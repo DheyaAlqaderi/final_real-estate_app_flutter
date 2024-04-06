@@ -1,5 +1,4 @@
 
-
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
@@ -25,6 +24,14 @@ abstract class PropertyDetailsApi{
   @GET('api/property/{propertyId}/reviews/')
   Future<ReviewModel> getReviewsPropertyById(
       @Path("propertyId") int propertyId,
-      @Query("prop") int propertyId2
+      @Query("ordering") String timeCreated,
+      );
+
+  /// get Reviews of rate number
+  @GET('api/property/{propertyId}/reviews/')
+  Future<ReviewModel> getReviewsPropertyByRateNo(
+      @Path("propertyId") int propertyId,
+      @Query("rate_review") int rateReview,
+      @Query("ordering") String timeCreated,
       );
 }

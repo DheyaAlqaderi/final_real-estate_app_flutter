@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
@@ -9,15 +10,15 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
-import 'package:smart_real_estate/features/client/property_details/presentation/widgets/image_section_widget.dart';
 
 import '../../../home/widgets/high_places_widget.dart';
 import '../manager/property_details/property_details_state.dart';
 import '../manager/reviews/reviews_state.dart';
-import '../widgets/address_details_widget.dart';
-import '../widgets/feature_attribute_widget.dart';
-import '../widgets/property_details_description_widget.dart';
-import '../widgets/property_review_rating_widget.dart';
+import '../widgets/property_details_widgets/address_details_widget.dart';
+import '../widgets/property_details_widgets/feature_attribute_widget.dart';
+import '../widgets/property_details_widgets/image_section_widget.dart';
+import '../widgets/property_details_widgets/property_details_description_widget.dart';
+import '../widgets/property_details_widgets/property_review_rating_widget.dart';
 
 
 class PropertyDetailsScreen extends StatefulWidget {
@@ -62,6 +63,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                 image: imageModel.image,
                 id: imageModel.id,
               )).toList();
+
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -80,8 +83,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     description: propertyDetails.description!,
                     address: propertyDetails.address?.line1 ?? "",
                     isForSale: propertyDetails.forSale!,
-                    price: propertyDetails.price,
-                    date: propertyDetails.timeCreated,
+                    price: propertyDetails.price!,
+                    date: propertyDetails.timeCreated!,
                   ),
 
                   /// Displaying property Features and Attribute
@@ -145,7 +148,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100),
                                   image: DecorationImage(
-                                    image: CachedNetworkImageProvider("${AppConstants.baseUrl2}${propertyDetails.user!.image}"),
+                                    image: CachedNetworkImageProvider(
+                                        "${AppConstants.baseUrl2}${propertyDetails.user!.image}"),
                                     fit: BoxFit.cover,
                                   )
                                 ),
@@ -156,7 +160,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(propertyDetails.user!.name.toString(), style: fontMediumBold,),
-                                  Text(propertyDetails.user!.email.toString(), style: fontSmall,)
+                                  Text(propertyDetails.user!.userType.toString(), style: fontSmall,)
                                 ],
                               ),
                             ],
@@ -178,12 +182,32 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                   /// display GoogleMap and address details
                   const SizedBox(height: 10.0,),
                   AddressDetailsWidget(
-                    addressLine: propertyDetails.address!.line1.toString(),
+                    addressLine: propertyDetails.address!,
                     // lat: propertyDetails.address.latitude!,
                   ),
 
                   /// display reviews and Rating
                   const SizedBox(height: 10.0,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(Locales.string(context, "review"), style: fontMediumBold,),
+                        Container(
+                          height: 29.0,
+                          width: 29.0,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius: BorderRadius.circular(50.0)
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.add, size: 16,),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   BlocBuilder<ReviewsPropertyCubit, ReviewsPropertyState>(
                     builder: (context, state) {
                       if (state is ReviewsPropertyLoading) {
@@ -191,14 +215,21 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                           child: CircularProgressIndicator(),
                         );
                       } else if (state is ReviewsPropertyLoaded) {
-                        final reviews = state.reviewModel.results;
-                        if (kDebugMode) {
-                          print("success");
+                        if (state.reviewModel.results!.isEmpty) {
+                          return const Center(
+                            child: Text("No Reviews"),
+                          );
+                        } else {
+                          if (kDebugMode) {
+                            print("success");
+                          }
+                          return PropertyReviewAndRatingWidget(
+                            rating: propertyDetails.rate!,
+                            reviewModel: state.reviewModel,
+                            propertyId: widget.id!,
+                            index: 0,
+                          );
                         }
-                        return PropertyReviewAndRatingWidget(
-                          rating: propertyDetails.rate!,
-                          reviewModel: state.reviewModel,
-                        );
                       } else if (state is ReviewsPropertyError) {
                         return Center(
                           child: Text(state.message),
@@ -208,6 +239,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                       }
                     },
                   ),
+
 
                 ],
               );

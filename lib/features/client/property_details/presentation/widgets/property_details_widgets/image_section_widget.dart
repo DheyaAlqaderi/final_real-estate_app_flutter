@@ -6,7 +6,7 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 
-import '../../../../../core/utils/images.dart';
+import '../../../../../../core/utils/images.dart';
 
 
 class ImageSectionPropertyDetailsWidget extends StatefulWidget {

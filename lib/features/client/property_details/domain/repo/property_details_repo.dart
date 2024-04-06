@@ -21,10 +21,20 @@ class PropertyDetailsRepository {
   /// to get property reviews
   Future<ReviewModel> getReviewsPropertyById(int propertyId) async {
     try {
-      return await _api.getReviewsPropertyById(propertyId, propertyId);
+      return await _api.getReviewsPropertyById(propertyId, "-time_created");
     } catch (e) {
       // Handle error
       throw Exception('Failed to fetch property reviews');
     }
   }
+
+  /// to get property reviews by rate number
+  Future<ReviewModel> getReviewsPropertyByRateNo(int propertyId, int rateReview) async {
+    try {
+      return await _api.getReviewsPropertyByRateNo(propertyId, rateReview, "-time_created");
+    } catch (e) {
+      throw Exception('Failed to fetch property reviews by rate number');
+    }
+  }
+
 }

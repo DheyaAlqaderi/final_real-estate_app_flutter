@@ -1,3 +1,5 @@
+import 'address_state_model.dart';
+
 class PropertyDetailsModel {
   final int? id;
   final List<FeatureProperty>? featureProperty;
@@ -50,7 +52,7 @@ class PropertyDetailsModel {
       propertyValue: (json['property_value'] as List<dynamic>?)
           ?.map((e) => PropertyValue.fromJson(e))
           .toList(),
-      rate: json['rate']?.toDouble(),
+      rate: json['rate_review']?.toDouble(),
       inFavorite: json['in_favorite'],
       address: json['address'] is String ? Address(line1: json['address']) : Address.fromJson(json['address']),
       category: json['category'] != null ? Category.fromJson(json['category']) : null,
@@ -77,7 +79,7 @@ class PropertyDetailsModel {
       'id': id,
       'feature_property': featureProperty?.map((e) => e.toJson()).toList(),
       'property_value': propertyValue?.map((e) => e.toJson()).toList(),
-      'rate': rate,
+      'rate_review': rate,
       'in_favorite': inFavorite,
       'address': address?.toJson(),
       'category': category?.toJson(),
@@ -97,6 +99,39 @@ class PropertyDetailsModel {
   }
 }
 
+class State {
+  final int? id;
+  final List<ImageModel>? image;
+  final String? name;
+  final int? city;
+
+  State({
+    this.id,
+    this.image,
+    this.name,
+    this.city,
+  });
+
+  factory State.fromJson(Map<String, dynamic> json) {
+    return State(
+      id: json['id'],
+      image: (json['image'] as List<dynamic>?)
+          ?.map((e) => ImageModel.fromJson(e))
+          .toList(),
+      name: json['name'],
+      city: json['city'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'image': image?.map((e) => e.toJson()).toList(),
+      'name': name,
+      'city': city,
+    };
+  }
+}
 class FeatureProperty {
   final int? id;
   final Feature? feature;
@@ -247,80 +282,6 @@ class Attribute {
   }
 }
 
-class Address {
-  final int? id;
-  final State? state;
-  final String? longitude;
-  final String? latitude;
-  final String? line1;
-  final String? line2;
-
-  Address({
-    this.id,
-    this.state,
-    this.longitude,
-    this.latitude,
-    this.line1,
-    this.line2,
-  });
-
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      id: json['id'],
-      state: json['state'] != null ? State.fromJson(json['state']) : null,
-      longitude: json['longitude'],
-      latitude: json['latitude'],
-      line1: json['line1'],
-      line2: json['line2'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'state': state?.toJson(),
-      'longitude': longitude,
-      'latitude': latitude,
-      'line1': line1,
-      'line2': line2,
-    };
-  }
-}
-
-class State {
-  final int? id;
-  final List<ImageModel>? image;
-  final String? name;
-  final int? city;
-
-  State({
-    this.id,
-    this.image,
-    this.name,
-    this.city,
-  });
-
-  factory State.fromJson(Map<String, dynamic> json) {
-    return State(
-      id: json['id'],
-      image: (json['image'] as List<dynamic>?)
-          ?.map((e) => ImageModel.fromJson(e))
-          .toList(),
-      name: json['name'],
-      city: json['city'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'image': image?.map((e) => e.toJson()).toList(),
-      'name': name,
-      'city': city,
-    };
-  }
-}
-
 class Category {
   final int? id;
   final List<ImageModel>? image;
@@ -385,8 +346,9 @@ class User {
   final bool? isActive;
   final String? image;
   final bool? isDeleted;
+  final String? userType;
 
-  User({
+  User( {
     this.id,
     this.email,
     this.phoneNumber,
@@ -396,6 +358,7 @@ class User {
     this.isActive,
     this.image,
     this.isDeleted,
+    this.userType,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -409,6 +372,7 @@ class User {
       isActive: json['is_active'],
       image: json['image'],
       isDeleted: json['is_deleted'],
+      userType: json['user_type']
     );
   }
 
@@ -423,6 +387,7 @@ class User {
       'is_active': isActive,
       'image': image,
       'is_deleted': isDeleted,
+      'user_type': userType
     };
   }
 }

@@ -57,7 +57,8 @@
   "location": "Location",
   "review": "Reviews",
   "review_no": "Reviews {no} from ",
-
+  "seconds_ago": "{no} seconds ago",
+  "minutes_ago": "{no} minutes ago",
   "days_ago": "{no} days ago",
   "hours_ago": "{no} hours ago",
   "month_ago": "{no} months ago",

@@ -56,11 +56,11 @@
   "location": "الموقع",
   "review": "التعليقات",
   "review_no": "التعليقات {no} من ",
-  "days_ago": " منذ {no} أيام",
+  "seconds_ago": " منذ {no} ثانية",
+  "minutes_ago": " منذ {no} دقيقة",
+  "days_ago": " منذ {no} يوم",
   "hours_ago": " منذ {no} ساعات",
   "month_ago": " منذ {no} شهر",
   "years_ago": " منذ {no} سنة",
   "display_all_reviews": "عرض جميع التقييمات"
-
-
 }

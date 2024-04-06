@@ -24,6 +24,7 @@ import 'package:smart_real_estate/features/client/property_details/data/remote_a
 import 'package:smart_real_estate/features/client/property_details/domain/repo/property_details_repo.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/screen_review/review_property_rateNo_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
@@ -32,6 +33,7 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
+import 'features/client/property_details/presentation/pages/reviews_rating_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -113,6 +115,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<ReviewsPropertyCubit>(
           create: (_) => ReviewsPropertyCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
+        BlocProvider<ReviewsPropertyByRateNoCubit>(
+          create: (_) => ReviewsPropertyByRateNoCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+        ),
       ],
       child: LocaleBuilder(
         builder: (locale) => MaterialApp(
@@ -123,7 +128,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const PropertyDetailsScreen(id: 1),
+          home: const RootScreen(),
         ),
       ),
     );

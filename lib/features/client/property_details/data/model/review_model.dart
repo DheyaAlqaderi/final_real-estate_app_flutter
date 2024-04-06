@@ -2,7 +2,7 @@ class ReviewModel {
   final int? count;
   final dynamic next;
   final dynamic previous;
-  final List<ReviewResult> results;
+  final List<ReviewResult>? results;
 
   ReviewModel({
     this.count,
@@ -24,7 +24,7 @@ class ReviewModel {
   }
 
   Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>> resultsJsonList = results.map((e) => e.toJson()).toList();
+    List<Map<String, dynamic>> resultsJsonList = results!.map((e) => e.toJson()).toList();
 
     return {
       'count': count,
