@@ -33,6 +33,7 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
+import 'features/client/property_details/presentation/pages/profile_owner_screen.dart';
 import 'features/client/property_details/presentation/pages/reviews_rating_screen.dart';
 import 'firebase_options.dart';
 
@@ -128,7 +129,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const RootScreen(),
+          home: const ProfileOwnerScreen(),
         ),
       ),
     );

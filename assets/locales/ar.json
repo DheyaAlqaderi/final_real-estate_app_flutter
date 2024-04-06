@@ -62,5 +62,8 @@
   "hours_ago": " منذ {no} ساعات",
   "month_ago": " منذ {no} شهر",
   "years_ago": " منذ {no} سنة",
-  "display_all_reviews": "عرض جميع التقييمات"
+  "display_all_reviews": "عرض جميع التقييمات",
+  "personal_profile": "الملف الشخصي",
+
+  "sold": "مباع"
 }

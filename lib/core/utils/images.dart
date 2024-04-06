@@ -21,6 +21,7 @@ class Images {
   static const String googleIcon = "assets/svg/google-icon.svg";
   static const String errorNetwork = "assets/images/network-error.png";
   static const String chatIcon = "assets/svg/chat_icon.svg";
+  static const String phoneIcon = "assets/svg/phone_icon.svg";
 
 
 
