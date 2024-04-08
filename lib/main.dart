@@ -22,9 +22,11 @@ import 'package:smart_real_estate/features/client/home/domain/manager/main_categ
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/data/remote_api/property_details_api.dart';
 import 'package:smart_real_estate/features/client/property_details/domain/repo/property_details_repo.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/manager/owner_properties/property_owner_properties._cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/screen_review/review_property_rateNo_cubit.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
@@ -43,7 +45,7 @@ Future<void> main() async {
 
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
-  await Locales.init([ 'ar']); // get last saved language
+  await Locales.init([ 'en', 'ar']); // get last saved language
 
   /// 2. initialize firebase
   _initializeFirebase();
@@ -119,6 +121,12 @@ class MyApp extends StatelessWidget {
         BlocProvider<ReviewsPropertyByRateNoCubit>(
           create: (_) => ReviewsPropertyByRateNoCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
+        BlocProvider<PropertyOwnerProfileCubit>(
+          create: (_) => PropertyOwnerProfileCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+        ),
+        BlocProvider<PropertyOwnerPropertiesCubit>(
+          create: (_) => PropertyOwnerPropertiesCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+        ),
       ],
       child: LocaleBuilder(
         builder: (locale) => MaterialApp(
@@ -129,7 +137,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const ProfileOwnerScreen(),
+          home: const RootScreen(),
         ),
       ),
     );

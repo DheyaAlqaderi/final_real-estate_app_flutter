@@ -24,7 +24,7 @@ ThemeData dark = ThemeData(
         elevation: MaterialStateProperty.all<double>(0),
         foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // Set background color to brown
         backgroundColor: MaterialStateProperty.all<Color>(Colors.white10), // Set text color to white
-        side: MaterialStateProperty.all<BorderSide>(BorderSide(color: const Color(0xFF1F4C6B), width: 1)), // Add border
+        side: MaterialStateProperty.all<BorderSide>(const BorderSide(color: Color(0xFF1F4C6B), width: 1)), // Add border
       )
   ),
   colorScheme: ColorScheme(

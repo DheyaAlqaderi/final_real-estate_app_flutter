@@ -139,7 +139,9 @@ class _ImageSectionPropertyDetailsWidgetState
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             InkWell(
-              onTap: (){},
+              onTap: (){
+                Navigator.pop(context);
+              },
               child: Container(
                 height: 50.0,
                 width: 50.0,

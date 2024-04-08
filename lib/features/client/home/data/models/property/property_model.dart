@@ -39,40 +39,40 @@ class PropertyModel {
 
 class PropertyResult {
   final int? id;
-  // final double? rate;
+  final double? rate;
   final bool? inFavorite;
   final List<PropertyImage>? image;
   final String? name;
-  // final String? description;
+  final String? description;
   final String? price;
-  // final int? size;
-  // final bool? isActive;
-  // final bool? isDeleted;
-  // final String? timeCreated;
-  // final String? uniqueNumber;
+  final int? size;
+  final bool? isActive;
+  final bool? isDeleted;
+  final String? timeCreated;
+  final String? uniqueNumber;
   final bool? forSale;
   final bool? isFeatured;
-  // final int? user;
-  // final int? category;
+  final int? user;
+  final int? category;
   final String? address;
 
   PropertyResult({
     this.id,
-    // this.rate,
+    this.rate,
     this.inFavorite,
     this.image,
     this.name,
-    // this.description,
+    this.description,
     this.price,
-    // this.size,
-    // this.isActive,
-    // this.isDeleted,
-    // this.timeCreated,
-    // this.uniqueNumber,
+    this.size,
+    this.isActive,
+    this.isDeleted,
+    this.timeCreated,
+    this.uniqueNumber,
     this.forSale,
     this.isFeatured,
-    // this.user,
-    // this.category,
+    this.user,
+    this.category,
     this.address,
   });
 
@@ -86,21 +86,21 @@ class PropertyResult {
     }
     return PropertyResult(
       id: json['id'] ,
-      // rate: json['rate_review'] ,
+      rate: json['rate_review'] ,
       inFavorite: json['in_favorite'],
       image: image,
       name: json['name'] ,
-      // description: json['description'] ,
+      description: json['description'] ,
       price: json['price'] ,
-      // size: json['size'],
-      // isActive: json['is_active'] ,
-      // isDeleted: json['is_deleted'] ,
-      // timeCreated: json['time_created'] ,
-      // uniqueNumber: json['unique_number'],
+      size: json['size'],
+      isActive: json['is_active'] ,
+      isDeleted: json['is_deleted'] ,
+      timeCreated: json['time_created'] ,
+      uniqueNumber: json['unique_number'],
       forSale: json['for_sale'] ,
       isFeatured: json['is_featured'] ,
-      // user: json['user'] ,
-      // category: json['category'] ,
+      user: json['user'] ,
+      category: json['category'] ,
       address: json['address'] ,
     );
   }
@@ -108,21 +108,21 @@ class PropertyResult {
   Map<String, dynamic>? toJson() {
     return {
       'id': id,
-      // 'rate_review': rate,
+      'rate_review': rate,
       'in_favorite': inFavorite,
       'image': image?.map((img) => img.toJson()).toList(),
       'name': name,
-      // 'description': description,
+      'description': description,
       'price': price,
-      // 'size': size,
-      // 'is_active': isActive,
-      // 'is_deleted': isDeleted,
-      // 'time_created': timeCreated,
-      // 'unique_number': uniqueNumber,
+      'size': size,
+      'is_active': isActive,
+      'is_deleted': isDeleted,
+      'time_created': timeCreated,
+      'unique_number': uniqueNumber,
       'for_sale': forSale,
       'is_featured': isFeatured,
-      // 'user': user,
-      // 'category': category,
+      'user': user,
+      'category': category,
       'address': address,
     };
   }

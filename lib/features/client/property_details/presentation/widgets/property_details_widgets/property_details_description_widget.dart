@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:intl/intl.dart';
@@ -69,7 +70,7 @@ class _PropertyDetailsDescriptionWidgetState extends State<PropertyDetailsDescri
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(widget.address, style: fontMedium,),
+              Expanded(child: Text("${widget.address}State - ${widget.address}", style: fontMedium,)),
               Text(calculateTimeDifference(widget.date.toString()) , style: fontSmall,),
             ],
           ),
@@ -81,7 +82,9 @@ class _PropertyDetailsDescriptionWidgetState extends State<PropertyDetailsDescri
                 children: [
                   Text(widget.price, style: fontMediumBold,),
                   const SizedBox(width: 7.0,),
-                  const Text("كل شهر" , style: fontSmall,)
+                  (!widget.isForSale)
+                      ? const Text("كل شهر" , style: fontSmall,)
+                      : const SizedBox(),
                 ],
               ),
 

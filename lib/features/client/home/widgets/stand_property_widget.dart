@@ -39,14 +39,14 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).cardColor,
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
-                spreadRadius: 2, // Spread radius of the shadow
-                blurRadius: 4, // Blur radius of the shadow
-                offset: const Offset(0, 2), // Offset of the shadow
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
+            //     spreadRadius: 2, // Spread radius of the shadow
+            //     blurRadius: 4, // Blur radius of the shadow
+            //     offset: const Offset(0, 2), // Offset of the shadow
+            //   ),
+            // ],
           ),
           child: Column(
             children: [

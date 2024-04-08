@@ -1,7 +1,9 @@
 import 'package:smart_real_estate/features/client/property_details/data/remote_api/property_details_api.dart';
 
+import '../../../home/data/models/property/property_model.dart';
 import '../../data/model/property_details_model.dart';
 import '../../data/model/review_model.dart';
+import '../../data/model/user_profile_model.dart';
 
 class PropertyDetailsRepository {
   final PropertyDetailsApi _api;
@@ -34,6 +36,26 @@ class PropertyDetailsRepository {
       return await _api.getReviewsPropertyByRateNo(propertyId, rateReview, "-time_created");
     } catch (e) {
       throw Exception('Failed to fetch property reviews by rate number');
+    }
+  }
+
+  /// to get property owner profile by userId
+  Future<ProfileUserModel> getPropertyOwnerProfileById(int userId) async {
+    try {
+      return await _api.getPropertyOwnerProfileById(userId);
+    } catch (error) {
+      // Handle error
+      throw Exception('Failed to fetch property owner profile: $error');
+    }
+  }
+
+  /// to get property owner properties by userId
+  Future<PropertyModel> getPropertyOwnerPropertiesByUserId(int userId) async {
+    try {
+      return await _api.getPropertyOwnerPropertiesByUserId(userId);
+    } catch (error) {
+      // Handle error
+      throw Exception('Failed to fetch property owner properties: $error');
     }
   }
 

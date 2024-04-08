@@ -40,14 +40,14 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).cardColor,
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
-                spreadRadius: 2, // Spread radius of the shadow
-                blurRadius: 4, // Blur radius of the shadow
-                offset: const Offset(0, 2), // Offset of the shadow
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
+            //     spreadRadius: 2, // Spread radius of the shadow
+            //     blurRadius: 4, // Blur radius of the shadow
+            //     offset: const Offset(0, 2), // Offset of the shadow
+            //   ),
+            // ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,14 +88,6 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             color: Theme.of(context).cardColor,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Theme.of(context).shadowColor, // Use shadowColor from the theme with opacity
-                                spreadRadius: 2, // Spread radius of the shadow
-                                blurRadius: 4, // Blur radius of the shadow
-                                offset: const Offset(0, 2), // Offset of the shadow
-                              ),
-                            ],
                           ),
                           child: Center(
                               child: SvgPicture.asset(
@@ -202,6 +194,46 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
                               ]
                           )
                     ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+                        child: Locales.isDirectionRTL(context)
+                            ?  Row(
+                            children: [
+                              const Icon(Icons.star, size: 10, color: Colors.amberAccent,),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                child: SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    widget.propertyModel.results![widget.index].rate.toString(),
+                                    style: fontSmall,
+                                    textDirection: TextDirection.rtl,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ]
+                        )
+                            : Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                child: SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    widget.propertyModel.results![widget.index].rate.toString(),
+                                    style: fontSmall,
+                                    maxLines: 2,
+                                    textDirection: TextDirection.rtl,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              const Icon(Icons.star, size: 10, color: Colors.amberAccent,),
+                            ]
+                        )
+                    ),
                     Expanded(
                         child: Padding(
                           padding: Locales.isDirectionRTL(context)
@@ -209,13 +241,21 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
                               :const EdgeInsets.only(right: 15.0,top: 5.0, bottom: 5.0),
                           child:  Align(
                               alignment: Alignment.bottomRight,
-                              child: Text(
-                                "${widget.propertyModel.results![widget.index].price.toString()} الف /شهر",
+                              child: (!widget.propertyModel.results![widget.index].forSale!)
+                                  ?Text(
+                                  "${widget.propertyModel.results![widget.index].price.toString()} الف /شهر",
                                 style: fontSmallBold,
                                 maxLines: 1,
                                 textDirection: TextDirection.rtl,
                                 overflow: TextOverflow.ellipsis,
                               )
+                                  : Text(
+                                widget.propertyModel.results![widget.index].price.toString(),
+                                style: fontSmallBold,
+                                maxLines: 1,
+                                textDirection: TextDirection.rtl,
+                                overflow: TextOverflow.ellipsis,
+                              ) ,
                           ),
                         )
                     ),

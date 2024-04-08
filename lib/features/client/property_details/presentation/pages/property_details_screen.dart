@@ -10,6 +10,7 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/pages/profile_owner_screen.dart';
 
 import '../../../home/widgets/high_places_widget.dart';
 import '../manager/property_details/property_details_state.dart';
@@ -81,7 +82,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                   PropertyDetailsDescriptionWidget(
                     name: propertyDetails.name!,
                     description: propertyDetails.description!,
-                    address: propertyDetails.address?.line1 ?? "",
+                    address: propertyDetails.address?.line1 ?? "", /// it should be fixed from Api
                     isForSale: propertyDetails.forSale!,
                     price: propertyDetails.price!,
                     date: propertyDetails.timeCreated!,
@@ -129,53 +130,61 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                   const SizedBox(height: 10.0,),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                      height: 85.0,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const SizedBox(width: 7.0,),
-                              Container(
-                                height: 50.0,
-                                width: 50.0,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  image: DecorationImage(
-                                    image: CachedNetworkImageProvider(
-                                        "${AppConstants.baseUrl2}${propertyDetails.user!.image}"),
-                                    fit: BoxFit.cover,
-                                  )
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProfileOwnerScreen(userId: propertyDetails.user!.id!,))
+                        );
+                      },
+                      child: Container(
+                        height: 85.0,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(width: 7.0,),
+                                Container(
+                                  height: 50.0,
+                                  width: 50.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    image: DecorationImage(
+                                      image: CachedNetworkImageProvider(
+                                          "${AppConstants.baseUrl2}${propertyDetails.user!.image}"),
+                                      fit: BoxFit.cover,
+                                    )
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 7.0,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(propertyDetails.user!.name.toString(), style: fontMediumBold,),
-                                  Text(propertyDetails.user!.userType.toString(), style: fontSmall,)
-                                ],
-                              ),
-                            ],
-                          ),
+                                const SizedBox(width: 7.0,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(propertyDetails.user!.name.toString(), style: fontMediumBold,),
+                                    Text(propertyDetails.user!.userType.toString(), style: fontSmall,)
+                                  ],
+                                ),
+                              ],
+                            ),
 
 
-                          Row(
-                            children: [
-                              SvgPicture.asset(Images.chatIcon),
-                              const SizedBox(width: 7.0,),
-                            ],
-                          ),
-                        ],
+                            Row(
+                              children: [
+                                SvgPicture.asset(Images.chatIcon),
+                                const SizedBox(width: 7.0,),
+                              ],
+                            ),
+                          ],
+                        ),
+
                       ),
-
                     ),
                   ),
 
@@ -255,6 +264,4 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
       ),
     );
   }
-
-
 }

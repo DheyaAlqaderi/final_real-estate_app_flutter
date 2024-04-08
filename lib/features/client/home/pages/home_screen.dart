@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,52 +114,73 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            right: 0,
-            child: SvgPicture.asset(Images.halfCircle),
-          ),
-          SafeArea(
-            child: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  _fetchDataRefresh();
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _buildAppBarSection(),
-                        const SizedBox(height: 20,),
-                        _buildGreetingSection(),
-                        const SizedBox(height: 20,),
-                        _buildSearchBarAndFilter(),
-                        const SizedBox(height: 20,),
-                        _buildMainCategoriesRowList(),
-                        const SizedBox(height: 25,),
-                        _buildHomePageSectionsBanners(),
-                        _buildHomePageSectionsSubCategories(),
-                        _buildFeaturedProperties(),
-                        const SizedBox(height: 15,),
-                        _buildHighPlaces(),
-                        const SizedBox(height: 15,),
-                        _buildTopRealEstateAgents(),
-                        const SizedBox(height: 15,),
-                        _buildDiscoverNearProperties(),
-                      ],
-                    ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _fetchDataRefresh();
+        },
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: <Widget>[
+            SliverAppBar(
+              actions: [
+                SizedBox(
+                  width: 200, // Set a fixed width for the SizedBox
+                  child: Row(
+                    children: [
+                      Expanded(child: _buildAppBarSection()), // Assuming _buildAppBarSection returns a widget
+                    ],
                   ),
                 ),
+              ],
+              expandedHeight: 250,
+              floating: true,
+              automaticallyImplyLeading: false,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Stack(
+                  children: [
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: SvgPicture.asset(Images.halfCircle),
+                    ),
+                    SafeArea(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(height: kToolbarHeight + 10), // Adjust height as needed
+                          _buildGreetingSection(),
+                          const SizedBox(height: 20),
+                          _buildSearchBarAndFilter(),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                centerTitle: true,
+                collapseMode: CollapseMode.pin,
               ),
             ),
-          )
-        ],
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 20),
+                  _buildMainCategoriesRowList(),
+                  const SizedBox(height: 25),
+                  _buildHomePageSectionsBanners(),
+                  _buildHomePageSectionsSubCategories(),
+                  _buildFeaturedProperties(),
+                  const SizedBox(height: 15),
+                  _buildHighPlaces(),
+                  const SizedBox(height: 15),
+                  _buildTopRealEstateAgents(),
+                  const SizedBox(height: 15),
+                  _buildDiscoverNearProperties(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -683,85 +703,4 @@ class _HomeScreenState extends State<HomeScreen> {
     'Retail Space',
     'Office Space',
   ];
-  // void _fillBanners(){
-  //   bannerList = [
-  //     BannerModel(
-  //       id: 1,
-  //       time_created: '2024-03-28 03:50',
-  //       end_time: '2024-03-28 03:47',
-  //       start_time: '2024-03-30 03:48',
-  //       title: 'Hi every one',
-  //       description: 'Discount reach to 60 % for the Villas',
-  //       image: propertyImageList[0],
-  //       is_active: false,
-  //       category: 11,
-  //     ),
-  //     BannerModel(
-  //       id: 2,
-  //       time_created: '2024-03-28 03:50',
-  //       end_time: '2024-03-28 03:47',
-  //       start_time: '2024-03-30 03:48',
-  //       title: 'Title for banner 2',
-  //       description: 'Description for banner 2',
-  //       image: propertyImageList[1],
-  //       is_active: false,
-  //       category: 11,
-  //     ),
-  //     BannerModel(
-  //       id: 3,
-  //       time_created: '2024-03-28 03:50',
-  //       end_time: '2024-03-28 03:47',
-  //       start_time: '2024-03-30 03:48',
-  //       title: 'Title for banner 3',
-  //       description: 'Description for banner 3',
-  //       image: propertyImageList[2],
-  //       is_active: false,
-  //       category: 11,
-  //     ),
-  //     BannerModel(
-  //       id: 4,
-  //       time_created: '2024-03-28 03:50',
-  //       end_time: '2024-03-28 03:47',
-  //       start_time: '2024-03-30 03:48',
-  //       title: 'Title for banner 4',
-  //       description: 'Description for banner 4',
-  //       image: propertyImageList[3],
-  //       is_active: false,
-  //       category: 11,
-  //     ),
-  //     BannerModel(
-  //       id: 5,
-  //       time_created: '2024-03-28 03:50',
-  //       end_time: '2024-03-28 03:47',
-  //       start_time: '2024-03-30 03:48',
-  //       title: 'Title for banner 5',
-  //       description: 'Description for banner 5',
-  //       image: propertyImageList[4],
-  //       is_active: false,
-  //       category: 11,
-  //     ),
-  //     BannerModel(
-  //       id: 6,
-  //       time_created: '2024-03-28 03:50',
-  //       end_time: '2024-03-28 03:47',
-  //       start_time: '2024-03-30 03:48',
-  //       title: 'Title for banner 6',
-  //       description: 'Description for banner 6',
-  //       image: propertyImageList[5],
-  //       is_active: false,
-  //       category: 11,
-  //     ),
-  //     BannerModel(
-  //       id: 7,
-  //       time_created: '2024-03-28 03:50',
-  //       end_time: '2024-03-28 03:47',
-  //       start_time: '2024-03-30 03:48',
-  //       title: 'Title for banner 7',
-  //       description: 'Description for banner 7',
-  //       image: propertyImageList[6],
-  //       is_active: false,
-  //       category: 11,
-  //     ),
-  //   ];
-  // }
 }
