@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/login/login_screen.dart';
@@ -60,10 +61,11 @@ class _BothAuthScreenState extends State<BothAuthScreen> {
                             ),
                           ),
                           Center(
-                              child: Image.asset(
+                              child: SvgPicture.asset(
                                 Images.logo,
                                 width: 153.31,
                                 height: 144.38,
+                                color: Colors.white,
                               )
                           ),
                         ]

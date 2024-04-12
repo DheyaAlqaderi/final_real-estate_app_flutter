@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class BottomNav extends StatefulWidget {
   final List<String> titles;
   final List<IconData> icons;
   final int bottomNavIndex;
+  final List<String> iconSvg;
   final ValueChanged<int> onTabChange; // Define the onTabChange callback
 
    const BottomNav({
@@ -12,7 +14,7 @@ class BottomNav extends StatefulWidget {
     required this.titles,
     required this.icons,
     required this.bottomNavIndex,
-    required this.onTabChange, // Add onTabChange to the constructor
+    required this.onTabChange, required this.iconSvg, // Add onTabChange to the constructor
   });
 
   @override
@@ -59,6 +61,11 @@ class _BottomNavState extends State<BottomNav> {
               final icon = widget.icons[index];
               return GButton(
                 icon: icon,
+                leading: SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: SvgPicture.asset(widget.iconSvg[index]),
+                ),
                 text: title,
               );
             }).toList(),

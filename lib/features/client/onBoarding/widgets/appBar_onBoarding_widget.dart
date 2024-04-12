@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_real_estate/core/utils/images.dart';
 
 import '../../../../core/utils/styles.dart';
 
@@ -32,7 +34,12 @@ class _AppBarOnBoardingWidgetState extends State<AppBarOnBoardingWidget> {
                   )
               )
           ),
-          const Icon(Icons.search),
+          SvgPicture.asset(
+              Images.logo,
+            height: 55.0,
+            width: 55.0,
+            color: Colors.blueAccent,
+          ),
         ],
       ),
     );

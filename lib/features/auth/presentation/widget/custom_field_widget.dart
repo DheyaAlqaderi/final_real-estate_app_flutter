@@ -9,7 +9,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     required this.controller,
     required this.hintText,
      this.textInputType,
-   this.validator});
+    this.validator});
 
   var name;
   var controller;
@@ -44,8 +44,6 @@ class CustomTextFieldWidget extends StatelessWidget {
           borderSide: BorderSide.none, // No border by default
         ),
       ),
-      // validator: (){
-      // },
     );
   }
 }

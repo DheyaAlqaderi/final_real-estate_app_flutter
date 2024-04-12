@@ -50,6 +50,8 @@ dependencies:
   # Google Map
   google_maps_flutter: ^2.5.3
 
+  path_icon: ^0.7.2
+
 
   cupertino_icons: ^1.0.6
 

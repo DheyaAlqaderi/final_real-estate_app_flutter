@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/onBoarding/pages/onBoarding_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
+import 'package:smart_real_estate/features/client/welcome/pages/welcome_select_screen.dart';
 
 import '../../../../core/helper/local_data/shared_pref.dart';
 
@@ -29,9 +30,11 @@ class _SplashScreenState extends State<SplashScreen> {
     try {
       // Retrieve data
       String? firstTime = await SharedPrefManager.getData('FirstTime');
+      String? token = await SharedPrefManager.getData('token');
 
       if (kDebugMode) {
         print(firstTime);
+        print(token);
       }
       // Simulate a delay to mimic loading process
       await Future.delayed(const Duration(seconds: 2));
@@ -42,11 +45,11 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
         );
-      } else {
+      } else if(token == null) {
         // Navigate to HomePage if token is not present
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const RootScreen()),
+          MaterialPageRoute(builder: (context) => const WelcomeSelectScreen()),
         );
       }
     } catch (e) {
@@ -81,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
 
           Center(
-            child: Image.asset(Images.logo,),
+            child: SvgPicture.asset(Images.logo, height: 224.0, width: 224.0, color: Colors.white,),
           )
         ],
       ),

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:smart_real_estate/core/helper/SRValidator.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/auth/presentation/widget/custom_field_widget.dart';
+
+import '../../../../../core/helper/local_data/shared_pref.dart';
+import '../../../../client/root/pages/root_screen.dart';
+import '../../cubit/login/login_cubit.dart';
+import '../../cubit/login/login_state.dart';
 
 
 
@@ -34,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loginCubit = context.read<LoginCubit>();
     return Container(
       width: double.infinity,
       color: Theme.of(context).colorScheme.background,
@@ -64,27 +71,69 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: (password) => (password!.isEmpty)? 'please fill the password': null,
                   ),
                   const SizedBox(height: 10.0),
-                  Container(
-                    margin: const EdgeInsets.all(5.0),
-                    width: double.infinity,
-                    height: 58,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        /// sign in button
-                         if(formKey.currentState!.validate()){
-                                return;
-                              }
+                  BlocListener<LoginCubit, LoginState>(
+                    listener: (context, state) {
+                      if (state is LoginSuccess) {
+                        // Navigate to the next screen or perform any other action on login success
+                        final response = state.response;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Logged in successfully! User ID: ${response.userId}'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        SharedPrefManager.saveData("token", response.token.toString());
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+
+                      } else if (state is LoginFailure) {
+                        // Show error message on login failure
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Login failed: ${state.error}'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                    child: BlocBuilder<LoginCubit, LoginState>(
+                      builder: (context, state) {
+                        if (state is LoginLoading) {
+                          return Container(
+                            margin: const EdgeInsets.all(5.0),
+                            width: double.infinity,
+                            height: 58,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            margin: const EdgeInsets.all(5.0),
+                            width: double.infinity,
+                            height: 58,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Sign in button
+                                if(formKey.currentState!.validate()) {
+                                  final email = emailController.text;
+                                  final password = passwordController.text;
+                                  loginCubit.login(email, password);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF1F4C6B),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+                              child:  Text(
+                                  Locales.string(context, "login"),
+                                  style: fontMediumBold
+                              ),
+                            ),
+                          );
+                        }
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1F4C6B),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                      ),
-                      child: Text(
-                          Locales.string(context, "login"),
-                          style: fontMediumBold
-                      ),
                     ),
                   ),
                   const SizedBox(height: 20.0),

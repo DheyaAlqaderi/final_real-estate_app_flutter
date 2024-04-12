@@ -240,6 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: List.generate(
                 3 * 2, // Number of containers and SizedBox widgets multiplied by 2 (since there will be 10 width SizedBox between each container)
                     (index) {
@@ -273,6 +274,8 @@ class _HomeScreenState extends State<HomeScreen> {
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
+
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Add default chip widget here
                 Padding(

@@ -22,11 +22,9 @@ class Images {
   static const String errorNetwork = "assets/images/network-error.png";
   static const String chatIcon = "assets/svg/chat_icon.svg";
   static const String phoneIcon = "assets/svg/phone_icon.svg";
-
-
-
-
-
+  static const String homeIcon = "assets/svg/home_icon.svg";
+  static const String userIcon = "assets/svg/user_icon.svg";
+  static const String heartNavIcon = "assets/svg/heart_nav.svg";
 
 
 }

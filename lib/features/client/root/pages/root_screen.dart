@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/chat/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/favorite/pages/favorite_screen.dart';
 import 'package:smart_real_estate/features/client/home/pages/home_screen.dart';
@@ -46,6 +46,13 @@ class _RootScreenState extends State<RootScreen> {
     LineIcons.heart,
     LineIcons.user,
   ];
+
+  final List<String> iconSvg = [
+    Images.homeIcon,
+    Images.chatIcon,
+    Images.heartNavIcon,
+    Images.userIcon,
+  ];
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -67,6 +74,7 @@ class _RootScreenState extends State<RootScreen> {
             _bottomNavIndex = index;
           });
         },
+        iconSvg: iconSvg,
       ),
       floatingActionButton: buildFloatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
