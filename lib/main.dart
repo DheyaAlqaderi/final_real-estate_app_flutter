@@ -151,7 +151,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const RootScreen(),
+          home: const SplashScreen(),
         ),
       ),
     );

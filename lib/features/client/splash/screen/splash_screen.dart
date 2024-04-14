@@ -51,6 +51,11 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(builder: (context) => const WelcomeSelectScreen()),
         );
+      } else{
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RootScreen()),
+        );
       }
     } catch (e) {
       // Handle error

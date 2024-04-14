@@ -1,30 +1,32 @@
-class UserAuth {
-  final String token;
-  final int userId;
-  final String email;
+import 'package:smart_real_estate/features/auth/data/model/login_model/response_login_model.dart';
 
-  UserAuth({
-    required this.token,
-    required this.userId,
-    required this.email,
-  });
-
-  factory UserAuth.fromJson(Map<String, dynamic> json) {
-    return UserAuth(
-      token: json['token'] ?? '',
-      userId: json['user_id'] ?? 0,
-      email: json['email'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'token': token,
-      'user_id': userId,
-      'email': email,
-    };
-  }
-}
+// class UserAuth {
+//   final String token;
+//   final int userId;
+//   final String email;
+//
+//   UserAuth({
+//     required this.token,
+//     required this.userId,
+//     required this.email,
+//   });
+//
+//   factory UserAuth.fromJson(Map<String, dynamic> json) {
+//     return UserAuth(
+//       token: json['token'] ?? '',
+//       userId: json['user_id'] ?? 0,
+//       email: json['email'] ?? '',
+//     );
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'token': token,
+//       'user_id': userId,
+//       'email': email,
+//     };
+//   }
+// }
 
 class ResponseSignUpModel {
   final int id;
@@ -33,7 +35,7 @@ class ResponseSignUpModel {
   final String username;
   final String name;
   final String? image;
-  final UserAuth userAuth;
+  final ResponseLoginModel userAuth;
   final String userType;
 
   ResponseSignUpModel({
@@ -55,7 +57,7 @@ class ResponseSignUpModel {
       username: json['username'] ?? '',
       name: json['name'] ?? '',
       image: json['image'],
-      userAuth: UserAuth.fromJson(json['user_auth'] ?? {}),
+      userAuth: ResponseLoginModel.fromJson(json['user_auth'] ?? {}),
       userType: json['user_type'] ?? '',
     );
   }

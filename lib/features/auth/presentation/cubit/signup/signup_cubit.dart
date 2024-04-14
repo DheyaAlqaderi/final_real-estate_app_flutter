@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_real_estate/features/auth/data/model/login_model/response_login_model.dart';
 import 'package:smart_real_estate/features/auth/domain/repo/auth_repository.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_state.dart';
 
@@ -18,6 +19,7 @@ class SignUpCubit extends Cubit<SignUpState> {
 
     try {
       emit(SignUpLoading());
+
       final response = await _authRepository.signUp(
           userType: userType,
           name: name,
@@ -25,6 +27,11 @@ class SignUpCubit extends Cubit<SignUpState> {
           password: password,
           phoneNumber: phoneNumber,
           username: username);
+
+      // save user into firebase
+      await _authRepository.saveUserRecordFirebase(response.userAuth);
+      await _authRepository.saveUsers();
+
       emit(SignUpSuccess(response));
     } catch (e) {
       emit(SignUpFailure(e.toString()));
