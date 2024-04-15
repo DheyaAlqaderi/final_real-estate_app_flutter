@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_real_estate/core/constant/firebase/firebase_collections_names.dart';
 
 import '../../data/model/login_model/response_login_model.dart';
 import '../../data/model/signup_model/response_signup_model.dart';
@@ -35,7 +36,7 @@ class AuthRepository {
 
   Future<void> saveUserRecordFirebase(ResponseLoginModel user) async{
     try {
-      await _db.collection('Users').doc(user.userId.toString()).set(
+      await _db.collection(FirebaseCollectionNames.users).doc(user.userId.toString()).set(
         user.toJson(),
         SetOptions(merge: true),
       );

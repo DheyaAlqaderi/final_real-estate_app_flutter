@@ -134,6 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           );
                           SharedPrefManager.saveData("token", response.userAuth.token.toString());
+                          SharedPrefManager.saveData("user_id", response.id.toString());
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
                         });
                         return _buildButton(context);

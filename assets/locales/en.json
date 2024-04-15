@@ -65,6 +65,10 @@
   "years_ago": "{no} years ago",
   "display_all_reviews": "Display all Reviews",
   "personal_profile": "Personal Profile",
-  "sold": "مباع"
+  "sold": "مباع",
+
+
+  "hint_message": "Type a message ..."
+
 
 }

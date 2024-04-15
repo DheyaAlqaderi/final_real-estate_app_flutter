@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
@@ -14,6 +15,8 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
+import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
+import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -51,10 +54,12 @@ Future<void> main() async {
 
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
-  await Locales.init([ 'en', 'ar']); // get last saved language
 
   /// 2. initialize firebase
-  _initializeFirebase();
+  await _initializeFirebase();
+
+  await Locales.init([ 'ar', 'ar']); // get last saved language
+
 
   /// 3. for buttery icons and notifications to be fixable in colors
   SystemChrome.setSystemUIOverlayStyle(
@@ -67,7 +72,7 @@ Future<void> main() async {
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
 
-  runApp(const MyApp());
+  runApp(const MyApp(),);
 }
 
 class MyApp extends StatelessWidget {
@@ -151,7 +156,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const SplashScreen(),
+          home: RoomsScreen(),
         ),
       ),
     );

@@ -24,6 +24,7 @@ class Images {
   static const String homeIcon = "assets/svg/home_icon.svg";
   static const String userIcon = "assets/svg/user_icon.svg";
   static const String heartNavIcon = "assets/svg/heart_nav.svg";
+  static const String camIconSvg = "assets/svg/cam_icon.svg";
 
 
 }

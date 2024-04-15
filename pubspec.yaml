@@ -20,14 +20,15 @@ dependencies:
   firebase_storage: ^11.7.1
   #state management
   flutter_bloc: ^8.1.4
+  flutter_riverpod: ^2.3.7
   #make request to api
   retrofit: ^4.1.0
   dio: ^5.4.1
   # json_annotation:
   json_annotation: ^4.8.1
   #cached image
-  cached_network_image: ^3.2.0
-  # svg imsges
+  cached_network_image: ^3.3.1
+  # svg images
   flutter_svg: ^2.0.9
   # for saving data
   shared_preferences: ^2.1.1
@@ -49,6 +50,14 @@ dependencies:
   photo_view: ^0.14.0
   # Google Map
   google_maps_flutter: ^2.5.3
+  # generating ids for users
+  uuid: ^3.0.7
+  # formatting dates and timeAgo
+  jiffy: ^6.2.1
+  # pick images
+  image_picker: ^1.0.2
+  # play videos
+  video_player: ^2.0.4
 
   path_icon: ^0.7.2
 

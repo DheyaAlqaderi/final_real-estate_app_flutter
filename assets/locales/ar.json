@@ -65,5 +65,7 @@
   "display_all_reviews": "عرض جميع التقييمات",
   "personal_profile": "الملف الشخصي",
 
-  "sold": "مباع"
+  "sold": "مباع",
+
+  "hint_message": "قل شيئًا ..."
 }
