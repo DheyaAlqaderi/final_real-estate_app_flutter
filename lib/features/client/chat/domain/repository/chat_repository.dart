@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../core/constant/firebase/firebase_collections_names.dart';
@@ -86,7 +87,7 @@ class ChatRepository {
       Message newMessage = Message(
         message: message,
         messageId: messageId,
-        senderId: "7",
+        senderId: AppConstants.userIdFake,
         receiverId: receiverId,
         timestamp: now,
         seen: false,
@@ -132,7 +133,7 @@ class ChatRepository {
       Message newMessage = Message(
         message: downloadUrl,
         messageId: messageId,
-        senderId: myUid,
+        senderId:AppConstants.userIdFake,
         receiverId: receiverId,
         timestamp: now,
         seen: false,

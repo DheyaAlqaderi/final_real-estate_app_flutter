@@ -25,6 +25,10 @@ class Images {
   static const String userIcon = "assets/svg/user_icon.svg";
   static const String heartNavIcon = "assets/svg/heart_nav.svg";
   static const String camIconSvg = "assets/svg/cam_icon.svg";
+  static const String clipIconSvg = "assets/svg/clip_icon.svg";
+  static const String clipIconBoldSvg = "assets/svg/clip_icon_bold.svg";
+  static const String userImageIfNull = "https://static.vecteezy.com/system/resources/previews/019/879/186/large_2x/user-icon-on-transparent-background-free-png.png";
+
 
 
 }

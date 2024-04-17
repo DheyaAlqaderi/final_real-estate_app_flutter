@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'network_video_view.dart';
@@ -15,11 +16,16 @@ class PostImageVideoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (fileType == 'image') {
-      return Image.network(fileUrl);
+      return CachedNetworkImage(
+        imageUrl: fileUrl,
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      );
     } else {
       return NetworkVideoView(
         videoUrl: fileUrl,
       );
     }
   }
+
 }

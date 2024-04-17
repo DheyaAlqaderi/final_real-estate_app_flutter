@@ -20,7 +20,6 @@ dependencies:
   firebase_storage: ^11.7.1
   #state management
   flutter_bloc: ^8.1.4
-  flutter_riverpod: ^2.3.7
   #make request to api
   retrofit: ^4.1.0
   dio: ^5.4.1
@@ -55,9 +54,14 @@ dependencies:
   # formatting dates and timeAgo
   jiffy: ^6.2.1
   # pick images
-  image_picker: ^1.0.2
+  image_picker: ^1.1.0
+  image_cropper: ^5.0.1
+  permission_handler: ^11.3.1
   # play videos
   video_player: ^2.0.4
+  file_picker: ^8.0.0+1
+  # Group list view for chat page
+  grouped_list: ^5.1.2
 
   path_icon: ^0.7.2
 

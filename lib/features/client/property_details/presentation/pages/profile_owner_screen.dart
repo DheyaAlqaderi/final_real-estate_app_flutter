@@ -102,7 +102,7 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50.0),
                                   image: DecorationImage(
-                                      image: CachedNetworkImageProvider(state.profile.image.toString()),
+                                      image: CachedNetworkImageProvider(state.profile.image == null ?Images.userImageIfNull:state.profile.image.toString()),
                                       fit: BoxFit.cover
                                   ),
                                 ),

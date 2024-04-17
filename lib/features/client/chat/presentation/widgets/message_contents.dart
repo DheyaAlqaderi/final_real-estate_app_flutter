@@ -19,10 +19,9 @@ class MessageContents extends StatelessWidget {
     if (message.messageType == 'text') {
       return Text(
         message.message,
-        style: fontSmall.copyWith(
+        style: fontSmallBold.copyWith(
           color: !isSentMessage? Colors.white:null
         )
-
       );
     } else {
       return PostImageVideoView(

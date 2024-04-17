@@ -1,22 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 
+import '../../../../../core/constant/app_constants.dart';
 import '../widgets/room_chat_widget.dart';
 import 'chat_page.dart';
 
 
-class RoomsScreen extends ConsumerStatefulWidget {
+class RoomsScreen extends StatefulWidget {
   const RoomsScreen({super.key});
 
   @override
-  ConsumerState<RoomsScreen> createState() => _RoomsScreenState();
+  State<RoomsScreen> createState() => _RoomsScreenState();
 }
 
-class _RoomsScreenState extends ConsumerState<RoomsScreen> {
-  late String userId = '7';
+class _RoomsScreenState extends State<RoomsScreen> {
+  late String userId = AppConstants.userIdFake;
 
   @override
   void initState() {

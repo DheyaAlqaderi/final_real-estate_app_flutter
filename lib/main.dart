@@ -5,18 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
-import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
 import 'package:smart_real_estate/features/client/category_property/data/remote_api/property_category_api.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/main_property_category_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
-import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
-import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -33,9 +29,7 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/screen_review/review_property_rateNo_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
-import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
-import 'package:smart_real_estate/features/client/splash/screen/splash_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
@@ -44,8 +38,6 @@ import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
-import 'features/client/property_details/presentation/pages/profile_owner_screen.dart';
-import 'features/client/property_details/presentation/pages/reviews_rating_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -156,7 +148,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: RoomsScreen(),
+          home: const RootScreen(),
         ),
       ),
     );

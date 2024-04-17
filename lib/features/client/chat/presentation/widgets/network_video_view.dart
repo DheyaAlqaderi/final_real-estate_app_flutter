@@ -1,14 +1,17 @@
-import 'package:video_player/video_player.dart';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 class NetworkVideoView extends StatefulWidget {
   const NetworkVideoView({
-    super.key,
+    Key? key,
     required this.videoUrl,
-  });
+    this.localVideoFile,
+  }) : super(key: key);
 
   final String videoUrl;
+  final File? localVideoFile;
 
   @override
   State<NetworkVideoView> createState() => _NetworkVideoViewState();
@@ -16,25 +19,37 @@ class NetworkVideoView extends StatefulWidget {
 
 class _NetworkVideoViewState extends State<NetworkVideoView> {
   late final VideoPlayerController _videoController;
-
-  bool isPlaying = false;
+  late bool isPlaying = false;
 
   @override
   void initState() {
-    _videoController = VideoPlayerController.networkUrl(
-      Uri.parse(
-        widget.videoUrl,
-      ),
-    )..initialize().then((value) {
-        setState(() {});
-      });
     super.initState();
+    _initializeVideoController();
   }
 
   @override
   void dispose() {
     _videoController.dispose();
     super.dispose();
+  }
+
+  void _initializeVideoController() {
+    _videoController = widget.localVideoFile != null
+        ? VideoPlayerController.file(widget.localVideoFile!)
+        : VideoPlayerController.network(widget.videoUrl);
+
+    _videoController.initialize().then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  void _togglePlayPause() {
+    if (isPlaying) {
+      _videoController.pause();
+    } else {
+      _videoController.play();
+    }
+    setState(() => isPlaying = !isPlaying);
   }
 
   @override
@@ -44,21 +59,9 @@ class _NetworkVideoViewState extends State<NetworkVideoView> {
       child: Stack(
         children: [
           VideoPlayer(_videoController),
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
+          Positioned.fill(
             child: IconButton(
-              onPressed: () {
-                if (isPlaying) {
-                  _videoController.pause();
-                } else {
-                  _videoController.play();
-                }
-                isPlaying = !isPlaying;
-                setState(() {});
-              },
+              onPressed: _togglePlayPause,
               icon: Icon(
                 isPlaying ? Icons.pause_circle : Icons.play_circle,
                 size: 50,
