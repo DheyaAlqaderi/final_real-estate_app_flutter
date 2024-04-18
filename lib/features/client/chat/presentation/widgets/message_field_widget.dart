@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import '../../../../../core/constant/firebase/utils.dart';
@@ -30,6 +32,8 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
   late String receiverId; // Declare receiverId and messageType
   late String messageType;
   bool _uploading = false; // Flag to track whether the upload is in progress
+  int currentLines = 1;
+  final int maxLines = 6;
 
   @override
   void initState() {
@@ -39,6 +43,13 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
     _messageController.addListener(() {
       setState(() {
         isIconAppeared = _messageController.text.isEmpty;
+
+        final lines = _messageController.text.split('\n').length;
+        if (lines != currentLines && lines <= maxLines) {
+          setState(() {
+            currentLines = lines;
+          });
+        }
       });
     });
     // Initialize chatroomId and receiverId
@@ -285,7 +296,15 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
 
 
 
+  double _calculateLineHeight(BuildContext context) {
+    final TextPainter textPainter = TextPainter(
+      text: const TextSpan(text: 'A\n', style: TextStyle(fontSize: 16.0)),
+      textDirection: TextDirection.ltr,
+      maxLines: 2,
+    )..layout(maxWidth: double.infinity);
 
+    return textPainter.preferredLineHeight;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,21 +354,34 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
                   ],
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: TextField(
-                      controller: _messageController,
-                      maxLines: null, // Allow the TextField to expand vertically
-                      decoration: InputDecoration(
-                        hintText: Locales.string(context, "hint_message"),
-                        border: InputBorder.none, // Hide the underline
-                        hintStyle: const TextStyle(
-                          color: Colors.grey
-                        )
-                      ),
-                    ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxHeight: 7 * _calculateLineHeight(context)),
+                          child: TextField(
+                            controller: _messageController,
+                            maxLines: null,
+                            textAlignVertical: TextAlignVertical.center,
+                            style: TextStyle(
+                              color: Theme.of(context).textTheme.bodyText1!.color,
+                              fontSize: 16.0,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: Locales.string(context, "hint_message"),
+                              border: InputBorder.none,
+                              hintStyle: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-
                 (!isIconAppeared)
                     /// sending a message
                     ?IconButton(

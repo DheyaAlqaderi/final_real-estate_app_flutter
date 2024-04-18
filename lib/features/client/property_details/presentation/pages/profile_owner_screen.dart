@@ -1,9 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
+import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
+import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/owner_properties/property_owner_properties._cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/owner_properties/property_owner_properties._sate.dart';
@@ -24,6 +28,7 @@ class ProfileOwnerScreen extends StatefulWidget {
 
 class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
 
+  late String imageUrl = " ";
 
   @override
   void initState() {
@@ -86,6 +91,7 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                   if(state is PropertyOwnerProfileLoading){
                     return const CircularProgressIndicator();
                   } else if(state is PropertyOwnerProfileLoaded){
+                    imageUrl = state.profile.image.toString();
                     return Column(
                       children: [
                         Text(state.profile.name.toString(), style: fontMediumBold,),
@@ -212,9 +218,24 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                   child: Row(
                     children: [
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 25.0)),
-                      SvgPicture.asset(Images.phoneIcon, color: Theme.of(context).colorScheme.onSurface,),
+                      IconButton(onPressed: (){}, icon: Icon(Icons.call)),
                       const Spacer(flex: 1,),
-                      SvgPicture.asset(Images.chatIcon, color: Theme.of(context).colorScheme.onSurface,),
+                      InkWell(
+                          onTap: () async {
+
+                            if(AppConstants.userIdFake == widget.userId.toString()){
+                              print("sorry you can not chat yourself");
+                              return;
+                            }
+                            print("start");
+                            ChatRepository chatRepository = ChatRepository();
+                            final String chatRoomId = await chatRepository.createChatroom(userId: widget.userId.toString());
+                            await chatRepository.updateUserImageUrl(widget.userId.toString(), imageUrl == " "? " ": imageUrl);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(chatRoomId: chatRoomId, receiverId: widget.userId.toString())));
+                            print("end");
+
+                          },
+                          child: SvgPicture.asset(Images.chatIcon, color: Theme.of(context).colorScheme.onSurface,)),
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 25.0)),
                     ],
                   ),

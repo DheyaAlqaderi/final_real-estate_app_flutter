@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:line_icons/line_icons.dart';
@@ -6,7 +7,9 @@ import 'package:smart_real_estate/features/client/favorite/pages/favorite_screen
 import 'package:smart_real_estate/features/client/home/pages/home_screen.dart';
 import 'package:smart_real_estate/features/client/profile/pages/profile_screen.dart';
 
+import '../../../../core/constant/app_constants.dart';
 import '../../../common_widget/bottom_nav.dart';
+import '../../chat/domain/repository/chat_repository.dart';
 import '../../chat/presentation/pages/rooms_screen.dart';
 
 class RootScreen extends StatefulWidget {
@@ -16,7 +19,8 @@ class RootScreen extends StatefulWidget {
   State<RootScreen> createState() => _RootScreenState();
 }
 
-class _RootScreenState extends State<RootScreen> {
+class _RootScreenState extends State<RootScreen>{
+
   late List<String> titleList;
   int _bottomNavIndex = 0;
 

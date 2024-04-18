@@ -28,6 +28,8 @@ class Images {
   static const String clipIconSvg = "assets/svg/clip_icon.svg";
   static const String clipIconBoldSvg = "assets/svg/clip_icon_bold.svg";
   static const String userImageIfNull = "https://static.vecteezy.com/system/resources/previews/019/879/186/large_2x/user-icon-on-transparent-background-free-png.png";
+  static const String chatPageBackground = "assets/images/chat_page_background.jpeg";
+  static const String noImageUrl = "https://as1.ftcdn.net/v2/jpg/05/04/28/96/1000_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg";
 
 
 

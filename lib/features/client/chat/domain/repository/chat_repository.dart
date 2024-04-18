@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:uuid/uuid.dart';
@@ -29,16 +30,16 @@ class ChatRepository {
     required String userId,
   }) async {
     try {
-      if (myUid.isEmpty) {
-        throw Exception('User ID is empty');
-      }
+      // if (myUid.isEmpty) {
+      //   throw Exception('User ID is empty');
+      // }
 
       final chatRooms = FirebaseFirestore.instance.collection(
         FirebaseCollectionNames.chatRooms,
       );
 
       // sorted members
-      final sortedMembers = [myUid, userId]..sort((a, b) => a.compareTo(b));
+      final sortedMembers = [/*myUid*/ AppConstants.userIdFake, userId]..sort((a, b) => a.compareTo(b));
 
       // existing chatRooms
       final existingChatRooms = await chatRooms
@@ -203,5 +204,32 @@ class ChatRepository {
         .orderBy('timestamp', descending: true)
         .snapshots();
   }
+
+  void updateUserStatus(String userId, bool isOnline) async {
+      await FirebaseFirestore.instance.collection('Users').doc(userId).update({
+        'isOnline': isOnline,
+        'lastSeen': isOnline ? null : FieldValue.serverTimestamp(),
+      });
+  }
+
+
+
+  Future<void> updateUserImageUrl(String userId, String imageUrl) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .update({'imageUrl': imageUrl});
+      if (kDebugMode) {
+        print('User imageUrl updated successfully');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error updating user imageUrl: $e');
+      }
+      // Handle error, display a message to the user, etc.
+    }
+  }
+
 
 }

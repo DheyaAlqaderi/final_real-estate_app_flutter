@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 
@@ -27,12 +29,13 @@ class _RoomChatWidgetState extends State<RoomChatWidget> {
           return Text('Error: ${snapshot.error}');
         }
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          return const Text('User not found.');
+          return Text('User not found for ID: ${widget.userId}');
         }
         final userData = snapshot.data!.data()!;
         final userName = userData['email'] ?? 'Unknown';
-        final lastSeenTime = userData['userId'];
+        final isOnline = userData['isOnline'] ?? false;
         final imageUrl = userData['imageUrl'] as String?;
+
 
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 5.0),
@@ -49,18 +52,35 @@ class _RoomChatWidgetState extends State<RoomChatWidget> {
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Container(
-                        height: 50.0,
-                        width: 50.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.0),
-                          image: imageUrl!.isNotEmpty
-                              ? DecorationImage(
-                            image: CachedNetworkImageProvider("https://as2.ftcdn.net/v2/jpg/06/04/08/91/1000_F_604089168_VAoSVQ3VJkiT3nKrHhX6PZ35YYGPYs2m.jpg"),
-                            fit: BoxFit.cover,
-                          )
-                              : null, // Handle empty imageUrl
+                  height: 50.0,
+                  width: 50.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100.0),
+                    image: imageUrl!.isNotEmpty
+                        ?  DecorationImage(
+                      image: CachedNetworkImageProvider(imageUrl.toString()),
+                      fit: BoxFit.cover,
+                    )
+                        : null, // Handle empty imageUrl
+                  ),
+                  child: isOnline
+                      ?Stack(
+                    children: [
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          height: 12,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            color: const Color(0xFF8BC83F)
+                          ),
                         ),
-                      ),
+                      )
+                    ],
+                  ):const SizedBox(),
+                ),
               ),
               const SizedBox(width: 7.0),
               Expanded(
@@ -71,11 +91,19 @@ class _RoomChatWidgetState extends State<RoomChatWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(userName, style: fontMediumBold),
+                        Expanded(
+                          child: Text(
+                            userName,
+                            style: fontMediumBold,
+                            overflow: TextOverflow.ellipsis, // Add this line
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Text(lastSeenTime.toString(),
-                              style: fontSmall),
+                          child: Text(
+                            widget.time,
+                            style: fontSmall,
+                          ),
                         ),
                       ],
                     ),
@@ -89,6 +117,7 @@ class _RoomChatWidgetState extends State<RoomChatWidget> {
                   ],
                 ),
               ),
+
             ],
           ),
         );

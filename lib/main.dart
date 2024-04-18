@@ -13,6 +13,9 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
+import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
+import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
+import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -67,12 +70,53 @@ Future<void> main() async {
   runApp(const MyApp(),);
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+
+  late ChatRepository _userRepository;
+  late String _userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _userRepository = ChatRepository();
+    _userId = AppConstants.userIdFake;
+    WidgetsBinding.instance.addObserver(this);
+    _updateUserStatus(true);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // App is in foreground
+      _updateUserStatus(true);
+    } else {
+      // App is in background or closed
+      _updateUserStatus(false);
+    }
+  }
+
+  void _updateUserStatus(bool isOnline)  {
+    if (_userId.isNotEmpty) {
+       _userRepository.updateUserStatus(_userId, isOnline);
+    }
+  }
 
 
-  // This widget is the root of your application.
+  /// This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -160,6 +204,7 @@ _initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
 }
+
+
 

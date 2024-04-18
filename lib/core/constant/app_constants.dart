@@ -10,5 +10,5 @@ class AppConstants {
   // static const String baseUrl2 = "http://192.168.1.9:8000";
   static const String noImageUrl = "https://as1.ftcdn.net/v2/jpg/05/04/28/96/1000_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg";
 
-  static const String userIdFake = "7";
+  static const String userIdFake = "9";
 }
