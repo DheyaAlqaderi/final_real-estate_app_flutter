@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:intl/intl.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/review_model.dart';
@@ -315,7 +314,7 @@ class _PropertyReviewAndRatingWidgetState
     } else {
       int years = difference.inDays ~/ 365;
       int months = (difference.inDays % 365) ~/ 30;
-      return Locales.string(context, "years_ago").replaceAll("{no}", '${years} years and ${months} months ago');
+      return Locales.string(context, "years_ago").replaceAll("{no}", '$years years and $months months ago');
     }
   }
 

@@ -1,9 +1,11 @@
 
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
@@ -14,8 +16,7 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
-import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
-import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
+import 'package:smart_real_estate/features/client/chat/domain/repository/notification.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -39,21 +40,57 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
+import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'firebase_options.dart';
 
+Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
+  if (message.notification != null) {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
+    // Initialize notifications if not already initialized
+    NotificationInitialize.initializeNotifications(flutterLocalNotificationsPlugin);
 
-Future<void> main() async {
+    // Show notification
+    await NotificationInitialize.showNotification(
+      title: message.notification!.title!,
+      body: message.notification!.body!,
+      flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+    );
+  }
+}
+Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
+  if (message.notification != null) {
+    print(message.notification!.title);
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+    // Initialize notifications if not already initialized
+    NotificationInitialize.initializeNotifications(flutterLocalNotificationsPlugin);
+
+    // Show notification
+    await NotificationInitialize.showNotification(
+      title: message.notification!.title!,
+      body: message.notification!.body!,
+      flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+    );
+  }
+}
+void main() async {
 
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
 
   /// 2. initialize firebase
   await _initializeFirebase();
+  await FirebaseMessagingRepository.init();
+  FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
+  FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
 
-  await Locales.init([ 'ar', 'ar']); // get last saved language
+  /// initialize languages
+  await Locales.init([ 'ar', 'en']); // get last saved language
 
 
   /// 3. for buttery icons and notifications to be fixable in colors

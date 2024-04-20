@@ -7,7 +7,7 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import '../../data/models/message_model.dart';
 import 'message_contents.dart';
 class SentMessage extends StatelessWidget {
-  final Message message;
+  final MessageModel message;
 
   const SentMessage({
     super.key,

@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_real_estate/features/auth/data/model/login_model/response_login_model.dart';
 import 'package:smart_real_estate/features/auth/domain/repo/auth_repository.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_state.dart';
 

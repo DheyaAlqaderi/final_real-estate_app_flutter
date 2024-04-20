@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:line_icons/line_icons.dart';
@@ -7,9 +6,9 @@ import 'package:smart_real_estate/features/client/favorite/pages/favorite_screen
 import 'package:smart_real_estate/features/client/home/pages/home_screen.dart';
 import 'package:smart_real_estate/features/client/profile/pages/profile_screen.dart';
 
-import '../../../../core/constant/app_constants.dart';
+import '../../../../core/utils/styles.dart';
 import '../../../common_widget/bottom_nav.dart';
-import '../../chat/domain/repository/chat_repository.dart';
+import '../../alarm/presentation/pages/add_alarm_screen.dart';
 import '../../chat/presentation/pages/rooms_screen.dart';
 
 class RootScreen extends StatefulWidget {
@@ -107,12 +106,13 @@ class _RootScreenState extends State<RootScreen>{
       ),
       child: FloatingActionButton(
         onPressed: () {
+          _addPropertyAlarm(context);
         },
-        tooltip: 'Open the Map',
+        tooltip: 'Add Alarm',
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: const Icon(
-          Icons.map,
+          Icons.add,
           color: Colors.black,
         ),
       ),
@@ -139,5 +139,65 @@ class _RootScreenState extends State<RootScreen>{
     );
   }
 
+  _addPropertyAlarm(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (builder) {
+        return Card(
+          color: Theme.of(context).cardColor,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 5.2,
+            margin: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    child: const Column(
+                      children: [
+                        Icon(Icons.add, size: 40.0),
+                        SizedBox(height: 12.0),
+                        Text(
+                          "أضافة عقار",
+                          textAlign: TextAlign.center,
+                          style: fontSmallBold,
+                        )
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    child: const SizedBox(
+                      child: Column(
+                        children: [
+                          Icon(Icons.add_alert, size: 40.0),
+                          SizedBox(height: 12.0),
+                          Text(
+                            "أضافة منبة عقاري",
+                            textAlign: TextAlign.center,
+                            style: fontSmallBold,
+                          )
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AddAlarmScreen()));
+                    },
+                  ),
+                ),
 
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

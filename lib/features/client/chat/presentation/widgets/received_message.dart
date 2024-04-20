@@ -8,7 +8,7 @@ import '../../data/models/message_model.dart';
 import 'message_contents.dart';
 
 class ReceivedMessage extends StatelessWidget {
-  final Message message;
+  final MessageModel message;
 
   const ReceivedMessage({
     super.key,

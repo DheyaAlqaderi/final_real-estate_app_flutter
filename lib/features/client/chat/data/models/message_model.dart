@@ -2,7 +2,7 @@
 import '../../../../../core/constant/firebase/firebase_field_names.dart';
 
 
-class Message {
+class MessageModel {
   final String message;
   final String messageId;
   final String senderId;
@@ -11,7 +11,7 @@ class Message {
   final bool seen;
   final String messageType;
 
-  const Message({
+  const MessageModel({
     required this.message,
     required this.messageId,
     required this.senderId,
@@ -33,8 +33,8 @@ class Message {
     };
   }
 
-  factory Message.fromMap(Map<String, dynamic> map) {
-    return Message(
+  factory MessageModel.fromMap(Map<String, dynamic> map) {
+    return MessageModel(
       message: map[FirebaseFieldNames.message] as String,
       messageId: map[FirebaseFieldNames.messageId] as String,
       senderId: map[FirebaseFieldNames.senderId] as String,
