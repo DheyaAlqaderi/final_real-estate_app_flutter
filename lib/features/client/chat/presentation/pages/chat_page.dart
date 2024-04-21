@@ -135,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
                                     borderRadius: BorderRadius.circular(25.0),
                                     color: Theme.of(context).cardColor,
                                     image: DecorationImage(
-                                      image: CachedNetworkImageProvider(userData!['imageUrl'].toString()),
+                                      image: CachedNetworkImageProvider(userData['imageUrl'].toString()),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
