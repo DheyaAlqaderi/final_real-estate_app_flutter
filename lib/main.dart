@@ -16,6 +16,7 @@ import 'package:smart_real_estate/features/client/category_property/domain/repo_
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
 import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
+import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -53,7 +54,7 @@ Future<void> main() async {
   /// 2. initialize firebase
   await _initializeFirebase();
 
-  await Locales.init([ 'ar', 'ar']); // get last saved language
+  await Locales.init([ 'ar', 'en']); // get last saved language
 
 
   /// 3. for buttery icons and notifications to be fixable in colors
@@ -192,7 +193,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const RootScreen(),
+          home: RoomsScreen(),
         ),
       ),
     );
