@@ -20,6 +20,6 @@ class TitleSectionWidget extends StatelessWidget {
               child: Text(titleButton, style: fontSmallBold,)),
         ],
       ),
-    );;
+    );
   }
 }

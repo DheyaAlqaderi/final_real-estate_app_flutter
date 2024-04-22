@@ -11,7 +11,7 @@ class MessageContents extends StatelessWidget {
     this.isSentMessage = false,
   });
 
-  final Message message;
+  final MessageModel message;
   final bool isSentMessage;
 
   @override

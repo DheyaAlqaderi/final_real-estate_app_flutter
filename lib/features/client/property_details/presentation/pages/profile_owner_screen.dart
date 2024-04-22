@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -8,7 +7,6 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
-import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/owner_properties/property_owner_properties._cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/owner_properties/property_owner_properties._sate.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
@@ -218,7 +216,7 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                   child: Row(
                     children: [
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 25.0)),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.call)),
+                      IconButton(onPressed: (){}, icon: const Icon(Icons.call)),
                       const Spacer(flex: 1,),
                       InkWell(
                           onTap: () async {

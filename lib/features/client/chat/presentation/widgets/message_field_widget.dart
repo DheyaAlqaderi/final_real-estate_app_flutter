@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -10,17 +9,17 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import '../../../../../core/constant/firebase/utils.dart';
 import '../../../../../core/utils/images.dart';
 
 class MessageFieldWidget extends StatefulWidget {
-  const MessageFieldWidget({super.key, required this.chatRoomId, required this.receiverId});
+  const MessageFieldWidget({super.key, required this.chatRoomId, required this.receiverId, required this.fcmToken});
 
   final String chatRoomId;
   final String receiverId;
+  final String fcmToken;
   @override
   State<MessageFieldWidget> createState() => _MessageFieldWidgetState();
 }
@@ -70,6 +69,7 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
     return Theme.of(context).brightness == Brightness.dark;
   }
   File? imageFile;
+  File? _video;
   final picker = ImagePicker();
 
 
@@ -157,7 +157,7 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
     );
   }
 
-  File? _video;
+
 
   Future<void> _pickAndUploadVideo() async {
     setState(() {
@@ -365,7 +365,7 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
                             maxLines: null,
                             textAlignVertical: TextAlignVertical.center,
                             style: TextStyle(
-                              color: Theme.of(context).textTheme.bodyText1!.color,
+                              color: Theme.of(context).textTheme.bodyLarge!.color,
                               fontSize: 16.0,
                             ),
                             decoration: InputDecoration(
@@ -398,6 +398,7 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
                             message: messageText,
                             chatroomId: widget.chatRoomId,
                             receiverId: widget.receiverId,
+                            fcmToken: widget.fcmToken
                           ).then((result) {
                             if (result != null) {
                               // Handle any errors returned by the sendMessage function
@@ -420,33 +421,9 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
                     :IconButton(
                       icon: Icon(Icons.mic, color: Theme.of(context).hintColor),
                       onPressed: () {
-                        // Get the message from the controller
-                        String messageText =
-                        _messageController.text.trim(); // Trim any leading or trailing whitespace
 
-                        // Check if the message is empty
-                        if (messageText.isNotEmpty) {
-                          // Call sendMessage function from your repository
-                          chatRepository.sendMessage(
-                            message: messageText,
-                            chatroomId: widget.chatRoomId,
-                            receiverId: widget.receiverId,
-                          ).then((result) {
-                            if (result != null) {
-                              // Handle any errors returned by the sendMessage function
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content:
-                                  Text("Failed to send message: $result"),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            } else {
-                              // Clear the text field after sending the message
-                              _messageController.clear();
-                            }
-                          });
-                        }
+                          chatRepository.sendNotificationToToken(widget.fcmToken, title: "hello", body: "name");
+
                       },
                     ),
               ],

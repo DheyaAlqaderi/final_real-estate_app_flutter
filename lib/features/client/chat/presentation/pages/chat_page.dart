@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_real_estate/core/constant/firebase/firebase_collections_names.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
@@ -28,12 +26,14 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final ChatRepository  chatRepository = ChatRepository();
+  String fcmTokene = "";
+  // var userData;
   // bool isIconAppeared = false;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  @override
+  void initState()  {
+    super.initState();
+  }
 
   bool isDarkMode(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark;
@@ -58,10 +58,10 @@ class _ChatPageState extends State<ChatPage> {
             }
 
             // Extract messages from snapshot
-            final messages = snapshot.data?.docs.map((doc) => Message.fromMap(doc.data())).toList() ?? [];
+            final messages = snapshot.data?.docs.map((doc) => MessageModel.fromMap(doc.data())).toList() ?? [];
 
             // Group messages by day
-            Map<DateTime, List<Message>> groupedMessages = {};
+            Map<DateTime, List<MessageModel>> groupedMessages = {};
             for (var message in messages) {
               DateTime messageDate = DateTime(message.timestamp.year, message.timestamp.month, message.timestamp.day);
               if (groupedMessages.containsKey(messageDate)) {
@@ -103,6 +103,7 @@ class _ChatPageState extends State<ChatPage> {
                         }
                         // Access data from the snapshot
                         final userData = snapshot.data!.data();
+                        fcmTokene = userData!['fcmToken'];
 
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
                                     borderRadius: BorderRadius.circular(25.0),
                                     color: Theme.of(context).cardColor,
                                     image: DecorationImage(
-                                      image: CachedNetworkImageProvider(userData!['imageUrl'].toString()),
+                                      image: CachedNetworkImageProvider(userData['imageUrl'].toString()),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -210,7 +211,7 @@ class _ChatPageState extends State<ChatPage> {
                               itemBuilder: (context, index) {
                                 var entry = groupedMessages.entries.elementAt(index);
                                 // Reverse the order of messages within each group
-                                List<Message> reversedMessages = entry.value.reversed.toList();
+                                List<MessageModel> reversedMessages = entry.value.reversed.toList();
                                 // Get today's date
                                 DateTime today = DateTime.now();
                                 // Get the date of the message
@@ -274,6 +275,7 @@ class _ChatPageState extends State<ChatPage> {
                             child: MessageFieldWidget(
                               chatRoomId: widget.chatRoomId,
                               receiverId: widget.receiverId,
+                              fcmToken: fcmTokene,
                             ),
                           ),
                         ],

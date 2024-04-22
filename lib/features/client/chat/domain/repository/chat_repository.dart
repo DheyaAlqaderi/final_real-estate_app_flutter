@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,12 +82,13 @@ class ChatRepository {
     required String message,
     required String chatroomId,
     required String receiverId,
+    required String fcmToken,
   }) async {
     try {
       final messageId = const Uuid().v1();
       final now = DateTime.now();
 
-      Message newMessage = Message(
+      MessageModel newMessage = MessageModel(
         message: message,
         messageId: messageId,
         senderId: AppConstants.userIdFake,
@@ -109,9 +112,47 @@ class ChatRepository {
         FirebaseFieldNames.lastMessageTs: now.millisecondsSinceEpoch,
       });
 
+      // Send push notification
+      sendNotificationToToken(fcmToken,body: message,title: "Dheya");
+
       return null;
     } catch (e) {
       return e.toString();
+    }
+  }
+  // Function to send notification to a specific token
+  Future<void> sendNotificationToToken(String fcmToken, {required String title, required String body}) async {
+    print("hello");
+    try {
+      // Construct your notification payload
+      Map<String, dynamic> notification = {
+        'priority': 'high',
+        'notification': {
+          'title': title,
+          'body': body,
+          'android_channel_id': 'dbfood'
+        },
+        'to': fcmToken,
+      };
+
+      // Send the notification to FCM server
+      final response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': "key=${AppConstants.serverFirebaseKey}",
+        },
+        body: jsonEncode(notification),
+      );
+
+      // Check the response status code
+      if (response.statusCode == 200) {
+        print("Notification sent successfully");
+      } else {
+        print("Failed to send notification. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error sending notification: $e");
     }
   }
 
@@ -131,7 +172,7 @@ class ChatRepository {
       TaskSnapshot snapshot = await ref.putFile(file);
       final downloadUrl = await snapshot.ref.getDownloadURL();
 
-      Message newMessage = Message(
+      MessageModel newMessage = MessageModel(
         message: downloadUrl,
         messageId: messageId,
         senderId:AppConstants.userIdFake,

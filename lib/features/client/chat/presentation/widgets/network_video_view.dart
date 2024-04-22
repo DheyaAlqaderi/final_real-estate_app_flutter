@@ -5,10 +5,10 @@ import 'package:video_player/video_player.dart';
 
 class NetworkVideoView extends StatefulWidget {
   const NetworkVideoView({
-    Key? key,
+    super.key,
     required this.videoUrl,
     this.localVideoFile,
-  }) : super(key: key);
+  });
 
   final String videoUrl;
   final File? localVideoFile;

@@ -1,4 +1,3 @@
-import 'package:smart_real_estate/features/client/home/data/models/category/category_model.dart';
 import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
 
 import 'main_category_state.dart';

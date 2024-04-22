@@ -1,5 +1,4 @@
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
-import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
 
 import 'main_category_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
