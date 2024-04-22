@@ -23,7 +23,7 @@ class AppBarWidget extends StatelessWidget  implements PreferredSizeWidget{
         ),
         icon: const Icon(Icons.arrow_back_ios_new_outlined,size: 15,),
         onPressed: onTap
-      ),
+      ),//
 
     );
   }
