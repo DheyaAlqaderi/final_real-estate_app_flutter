@@ -77,7 +77,7 @@ Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
       flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
     );
   }
-}
+}//
 void main() async {
 
   /// 1. for Localization and Languages
