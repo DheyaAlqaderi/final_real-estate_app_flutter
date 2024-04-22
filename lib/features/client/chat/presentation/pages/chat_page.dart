@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_real_estate/core/constant/firebase/firebase_collections_names.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/profile_owner_screen.dart';
 
 import '../../../../../core/constant/app_constants.dart';
@@ -103,7 +104,10 @@ class _ChatPageState extends State<ChatPage> {
                         }
                         // Access data from the snapshot
                         final userData = snapshot.data!.data();
-                        fcmTokene = userData!['fcmToken'];
+                        if(userData!['fcmToken'] == null) {
+                          fcmTokene = FirebaseMessagingRepository.getToken().toString();
+                          chatRepository.updateUserToken(AppConstants.userIdFake, fcmTokene);
+                        }
 
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

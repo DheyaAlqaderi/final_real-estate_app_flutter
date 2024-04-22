@@ -272,5 +272,20 @@ class ChatRepository {
     }
   }
 
-
+  Future<void> updateUserToken(String userId, String fcmToken) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .update({'fcmToken': fcmToken});
+      if (kDebugMode) {
+        print('User fcmToken updated successfully');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error updating user imageUrl: $e');
+      }
+      // Handle error, display a message to the user, etc.
+    }
+  }
 }

@@ -18,4 +18,8 @@ class FirebaseMessagingRepository {
     print("received token: $token");
 
   }
+
+  static Future<String?> getToken() async {
+    return await _firebaseMessaging.getToken();
+  }
 }
