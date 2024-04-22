@@ -120,7 +120,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   late String _userId;
 
   @override
-  void initState() {
+  void initState() {//
     super.initState();
     _userRepository = ChatRepository();
     _userId = AppConstants.userIdFake;
