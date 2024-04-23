@@ -73,7 +73,11 @@
   "any_ques": "Any Question?",
   "any_ques_description": "Do you have a problem with the Smart Real Estate Application platform? We are happy to hear your issues and opinions to improve our service.",
   "full_name": "full name",
-  "add_image": "add image"
+  "add_image": "add image",
+  "whats_problem": "what is the problem you are facing?",
+  "send": "send"
+
+
 
 
 }
