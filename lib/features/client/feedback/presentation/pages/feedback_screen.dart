@@ -208,7 +208,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               },
                               icon: null,//
                               underline: null, // Removes the underline border
-                              items: <String>['Option 1', 'Option 2', 'Option 3', 'Option 4']
+                              items: <String>['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 4', 'Option 4']
                                   .map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,

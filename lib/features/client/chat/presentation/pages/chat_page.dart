@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_real_estate/core/constant/firebase/firebase_collections_names.dart';
@@ -85,7 +86,7 @@ class _ChatPageState extends State<ChatPage> {
                           .collection('Users')
                           .doc(widget.receiverId)
                           .snapshots(),
-                      builder: (context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                      builder: (context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot){
                         // Widget code for user data...
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(
@@ -104,10 +105,10 @@ class _ChatPageState extends State<ChatPage> {
                         }
                         // Access data from the snapshot
                         final userData = snapshot.data!.data();
-                        if(userData!['fcmToken'] == null) {
-                          fcmTokene = FirebaseMessagingRepository.getToken().toString();
-                          chatRepository.updateUserToken(AppConstants.userIdFake, fcmTokene);
-                        }
+                        // if(userData != null && userData['fcmToken'] == null) {
+                        //    fcmTokene = FirebaseMessaging.instance.getToken() as String;
+                        //   chatRepository.updateUserToken(AppConstants.userIdFake, fcmTokene);
+                        // }
 
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,14 +140,14 @@ class _ChatPageState extends State<ChatPage> {
                                     borderRadius: BorderRadius.circular(25.0),
                                     color: Theme.of(context).cardColor,
                                     image: DecorationImage(
-                                      image: CachedNetworkImageProvider(userData['imageUrl'].toString()),
+                                      image: CachedNetworkImageProvider(userData!['imageUrl'].toString()),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
                                   child: IconButton(
                                     icon: const SizedBox(),
                                     onPressed: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileOwnerScreen(userId: userData['userId'])));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileOwnerScreen(userId: userData!['userId'])));
                                     },
                                   ),
                                 ),
@@ -155,9 +156,9 @@ class _ChatPageState extends State<ChatPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(userData["email"], style: fontMediumBold),
+                                    Text(userData!["email"], style: fontMediumBold),
                                     Text(
-                                      userData["isOnline"] == null || userData["isOnline"] ? "Online" : _getLastSeenText(userData),
+                                      userData?["isOnline"] == null || userData["isOnline"] ? "Online" : _getLastSeenText(userData),
                                       style: fontSmall.copyWith(color: userData["isOnline"]== null || userData["isOnline"] ? Colors.green : Colors.grey),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,

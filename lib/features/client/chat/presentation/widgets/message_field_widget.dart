@@ -37,6 +37,7 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
   @override
   void initState() {
     super.initState();
+    print(widget.fcmToken);
     chatRepository = ChatRepository();
     _messageController = TextEditingController();
     _messageController.addListener(() {
