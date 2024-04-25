@@ -75,7 +75,17 @@
   "full_name": "full name",
   "add_image": "add image",
   "whats_problem": "what is the problem you are facing?",
-  "send": "send"
+  "send": "send",
+  "please_name": "please enter your name",
+  "please_phone": "please enter your phone number",
+  "please_email": "please enter your email",
+  "please_problem": "please enter the problem",
+  "problem_type": "chose type of problem"
+
+
+
+
+
 
 
 

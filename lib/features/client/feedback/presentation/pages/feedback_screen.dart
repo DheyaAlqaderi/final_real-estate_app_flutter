@@ -1,9 +1,7 @@
 
 
-import 'dart:ffi';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -25,7 +23,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController emailAddress = TextEditingController();
   TextEditingController whatsProblem = TextEditingController();
-  String _selectedItem = 'Option 1';
+  final _feedbackForm = GlobalKey<FormState>();
+    String _selectedItem="problem_type";
+   @override
+  void initState() {
+    super.initState();
+    // _selectedItem=Locales.string(context, "problem_type");
+  }
+
+
 
   File? imageFile;
   final picker = ImagePicker();
@@ -79,6 +85,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       });
 
 
+
     }
   }
 
@@ -87,6 +94,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBarWidget(
         title: "feedback",
@@ -107,20 +115,21 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //space
-              SizedBox(height: 10,
+              const SizedBox(height: 10,
               width: double.infinity,),
               //text
               Text(Locales.string(context, "any_ques"),style: fontLargeBold,),
               //text
               Text(Locales.string(context, "any_ques_description"),style: fontMedium,),
               //space
-              SizedBox(height: 40,),
+              const SizedBox(height: 40,),
               //form
               Form(
+                key: _feedbackForm,
                   child: Column(
                     children: [
                       //name
-                      TextField(
+                      TextFormField(
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).cardColor,
@@ -130,12 +139,23 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ),
                           hintText:Locales.string(context, "full_name"),
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return Locales.string(context, "please_name");
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          fullName = fullName;
+                          // = value!;
+                        },
+
                         controller:fullName,
                         keyboardType: TextInputType.name,
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       //phone
-                      TextField(
+                      TextFormField(
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).cardColor,
@@ -145,12 +165,23 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ),
                           hintText:Locales.string(context, "phone"),
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return Locales.string(context, "please_phone");
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          phoneNumber = phoneNumber;
+                          // = value!;
+                        },
+
                         controller:phoneNumber,
                         keyboardType: TextInputType.phone,
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       //email
-                      TextField(
+                      TextFormField(
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).cardColor,
@@ -160,10 +191,21 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ),
                           hintText:Locales.string(context, "email"),
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return Locales.string(context, "please_email");
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          emailAddress = emailAddress;
+                          // = value!;
+                        },
+
                         controller:emailAddress,
                         keyboardType: TextInputType.emailAddress,
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       InkWell(
                         onTap: _imgFromGallery,
                         child: Container(
@@ -180,14 +222,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                  Locales.string(context, "add_image"),
-
+                                Locales.string(context, "add_image"),
+                                style: fontMedium.copyWith(color: Colors.grey[7]),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       Container(
                         height: 65,
                         width: double.infinity,
@@ -212,7 +254,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 },
                                 icon: null,//
                                 underline: null, // Removes the underline border
-                                items: <String>['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 4', 'Option 4']
+                                items: <String>["problem_type",'Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 4', 'Option 4']
                                     .map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -225,13 +267,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       ////////////////////////////////////////////////////////////////////
 
-                      TextField(
+                      TextFormField(
                         decoration: InputDecoration(
                           filled: true,
-
                           fillColor: Theme.of(context).cardColor,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -239,12 +280,22 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ),
                           hintText:Locales.string(context, "whats_problem"),
 
-                          contentPadding: EdgeInsets.symmetric(vertical: 35, horizontal: 8), // Adjust the vertical padding as needed
+                          contentPadding: const EdgeInsets.symmetric(vertical: 35, horizontal: 8), // Adjust the vertical padding as needed
                         ),
+                        validator: (value){
+                          if(value == null || value.isEmpty){
+                            return Locales.string(context, "please_problem");
+                          }
+                          return null;
+                        },
+                        onSaved: (value){
+                          whatsProblem = whatsProblem;
+                        },
+
                         controller:whatsProblem,
                         keyboardType: TextInputType.emailAddress,
                       ),
-                      SizedBox(height: 25,),
+                      const SizedBox(height: 25,),
                     ],
                   )
               ),
@@ -255,7 +306,19 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 child: SizedBox(
                   height: 70,
                   width: double.infinity,
-                  child: ElevatedButton(onPressed: (){},
+                  child: ElevatedButton(onPressed: (){
+                    if(imageFile == null){
+                      print("no image");
+                    }
+                    if(_feedbackForm.currentState!.validate()){
+
+
+
+                      _feedbackForm.currentState!.save();
+                      print('Submitted name: $fullName ');
+
+                    }
+                  },
                       child: Text(Locales.string(context, "send"),style: fontLarge,)),
                 ),
               )
