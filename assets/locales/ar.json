@@ -80,8 +80,20 @@
   "please_phone": "يرجى إدخال رقم الهاتف",
   "please_email": "يرجى إدخال الأيميل",
   "please_problem": "يرجى إدخال المشكله",
-  "problem_type": "اختر نوع المشكله"
-
-
-
+  "problem_type": "اختر نوع المشكله",
+  "just_letter": "الرجاء إدخال أحرف فقط ومسافات",
+  "setting_title": "الأعدادات",
+  "profile_title": "ملفي الشخصي",
+  "guide_lines": "دليل العناوين",
+  "user_page":"تحويل صفحة العميل",
+  "language":"اللغة ",
+  "notification":"الاشعارات",
+  "information": "معلومات",
+  "version":"إصدار",
+  "terms_of_service":"شروط الخدمة",
+  "privacy_policy": "سياسة الخصوصية",
+  "logout": "تسجيل الخروج ",
+  "add_alarm_notification": "اضافة منبه عقاري ",
+  "owner_page":"تحويل الى صفحة المروج",
+  "customer_service": "خدمة العملاء"
 }

@@ -80,14 +80,22 @@
   "please_phone": "please enter your phone number",
   "please_email": "please enter your email",
   "please_problem": "please enter the problem",
-  "problem_type": "chose type of problem"
-
-
-
-
-
-
-
+  "problem_type": "chose type of problem",
+  "just_letter": "please enter only letters and spaces",
+  "setting_title": "setting",
+  "profile_title": "profile",
+  "guide_lines": "guide lines",
+  "user_page":"change user page",
+  "language":"language",
+  "notification":"notification",
+  "information": "information",
+  "version":"version",
+  "terms_of_service":"terms of service",
+  "privacy_policy": "privacy policy",
+  "logout": "logout",
+  "add_alarm_notification": "add alarm notification",
+  "owner_page":"change owner page ",
+  "customer_service": "customer service"
 
 
 }

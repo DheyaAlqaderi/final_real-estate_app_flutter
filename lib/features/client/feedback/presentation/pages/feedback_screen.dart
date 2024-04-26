@@ -8,6 +8,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
+import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 
 import '../../../home/pages/home_screen.dart';
 
@@ -102,7 +103,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context)=>const HomeScreen(),));
+                builder: (context)=>const SettingScreen(),));
         },
       ),
 
@@ -142,6 +143,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return Locales.string(context, "please_name");
+                          }
+                          if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
+                            return Locales.string(context, "just_letter");
                           }
                           return null;
                         },

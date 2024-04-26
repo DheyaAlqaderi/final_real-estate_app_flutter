@@ -30,6 +30,21 @@ class Images {
   static const String userImageIfNull = "https://static.vecteezy.com/system/resources/previews/019/879/186/large_2x/user-icon-on-transparent-background-free-png.png";
   static const String chatPageBackground = "assets/images/chat_page_background.jpeg";
   static const String noImageUrl = "https://as1.ftcdn.net/v2/jpg/05/04/28/96/1000_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg";
+  static const String profileIcon ="assets/svg/profile_icon.svg";
+  static const String guideLines ="assets/svg/guide_lines_icon.svg";
+  static const String userPage ="assets/svg/user_page_icon.svg";
+  static const String language ="assets/svg/language_icon.svg";
+  static const String notification ="assets/svg/notification_icon.svg";
+  static const String version ="assets/svg/version_icon.svg";
+  static const String termsOfService ="assets/svg/terms_of_service_icon.svg";
+  static const String privacyPolicy ="assets/svg/privacy_policy_icon.svg";
+
+
+
+
+
+
+
 
 
 
