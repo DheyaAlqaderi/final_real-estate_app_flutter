@@ -11,6 +11,8 @@ A Real Estate project.
 
 ![Screenshot from 2024-04-27 21-57-41](https://github.com/DheyaAlqaderi/final_real-estate_app_flutter/assets/116699614/49eb4371-1cb0-499d-bdc8-996b81e930dd)
 
+![Screenshot from 2024-04-27 22-05-32](https://github.com/DheyaAlqaderi/final_real-estate_app_flutter/assets/116699614/6be53924-a541-4f58-8331-3ca6c30d7e61)
+
 https://github.com/DheyaAlqaderi/ds-application/assets/116699614/2fd29433-a28a-47bc-9fcf-4ae1d508b973
 
 ## Getting Started
