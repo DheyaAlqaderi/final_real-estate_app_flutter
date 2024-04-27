@@ -7,6 +7,8 @@ A Real Estate project.
 ![Screenshot from 2024-04-27 21-52-06](https://github.com/DheyaAlqaderi/final_real-estate_app_flutter/assets/116699614/0dc4ec6e-a90e-4f1c-856b-ad8d8ffa5c64)
 
 
+![Screenshot from 2024-04-27 21-57-41](https://github.com/DheyaAlqaderi/final_real-estate_app_flutter/assets/116699614/49eb4371-1cb0-499d-bdc8-996b81e930dd)
+
 https://github.com/DheyaAlqaderi/ds-application/assets/116699614/2fd29433-a28a-47bc-9fcf-4ae1d508b973
 
 ## Getting Started
