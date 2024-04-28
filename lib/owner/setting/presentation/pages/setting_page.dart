@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
-import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/profile/pages/profile_screen.dart';
 
 import '../../../../features/client/feedback/presentation/widgets/appBar.dart';
 import '../../../../features/client/home/pages/home_screen.dart';
-import '../../../feedback/presentation/widgets/appBar.dart';
-import '../../../home/pages/home_screen.dart';
 import '../widgets/profile.dart';
 
 
@@ -111,7 +108,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
               const SizedBox(height: 30.0,),
 
-              Text(Locales.string(context, "information"),style:TextStyle(color: Colors.grey)),
+              Text(Locales.string(context, "information"),style:const TextStyle(color: Colors.grey)),
 
               const SizedBox(height: 15,),
 

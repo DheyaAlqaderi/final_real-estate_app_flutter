@@ -17,7 +17,9 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/notification.dart';
-import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
+import 'package:smart_real_estate/features/client/favorite/data/models/favorite_model.dart';
+import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
+import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_widget_temp.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -35,14 +37,15 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/screen_review/review_property_rateNo_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
-import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
+import 'features/client/category_property/widget/subCategory_widget.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
+import 'features/client/favorite/presentation/widgets/grid_cell.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'firebase_options.dart';
@@ -231,7 +234,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const SettingScreen(),
+          home:  FavoriteScreen(),
         ),
       ),
     );

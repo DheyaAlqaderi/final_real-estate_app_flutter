@@ -38,6 +38,7 @@ class Images {
   static const String version ="assets/svg/version_icon.svg";
   static const String termsOfService ="assets/svg/terms_of_service_icon.svg";
   static const String privacyPolicy ="assets/svg/privacy_policy_icon.svg";
+  static const String favHeart="assets/svg/fav_heart.svg";
 
 
 

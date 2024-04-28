@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
-import 'package:smart_real_estate/features/client/favorite/pages/favorite_screen.dart';
+import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
 import 'package:smart_real_estate/features/client/home/pages/home_screen.dart';
 import 'package:smart_real_estate/features/client/profile/pages/profile_screen.dart';
 

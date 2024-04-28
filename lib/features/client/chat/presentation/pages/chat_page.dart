@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_real_estate/core/constant/firebase/firebase_collections_names.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
-import 'package:smart_real_estate/features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/profile_owner_screen.dart';
 
 import '../../../../../core/constant/app_constants.dart';
@@ -147,7 +145,7 @@ class _ChatPageState extends State<ChatPage> {
                                   child: IconButton(
                                     icon: const SizedBox(),
                                     onPressed: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileOwnerScreen(userId: userData!['userId'])));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileOwnerScreen(userId: userData['userId'])));
                                     },
                                   ),
                                 ),
@@ -156,9 +154,9 @@ class _ChatPageState extends State<ChatPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(userData!["email"], style: fontMediumBold),
+                                    Text(userData["email"], style: fontMediumBold),
                                     Text(
-                                      userData?["isOnline"] == null || userData["isOnline"] ? "Online" : _getLastSeenText(userData),
+                                      userData["isOnline"] == null || userData["isOnline"] ? "Online" : _getLastSeenText(userData),
                                       style: fontSmall.copyWith(color: userData["isOnline"]== null || userData["isOnline"] ? Colors.green : Colors.grey),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,

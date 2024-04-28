@@ -10,7 +10,6 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
 import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 
-import '../../../home/pages/home_screen.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
