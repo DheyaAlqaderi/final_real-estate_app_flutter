@@ -3,7 +3,7 @@ class AppConstants {
   static const String appName = 'Smart Real-estate';
   static const double appVersion = 0.1;
   static const String fontFamily = 'Lato';
-  static const String baseUrl = "http://192.168.0.86:8000/";
+  static const String baseUrl = "http://192.168.0.191:8000/";
   // static const String baseUrl = "http://192.168.1.9:8000/";
 
   static const String baseUrl2 = "http://192.168.0.86:8000";

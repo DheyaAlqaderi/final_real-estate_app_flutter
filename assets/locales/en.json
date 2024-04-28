@@ -95,7 +95,6 @@
   "logout": "logout",
   "add_alarm_notification": "add alarm notification",
   "owner_page":"change owner page ",
-  "customer_service": "customer service"
-
-
+  "customer_service": "customer service",
+  "add_review": "add review"
 }
