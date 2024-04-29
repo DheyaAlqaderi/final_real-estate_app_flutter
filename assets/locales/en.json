@@ -96,5 +96,10 @@
   "add_alarm_notification": "add alarm notification",
   "owner_page":"change owner page ",
   "customer_service": "customer service",
-  "add_review": "add review"
+  "add_review": "add review",
+  "text_in_empty_favorite_page": "your favorite page is empty",
+  "text_in_empty_favorite_page2": "click the add button to start exploring and chooses your favorite real estate"
+
+
+
 }

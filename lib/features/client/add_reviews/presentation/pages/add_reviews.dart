@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
+import 'package:smart_real_estate/features/client/add_reviews/domain/repositories/rating_repository.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
 
 import '../../../../../core/utils/styles.dart';
 import '../../../home/pages/home_screen.dart';
 
 class AddReview extends StatefulWidget {
-  const AddReview({super.key});
+  const AddReview({super.key, required this.propertyId});
+  final int propertyId;
 
   @override
   State<AddReview> createState() => _AddReviewState();
@@ -86,8 +89,10 @@ class _AddReviewState extends State<AddReview> {
                 height: 70,
                 width: 276,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // Handle rating and review submission here
+                    final String? token = await SharedPrefManager.getData("token");
+                    RatingRepository.postReview(idProperty: widget.propertyId, rating: rating, review: review, token: token.toString());
                   },
                   child: Center(
                     child: (

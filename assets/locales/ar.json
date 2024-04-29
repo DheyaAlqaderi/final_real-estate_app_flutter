@@ -96,6 +96,9 @@
   "add_alarm_notification": "اضافة منبه عقاري ",
   "owner_page":"تحويل الى صفحة المروج",
   "customer_service": "خدمة العملاء",
-  "add_review": "إضافة تعليق"
+  "add_review": "إضافة تعليق",
+  "text_in_empty_favorite_page": "الصفحة المفضلة لديك فارغة",
+  "text_in_empty_favorite_page2": "انقر فوق زر 'إضافة' اعلاه لبدء الاستكشاف واختيار العقارات المفضلة لديك"
+
 
 }
