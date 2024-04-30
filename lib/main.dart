@@ -20,6 +20,7 @@ import 'package:smart_real_estate/features/client/chat/domain/repository/chat_re
 import 'package:smart_real_estate/features/client/chat/domain/repository/notification.dart';
 import 'package:smart_real_estate/features/client/favorite/data/models/favorite_model.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
+import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_appbar.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_widget_temp.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
@@ -235,7 +236,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:  FavoriteScreen(),
+          home:  const FavoriteScreen(),
         ),
       ),
     );
