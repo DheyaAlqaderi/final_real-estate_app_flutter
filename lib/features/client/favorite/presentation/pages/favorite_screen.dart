@@ -6,8 +6,6 @@ import 'package:smart_real_estate/features/client/favorite/presentation/widgets/
 
 import '../../data/models/favorite_model.dart';
 import '../../data/repositories/network.dart';
-import '../widgets/add_favorite.dart';
-import '../widgets/grid_cell.dart';
 
 
 
@@ -23,7 +21,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(title: const Text("GridView with service")),
-      // body: AddFavorite(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,9 +45,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: FavoriteProperty(
-                          //imageUrl: data[index].prop!.image!.first.image!,
-                        ),
+                        // child: FavoriteProperty(
+                        //   //imageUrl: data[index].prop!.image!.first.image!,
+                        // ),
                       );
 
                     },
@@ -66,8 +63,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   ),
                   itemCount: 5,
                   itemBuilder: (context, index) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: FavoriteWidget(
                         title: "hamzah",
                         address: "sanna",
@@ -85,7 +82,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           ),
         ],
       ),
-    );
+    );;
   }
 }
 

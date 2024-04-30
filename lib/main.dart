@@ -47,7 +47,6 @@ import 'features/auth/domain/repo/auth_repository.dart';
 import 'features/client/add_reviews/presentation/pages/add_reviews.dart';
 import 'features/client/category_property/widget/subCategory_widget.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
-import 'features/client/favorite/presentation/widgets/grid_cell.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'firebase_options.dart';
