@@ -235,7 +235,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:  FavoriteScreen(),
+          home:  const RootScreen(),
         ),
       ),
     );

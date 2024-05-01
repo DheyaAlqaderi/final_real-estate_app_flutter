@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/SRValidator.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
@@ -129,12 +130,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Signed up successfully! User ID: ${response.id}', style: const TextStyle(color: Colors.white),),
+                              content: Text('Signed up successfully! User ID: ${response.userType} ${response.userType} ', style: const TextStyle(color: Colors.white),),
                               backgroundColor: Colors.green,
                             ),
                           );
-                          SharedPrefManager.saveData("token", response.userAuth.token.toString());
-                          SharedPrefManager.saveData("user_id", response.id.toString());
+                          SharedPrefManager.saveData(AppConstants.token, response.userAuth.token.toString());
+                          SharedPrefManager.saveData(AppConstants.userId, response.id.toString());
+                          SharedPrefManager.saveData(AppConstants.userType, response.userType.toString());
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
                         });
                         return _buildButton(context);

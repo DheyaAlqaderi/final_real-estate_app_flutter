@@ -27,10 +27,6 @@ class SignUpCubit extends Cubit<SignUpState> {
           phoneNumber: phoneNumber,
           username: username);
 
-      // save user into firebase
-      // await _authRepository.saveUserRecordFirebase(response.userAuth);
-      // await _authRepository.saveUsers();
-
       emit(SignUpSuccess(response));
     } catch (e) {
       emit(SignUpFailure(e.toString()));

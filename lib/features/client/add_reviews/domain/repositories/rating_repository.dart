@@ -1,33 +1,20 @@
+import 'package:dio/dio.dart';
+import 'package:retrofit/http.dart';
+import 'package:smart_real_estate/features/client/add_reviews/data/review_model.dart';
+import 'package:smart_real_estate/features/client/add_reviews/data/review_response_model.dart';
 
-import 'dart:ffi';
+import '../../../../../core/constant/app_constants.dart';
 
-import 'package:http/http.dart' as http;
-class RatingRepository{
 
-  static Future<String> postReview(
-      {required double rating, required String review, required int idProperty, required String token}) async {
-    /// the url
-    final String url ="j";
+part 'rating_repository.g.dart';
 
-    /// set data to model
-    Map<String, dynamic> mapData = {
-      "propertyId": idProperty,
-      "rating": rating,
-      "review": review
-    };
+@RestApi(baseUrl: AppConstants.baseUrl)
+abstract class RatingRepository{
+  factory RatingRepository(Dio dio, {String baseUrl}) = _RatingRepository;
 
-    /// post to the server
-    final response = await http.post(
-        Uri.parse(url),
-        body: mapData,
-      headers: {
-          "Authorization": "token $token"
-      }
-    );
-
-    /// get response
-    return response.body;
-
-  }
-
+  @POST("api/review/create/")
+  Future<ReviewResponseModel> postReview(
+      @Body() Review review,
+      @Header("Authorization")String token
+      );
 }
