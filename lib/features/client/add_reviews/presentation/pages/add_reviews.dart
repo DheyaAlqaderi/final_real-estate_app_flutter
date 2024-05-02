@@ -1,13 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
+import 'package:smart_real_estate/features/client/add_reviews/data/review_model.dart';
 import 'package:smart_real_estate/features/client/add_reviews/domain/repositories/rating_repository.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
 
-import '../../../../../core/utils/styles.dart';
 import '../../../home/pages/home_screen.dart';
-
 class AddReview extends StatefulWidget {
   const AddReview({super.key, required this.propertyId});
   final int propertyId;
@@ -19,21 +18,54 @@ class AddReview extends StatefulWidget {
 class _AddReviewState extends State<AddReview> {
   final TextEditingController _controller = TextEditingController();
   String review = '';
-
-
-
-
   double rating = 0;
+  bool isLoading = false;
+
+  late RatingRepository ratingRepository; // Declare as late to initialize later
+
+  Future<void> post() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    // Handle rating and review submission here
+    try {
+      await ratingRepository.postReview(
+          Review(
+              review: _controller.text,
+              rateReview: rating,
+              prop: widget.propertyId),
+          "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"
+      );
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      // setState(() {
+      //   isLoading = false;
+      // });
+      print("Failed to post review: $e");
+    }
+
+    // setState(() {
+    //   isLoading = false;
+    // });
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ratingRepository = RatingRepository(Dio()); // Initialize RatingRepository
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
         title: "add_review",
-        onTap: (){
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context)=>const HomeScreen(),));
+        onTap: () {
+          Navigator.pop(context);
         },
       ),
       body: SingleChildScrollView(
@@ -62,12 +94,11 @@ class _AddReviewState extends State<AddReview> {
                 },
               ),
               const SizedBox(height: 100.0),
-
               SizedBox(
                 height: 100,
                 child: TextFormField(
                   controller: _controller,
-                  maxLines: null , // This controls the height of the field
+                  maxLines: null, // This controls the height of the field
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Theme.of(context).cardColor,
@@ -81,23 +112,28 @@ class _AddReviewState extends State<AddReview> {
                       horizontal: 10,
                     ),
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      review = value;
+                    });
+                  },
                 ),
               ),
-
               const SizedBox(height: 70.0),
               SizedBox(
                 height: 70,
                 width: 276,
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Handle rating and review submission here
-                    final String? token = await SharedPrefManager.getData("token");
-                    RatingRepository.postReview(idProperty: widget.propertyId, rating: rating, review: review, token: token.toString());
+                    await post();
+                    Navigator.pop(context);
                   },
                   child: Center(
-                    child: (
-                      Text(Locales.string(context, "send"),style: fontLarge,)),
-                  )
+                    child: isLoading
+                        ?const CircularProgressIndicator(color: Colors.white,)
+                        :Text(Locales.string(context, "send"), style: const TextStyle(fontSize: 18), // Assuming fontLarge is defined elsewhere
+                    ),
+                  ),
                 ),
               ),
             ],

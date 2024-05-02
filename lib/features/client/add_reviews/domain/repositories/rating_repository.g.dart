@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'high_state_api.dart';
+part of 'rating_repository.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'high_state_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _HighStateApi implements HighStateApi {
-  _HighStateApi(
+class _RatingRepository implements RatingRepository {
+  _RatingRepository(
     this._dio, {
     this.baseUrl,
   }) {
@@ -21,28 +21,25 @@ class _HighStateApi implements HighStateApi {
   String? baseUrl;
 
   @override
-  Future<PropertyModel> getPropertyByState(
-    int propertyId,
-    int pageSize,
-    int state,
+  Future<ReviewResponseModel> postReview(
+    Review review,
+    String token,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'page': propertyId,
-      r'page_size': pageSize,
-      r'state': state,
-    };
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
-      method: 'GET',
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(review.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewResponseModel>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'api/property/by-state',
+              'api/review/create/',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -51,7 +48,7 @@ class _HighStateApi implements HighStateApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = PropertyModel.fromJson(_result.data!);
+    final value = ReviewResponseModel.fromJson(_result.data!);
     return value;
   }
 

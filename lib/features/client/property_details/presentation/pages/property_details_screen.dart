@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/add_reviews/presentation/pages/add_reviews.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
@@ -95,7 +96,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     child: Row(
                       children: List.generate(
                           propertyDetails.propertyValue!.length ,
-                            (index) {
+                              (index) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 7),
                               child: FeatureAttributeWidget(
@@ -103,10 +104,10 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                 attributeValue: propertyDetails.propertyValue![index].value!.value!,
                               ),
                             );
-                            }
-                        ),
+                          }
                       ),
                     ),
+                  ),
                   const SizedBox(height: 5.0,),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -133,8 +134,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     child: InkWell(
                       onTap: (){
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProfileOwnerScreen(userId: propertyDetails.user!.id!,))
+                            context,
+                            MaterialPageRoute(builder: (context) => ProfileOwnerScreen(userId: propertyDetails.user!.id!,))
                         );
                       },
                       child: Container(
@@ -154,12 +155,12 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                   height: 50.0,
                                   width: 50.0,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    image: DecorationImage(
-                                      image: CachedNetworkImageProvider(
-                                          "${AppConstants.baseUrl2}${propertyDetails.user!.image}"),
-                                      fit: BoxFit.cover,
-                                    )
+                                      borderRadius: BorderRadius.circular(100),
+                                      image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            "${AppConstants.baseUrl2}${propertyDetails.user!.image}"),
+                                        fit: BoxFit.cover,
+                                      )
                                   ),
                                 ),
                                 const SizedBox(width: 7.0,),
@@ -203,15 +204,20 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(Locales.string(context, "review"), style: fontMediumBold,),
-                        Container(
-                          height: 29.0,
-                          width: 29.0,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(50.0)
-                          ),
-                          child: const Center(
-                            child: Icon(Icons.add, size: 16,),
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> AddReview(propertyId: widget.id!.toInt())));
+                          },
+                          child: Container(
+                            height: 29.0,
+                            width: 29.0,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(50.0)
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.add, size: 16,),
+                            ),
                           ),
                         )
                       ],

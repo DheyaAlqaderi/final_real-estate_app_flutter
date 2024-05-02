@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/onBoarding/pages/onBoarding_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
@@ -28,14 +29,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> loadData() async {
     try {
+
       // Retrieve data
-      String? firstTime = await SharedPrefManager.getData('FirstTime');
-      String? token = await SharedPrefManager.getData('token');
+      String? firstTime = await SharedPrefManager.getData(AppConstants.firstTime);
+      String? token = await SharedPrefManager.getData(AppConstants.token);
+      String? userType = await SharedPrefManager.getData(AppConstants.userType);
 
       if (kDebugMode) {
         print(firstTime);
         print(token);
       }
+
       // Simulate a delay to mimic loading process
       await Future.delayed(const Duration(seconds: 2));
 
@@ -51,7 +55,12 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(builder: (context) => const WelcomeSelectScreen()),
         );
-      } else{
+      } else if(userType == "owner" && token.isNotEmpty && firstTime.isNotEmpty){
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RootScreen()),
+        );
+      } else {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const RootScreen()),

@@ -10,10 +10,18 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="fo" />
+
     <application
         android:label="Smart Real-Estate"
         android:name="${applicationName}"
         android:icon="@drawable/ic_launcher">
+<!--        <service-->
+<!--            android:name="id.flutter.flutter_background_service.BackgroundService"-->
+<!--            android:foregroundServiceType="WhatForegroundServiceTypeDoYouWant"-->
+<!--            />-->
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC4lXK37eiOfikKx9uHtqi9qxArsZS_J5Y"/>
         <activity
@@ -28,6 +36,8 @@
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
+
+
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
@@ -43,6 +53,8 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </activity>
+
+
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
