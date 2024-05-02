@@ -5,13 +5,14 @@ import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 
 class FavoriteWidget extends StatefulWidget {
-  const FavoriteWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate});
+  const FavoriteWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.onTapDelete});
   final String imagePath;
   final String title;
   final String price;
   final String address;
   final bool isFavorite;
   final double rate;
+  final VoidCallback onTapDelete;
 
   @override
   State<FavoriteWidget> createState() => _FavoriteWidgetState();
@@ -50,22 +51,26 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: Container(
-                        height: 25,
-                        width: 25,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.grey,
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            Images.heartIcon,
-                            fit: BoxFit.cover,
-                            color: widget.isFavorite ? Colors.red : Colors.white,
+                      child: InkWell(
+                        onTap: widget.onTapDelete,
+                        child: Container(
+                          height: 25,
+                          width: 25,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: Colors.grey,
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              Images.heartIcon,
+                              fit: BoxFit.cover,
+                              color: widget.isFavorite ? Colors.red : Colors.white,
+                            ),
                           ),
                         ),
                       ),
                     ),
+
                     Positioned(
                       bottom: 8,
                       right: 8,

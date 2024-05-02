@@ -1,30 +1,24 @@
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/features/client/favorite/data/models/favorite_model.dart';
-import 'dart:convert';
+import '../../../../../core/constant/app_constants.dart';
 
-class NetworkRequest {
-  static const String url = 'http://192.168.0.86:8000/api/user/favorite/';
-  static String token = "3cbe099b83e79ab703f50eb1a09f9ad658f9fe89";
+part 'network.g.dart';
 
-  static Future<FavoriteModel?> fetchPhotos() async {
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': "token $token",
-        },
+@RestApi(baseUrl: AppConstants.baseUrl2)
+abstract class FavoriteRepository{
+  factory FavoriteRepository(Dio dio, {String baseUrl}) = _FavoriteRepository;
+
+  @GET("api/user/favorite/")
+  Future<FavoriteModel> getFavorite(
+      @Header("Authorization")String token,
+      );
+  
+  @DELETE("api/user/favorite/{prop_id}/delete/")
+  Future<void> deleteFavorite(
+      @Header("Authorization")String token,
+      @Path("prop_id") int propId
       );
 
-      if (response.statusCode == 200) {
-        return FavoriteModel.fromJson(json.decode(response.body));
-      } else {
-        print('Failed to load data, status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-      return null;
-    }
-  }
 }

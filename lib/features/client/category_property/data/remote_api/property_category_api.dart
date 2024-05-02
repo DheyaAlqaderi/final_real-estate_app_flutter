@@ -9,7 +9,7 @@ import '../../../home/data/models/category/category_model.dart';
 
 part 'property_category_api.g.dart';
 
-@RestApi(baseUrl: AppConstants.baseUrl)
+@RestApi(baseUrl: AppConstants.baseUrl2)
 abstract class PropertyCategoryApi{
   factory PropertyCategoryApi(Dio dio, {String baseUrl}) = _PropertyCategoryApi;
 
