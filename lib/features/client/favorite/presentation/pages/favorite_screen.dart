@@ -49,72 +49,72 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     next: null,
     previous: null,
     results: [
-      PropertyResult(
-        id: 1,
-        rate: 4.5,
-        inFavorite: true,
-        image: [
-          PropertyImage(image: 'image1.jpg', id: 1),
-          PropertyImage(image: 'image2.jpg', id: 2),
-        ],
-        name: 'Property 1',
-        description: 'Description 1',
-        price: '\$500,000',
-        size: 2000,
-        isActive: true,
-        isDeleted: false,
-        timeCreated: '2024-04-01',
-        uniqueNumber: 'ABC123',
-        forSale: true,
-        isFeatured: true,
-        user: 1,
-        category: 1,
-        address: '123 Main St',
-      ),
-      PropertyResult(
-        id: 1,
-        rate: 4.5,
-        inFavorite: true,
-        image: [
-          PropertyImage(image: 'image1.jpg', id: 1),
-          PropertyImage(image: 'image2.jpg', id: 2),
-        ],
-        name: 'Property 1',
-        description: 'Description 1',
-        price: '\$500,000',
-        size: 2000,
-        isActive: true,
-        isDeleted: false,
-        timeCreated: '2024-04-01',
-        uniqueNumber: 'ABC123',
-        forSale: true,
-        isFeatured: true,
-        user: 1,
-        category: 1,
-        address: '123 Main St',
-      ),
-      PropertyResult(
-        id: 1,
-        rate: 4.5,
-        inFavorite: true,
-        image: [
-          PropertyImage(image: 'image1.jpg', id: 1),
-          PropertyImage(image: 'image2.jpg', id: 2),
-        ],
-        name: 'Property 1',
-        description: 'Description 1',
-        price: '\$500,000',
-        size: 2000,
-        isActive: true,
-        isDeleted: false,
-        timeCreated: '2024-04-01',
-        uniqueNumber: 'ABC123',
-        forSale: true,
-        isFeatured: true,
-        user: 1,
-        category: 1,
-        address: '123 Main St',
-      ),
+      // PropertyResult(
+      //   id: 1,
+      //   rate: 4.5,
+      //   inFavorite: true,
+      //   image: [
+      //     PropertyImage(image: 'image1.jpg', id: 1),
+      //     PropertyImage(image: 'image2.jpg', id: 2),
+      //   ],
+      //   name: 'Property 1',
+      //   description: 'Description 1',
+      //   price: '\$500,000',
+      //   size: 2000,
+      //   isActive: true,
+      //   isDeleted: false,
+      //   timeCreated: '2024-04-01',
+      //   uniqueNumber: 'ABC123',
+      //   forSale: true,
+      //   isFeatured: true,
+      //   user: 1,
+      //   category: 1,
+      //   address: '123 Main St',
+      // ),
+      // PropertyResult(
+      //   id: 1,
+      //   rate: 4.5,
+      //   inFavorite: true,
+      //   image: [
+      //     PropertyImage(image: 'image1.jpg', id: 1),
+      //     PropertyImage(image: 'image2.jpg', id: 2),
+      //   ],
+      //   name: 'Property 1',
+      //   description: 'Description 1',
+      //   price: '\$500,000',
+      //   size: 2000,
+      //   isActive: true,
+      //   isDeleted: false,
+      //   timeCreated: '2024-04-01',
+      //   uniqueNumber: 'ABC123',
+      //   forSale: true,
+      //   isFeatured: true,
+      //   user: 1,
+      //   category: 1,
+      //   address: '123 Main St',
+      // ),
+      // PropertyResult(
+      //   id: 1,
+      //   rate: 4.5,
+      //   inFavorite: true,
+      //   image: [
+      //     PropertyImage(image: 'image1.jpg', id: 1),
+      //     PropertyImage(image: 'image2.jpg', id: 2),
+      //   ],
+      //   name: 'Property 1',
+      //   description: 'Description 1',
+      //   price: '\$500,000',
+      //   size: 2000,
+      //   isActive: true,
+      //   isDeleted: false,
+      //   timeCreated: '2024-04-01',
+      //   uniqueNumber: 'ABC123',
+      //   forSale: true,
+      //   isFeatured: true,
+      //   user: 1,
+      //   category: 1,
+      //   address: '123 Main St',
+      // ),
       PropertyResult(
         id: 1,
         rate: 4.5,
@@ -218,67 +218,71 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           ),
           const SizedBox(height: 60,),
           Flexible(
-            child: FutureBuilder<FavoriteModel>(
-              future: NetworkRequest.fetchPhotos(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  var data =  snapshot.data!.results!;
-                  return GridView.builder(
+            child:FutureBuilder<FavoriteModel?>(
+                future: NetworkRequest.fetchPhotos(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error ${snapshot.error}');
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    var data = snapshot.data!.results;
+                  // return GridView.builder(
+                  //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  //     crossAxisCount: 2,
+                  //     childAspectRatio: 1,
+                  //     mainAxisSpacing: 4,
+                  //     crossAxisSpacing: 4,
+                  //   ),
+                  //   itemCount: list,
+                  //   itemBuilder: (context, index) {
+                  //     return const Padding(
+                  //       padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  //       // child: FavoriteProperty(
+                  //       //   imageUrl: data[index].prop!.image!.first.image!,
+                  //       // ),
+                  //     );
+                  //
+                  //   },
+                  // );
+
+
+                  return !isDesign1 ? GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 1,
                       mainAxisSpacing: 4,
                       crossAxisSpacing: 4,
                     ),
-                    itemCount: 5,
+                    itemCount: data!.length,
+
                     itemBuilder: (context, index) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        // child: FavoriteProperty(
-                        //   //imageUrl: data[index].prop!.image!.first.image!,
-                        // ),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: FavoriteWidget(
+                          imagePath: data[index].prop!.image!.first.image!,
+                          title: data[index].prop!.name!,
+                          price: data[index].prop!.price!,
+                          address: data[index].prop!.address!,
+                          isFavorite: data[index].prop!.inFavorite!,
+                          rate: data[index].prop!.rateReview!,
+                        ),
                       );
-
                     },
-                  );
+                  )
+                      : ListView.builder(
 
+                      itemCount: propertyModel.results!.length,
+                      itemBuilder: (context, index) {
+                        return FeaturedPropertyWidget(
+                            propertyModel: propertyModel,
+                            index: index,
+                            onTap: () {});
+                      });
+                } else{
+                  return SizedBox();
                 }
-                return !isDesign1? GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
-                  ),
-                  itemCount: list,
-
-                  itemBuilder: (context, index) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: FavoriteWidget(
-                        title: "hamzah",
-                        address: "sanna",
-                        imagePath: AppConstants.noImageUrl,
-                        price: "250000",
-                        isFavorite: true,
-                        rate: 3.2,
-                      ),
-                    );
-
-                  },
-                )
-                    : ListView.builder(
-
-                    itemCount: propertyModel.results!.length,
-                    itemBuilder: (context, index){
-
-                      return FeaturedPropertyWidget(propertyModel: propertyModel, index:index, onTap: (){});
-                });
-              },
+              }
             ),
-          ),
+          )
         ],
       ),
     );
