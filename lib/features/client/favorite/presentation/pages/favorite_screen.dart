@@ -1,5 +1,7 @@
 
 
+import 'dart:ffi';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -28,8 +30,9 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-  final int list=6;
+  late int list=0;//this to definition the number of items in the list
   late FavoriteRepository favoriteRepository;
+
   // late String token;
 
   @override
@@ -37,8 +40,23 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     super.initState();
 
     favoriteRepository = FavoriteRepository(Dio());
+    fetchData();
 
     // token = await SharedPrefManager.getData(AppConstants.token) as String;
+  }
+  //this to definition the number of items in the list
+  void fetchData()async{
+    try{
+      var response = await favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89");
+      if (response != null) {
+        setState(() {
+          list = response.results?.length ?? 0; // Update list with the length of the results
+        });
+      }
+    }catch(e){
+      print('Error fetching data: $e');
+    }
+
   }
 
   bool isDesign1 = true;
@@ -62,6 +80,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return  Scaffold(
       appBar: const FavoriteAppBar(),
       body: Column(
@@ -140,6 +159,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     return Text('Error ${snapshot.error}');
                   } else if (snapshot.hasData && snapshot.data != null) {
                     var data = snapshot.data!.results;
+                    list=data!.length;
+
 
 
                   return !isDesign1 ? GridView.builder(
@@ -149,7 +170,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       mainAxisSpacing: 4,
                       crossAxisSpacing: 4,
                     ),
-                    itemCount: data!.length,
+                    itemCount: list,
 
                     itemBuilder: (context, index) {
                       return Padding(
@@ -162,12 +183,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           isFavorite: data[index].prop!.inFavorite!,
                           rate: data[index].prop!.rateReview!,
                           onTapDelete: () async {
+
                             await favoriteRepository.deleteFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89", data[index].prop!.id!);
+
 
                             // reload the widget
                             setState(() {
                               // Remove the item from the data list
                               data.removeAt(index);
+                              list=data.length;
                             });
 
                           },

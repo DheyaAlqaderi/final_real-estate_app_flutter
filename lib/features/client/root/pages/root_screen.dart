@@ -59,7 +59,7 @@ class _RootScreenState extends State<RootScreen>{
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      appBar: _bottomNavIndex != 0
+      appBar: _bottomNavIndex != 0 && _bottomNavIndex != 2
           ? buildAppBar()
           : null,
       body: Center(
