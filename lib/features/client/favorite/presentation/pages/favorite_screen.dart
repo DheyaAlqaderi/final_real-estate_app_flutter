@@ -95,7 +95,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 padding: const EdgeInsets.all(15.0),
                 child: Row(
                   children: [
-                    Text("$list",style: fontMediumBold,),
+                    Text("$list ",style: fontMediumBold,),
                     Text(Locales.string(context, 'favorite_list'),style: fontLarge,)
                   ],
                 ),
@@ -138,7 +138,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                  borderRadius: BorderRadius.circular(100),
                                  color: isDesign1?Colors.transparent:Colors.white,
                                ),
-                               child:Center(child: SvgPicture.asset(Images.grideIcon,fit: BoxFit.contain, color: isDesign1?null:Theme.of(context).primaryColor,) ),
+                               child:Center(child: SvgPicture.asset(Images.grideIcon,fit: BoxFit.contain, color: isDesign1?null:Colors.blue,) ),
                            ))
 
 
@@ -148,9 +148,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   ),
                 ),
             ],
-            
+
           ),
-          const SizedBox(height: 60,),
+          const SizedBox(height: 10,),
           Flexible(
             child:FutureBuilder<FavoriteModel?>(
                 future: favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89"),

@@ -22,7 +22,9 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 250,
+      margin: const EdgeInsets.only(bottom: 10),
+      // padding: EdgeInsets.only(bottom: 6.0),
+      height: 500,
       width: 160,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -35,14 +37,14 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
           Flexible(
             flex: 3, // Three quarters
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top: 8.0,right: 8.0,left: 8.0),
               child: Container(
                 height: double.infinity, // Remove fixed height
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider("http://192.168.0.86:8000${widget.imagePath}"),
+                    image: CachedNetworkImageProvider("http://192.168.0.117:8000${widget.imagePath}"),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -93,37 +95,35 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
           ),
 
           /// title and address section
-          Flexible(
-            flex: 1, // One quarter
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.title,
-                    style: fontMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.address as String,
-                          style: fontSmall.copyWith(color: Colors.grey),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  widget.title,
+                  style: fontMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.address,
+                        style: fontSmall.copyWith(color: Colors.grey),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      Text(" ${widget.rate}⭐ ", style: fontSmall,),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    Text(" ${widget.rate}⭐ ", style: fontSmall,),
+                  ],
+                ),
+                SizedBox(height: 10.0,)
+              ],
             ),
           ),
         ],
