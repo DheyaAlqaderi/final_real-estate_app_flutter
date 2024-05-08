@@ -1,16 +1,19 @@
 
 
+import 'dart:ffi';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_appbar.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_widget_temp.dart';
 import 'package:smart_real_estate/features/client/home/widgets/featured_property_widget.dart';
 
-import '../../../home/data/models/property/property_model.dart';
 import '../../data/models/favorite_model.dart';
 import '../../data/repositories/network.dart';
 
@@ -27,7 +30,34 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-  final int list=6;
+  late int list=0;//this to definition the number of items in the list
+  late FavoriteRepository favoriteRepository;
+
+  // late String token;
+
+  @override
+  void initState()  {
+    super.initState();
+
+    favoriteRepository = FavoriteRepository(Dio());
+    fetchData();
+
+    // token = await SharedPrefManager.getData(AppConstants.token) as String;
+  }
+  //this to definition the number of items in the list
+  void fetchData()async{
+    try{
+      var response = await favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89");
+      if (response != null) {
+        setState(() {
+          list = response.results?.length ?? 0; // Update list with the length of the results
+        });
+      }
+    }catch(e){
+      print('Error fetching data: $e');
+    }
+
+  }
 
   bool isDesign1 = true;
 
@@ -44,109 +74,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   }
 
 
-  PropertyModel propertyModel = PropertyModel(
-    count: 1,
-    next: null,
-    previous: null,
-    results: [
-      PropertyResult(
-        id: 1,
-        rate: 4.5,
-        inFavorite: true,
-        image: [
-          PropertyImage(image: 'image1.jpg', id: 1),
-          PropertyImage(image: 'image2.jpg', id: 2),
-        ],
-        name: 'Property 1',
-        description: 'Description 1',
-        price: '\$500,000',
-        size: 2000,
-        isActive: true,
-        isDeleted: false,
-        timeCreated: '2024-04-01',
-        uniqueNumber: 'ABC123',
-        forSale: true,
-        isFeatured: true,
-        user: 1,
-        category: 1,
-        address: '123 Main St',
-      ),
-      PropertyResult(
-        id: 1,
-        rate: 4.5,
-        inFavorite: true,
-        image: [
-          PropertyImage(image: 'image1.jpg', id: 1),
-          PropertyImage(image: 'image2.jpg', id: 2),
-        ],
-        name: 'Property 1',
-        description: 'Description 1',
-        price: '\$500,000',
-        size: 2000,
-        isActive: true,
-        isDeleted: false,
-        timeCreated: '2024-04-01',
-        uniqueNumber: 'ABC123',
-        forSale: true,
-        isFeatured: true,
-        user: 1,
-        category: 1,
-        address: '123 Main St',
-      ),
-      PropertyResult(
-        id: 1,
-        rate: 4.5,
-        inFavorite: true,
-        image: [
-          PropertyImage(image: 'image1.jpg', id: 1),
-          PropertyImage(image: 'image2.jpg', id: 2),
-        ],
-        name: 'Property 1',
-        description: 'Description 1',
-        price: '\$500,000',
-        size: 2000,
-        isActive: true,
-        isDeleted: false,
-        timeCreated: '2024-04-01',
-        uniqueNumber: 'ABC123',
-        forSale: true,
-        isFeatured: true,
-        user: 1,
-        category: 1,
-        address: '123 Main St',
-      ),
-      PropertyResult(
-        id: 1,
-        rate: 4.5,
-        inFavorite: true,
-        image: [
-          PropertyImage(image: 'image1.jpg', id: 1),
-          PropertyImage(image: 'image2.jpg', id: 2),
-        ],
-        name: 'Property 1',
-        description: 'Description 1',
-        price: '\$500,000',
-        size: 2000,
-        isActive: true,
-        isDeleted: false,
-        timeCreated: '2024-04-01',
-        uniqueNumber: 'ABC123',
-        forSale: true,
-        isFeatured: true,
-        user: 1,
-        category: 1,
-        address: '123 Main St',
-      ),
-    ],
-  );
-
-
 
 
 
 
   @override
   Widget build(BuildContext context) {
+
     return  Scaffold(
       appBar: const FavoriteAppBar(),
       body: Column(
@@ -161,7 +95,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 padding: const EdgeInsets.all(15.0),
                 child: Row(
                   children: [
-                    Text("$list",style: fontMediumBold,),
+                    Text("$list ",style: fontMediumBold,),
                     Text(Locales.string(context, 'favorite_list'),style: fontLarge,)
                   ],
                 ),
@@ -204,7 +138,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                  borderRadius: BorderRadius.circular(100),
                                  color: isDesign1?Colors.transparent:Colors.white,
                                ),
-                               child:Center(child: SvgPicture.asset(Images.grideIcon,fit: BoxFit.contain, color: isDesign1?null:Theme.of(context).primaryColor,) ),
+                               child:Center(child: SvgPicture.asset(Images.grideIcon,fit: BoxFit.contain, color: isDesign1?null:Colors.blue,) ),
                            ))
 
 
@@ -214,71 +148,64 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   ),
                 ),
             ],
-            
+
           ),
-          const SizedBox(height: 60,),
+          const SizedBox(height: 10,),
           Flexible(
-            child: FutureBuilder<FavoriteModel>(
-              future: NetworkRequest.fetchPhotos(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  var data =  snapshot.data!.results!;
-                  return GridView.builder(
+            child:FutureBuilder<FavoriteModel?>(
+                future: favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89"),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error ${snapshot.error}');
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    var data = snapshot.data!.results;
+                    list=data!.length;
+
+
+
+                  return !isDesign1 ? GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 1,
                       mainAxisSpacing: 4,
                       crossAxisSpacing: 4,
                     ),
-                    itemCount: 5,
+                    itemCount: list,
+
                     itemBuilder: (context, index) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        // child: FavoriteProperty(
-                        //   //imageUrl: data[index].prop!.image!.first.image!,
-                        // ),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: FavoriteWidget(
+                          imagePath: data[index].prop!.image!.first.image!,
+                          title: data[index].prop!.name!,
+                          price: data[index].prop!.price!,
+                          address: data[index].prop!.address!,
+                          isFavorite: data[index].prop!.inFavorite!,
+                          rate: data[index].prop!.rateReview!,
+                          onTapDelete: () async {
+
+                            await favoriteRepository.deleteFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89", data[index].prop!.id!);
+
+
+                            // reload the widget
+                            setState(() {
+                              // Remove the item from the data list
+                              data.removeAt(index);
+                              list=data.length;
+                            });
+
+                          },
+                        ),
                       );
-
                     },
-                  );
-
+                  )
+                      : SizedBox();
+                } else{
+                  return SizedBox();
                 }
-                return !isDesign1? GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
-                  ),
-                  itemCount: list,
-
-                  itemBuilder: (context, index) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: FavoriteWidget(
-                        title: "hamzah",
-                        address: "sanna",
-                        imagePath: AppConstants.noImageUrl,
-                        price: "250000",
-                        isFavorite: true,
-                        rate: 3.2,
-                      ),
-                    );
-
-                  },
-                )
-                    : ListView.builder(
-
-                    itemCount: propertyModel.results!.length,
-                    itemBuilder: (context, index){
-
-                      return FeaturedPropertyWidget(propertyModel: propertyModel, index:index, onTap: (){});
-                });
-              },
+              }
             ),
-          ),
+          )
         ],
       ),
     );
