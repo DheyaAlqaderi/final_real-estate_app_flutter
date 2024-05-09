@@ -558,7 +558,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         (index) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2.5),
                       child: HighPlacesWidget(
-                          image: state.stateModel.length,
+                          image: "/media/feature_property-images/Screenshot_from_2024-03-29_00-44-02.png",
                           name: state.stateModel[index].name,
                         onTap: (){
                             Navigator.push(
