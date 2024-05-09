@@ -60,7 +60,7 @@ class NotificationWsRepository {
     Timer.periodic(const Duration(seconds: 1), (timer) async{
       if(service is AndroidServiceInstance){
         if(await service.isForegroundService()){
-          service.setForegroundNotificationInfo(title: "SCRIPT ACADEMY", content: "sub my channel");
+
         }
       }
 

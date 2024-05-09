@@ -1,6 +1,7 @@
 
 import 'dart:async';
-import 'dart:convert';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,8 +40,6 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
@@ -98,9 +97,13 @@ void main() async {
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
 
   /// 2.1 initialize background service
-  await NotificationWsRepository.init();
-  // FlutterBackgroundService().invoke('setAsBackground');
-  // FlutterBackgroundService().invoke('setAsForeground');
+  final ReceivePort receivePort = ReceivePort();
+  IsolateNameServer.registerPortWithName(receivePort.sendPort, 'isolate');
+
+  await NotificationWsRepository.init(); // Initialize the background service
+
+  final SendPort? sendPort = IsolateNameServer.lookupPortByName('isolate');
+  sendPort?.send({'sendPort': receivePort.sendPort});
 
   /// initialize languages
   await Locales.init([ 'ar', 'en']); // get last saved language
@@ -258,6 +261,14 @@ _initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+}
+
+void isolateEntryPoint(Map<String, dynamic> message) {
+  final SendPort send = message['sendPort'];
+  final ReceivePort port = ReceivePort();
+  send.send(port.sendPort);
+
+  NotificationWsRepository.init();
 }
 
 
