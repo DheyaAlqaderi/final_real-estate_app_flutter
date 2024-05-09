@@ -24,7 +24,7 @@ class NotificationWsRepository {
         androidConfiguration: AndroidConfiguration(
             onStart: onStart,
             isForegroundMode: true,
-            autoStart: true
+            autoStart: true,
         )
     );
   }
@@ -42,10 +42,10 @@ class NotificationWsRepository {
     DartPluginRegistrant.ensureInitialized();
     if(service is AndroidServiceInstance){
       service.on('setAsForeground').listen((event) {
-        service.setAsForegroundService();
+        service.setAsForegroundService().ignore();
       });
       service.on('setAsBackground').listen((event) {
-        service.setAsBackgroundService();
+        service.setAsBackgroundService().ignore();
       });
     }
 
@@ -53,21 +53,7 @@ class NotificationWsRepository {
       service.stopSelf();
     });
 
-
-
     getMessage();
-
-    Timer.periodic(const Duration(seconds: 1), (timer) async{
-      if(service is AndroidServiceInstance){
-        if(await service.isForegroundService()){
-
-        }
-      }
-
-      print("Background Service running");
-      service.invoke('update');
-
-    });
   }
 
   static void getMessage(){

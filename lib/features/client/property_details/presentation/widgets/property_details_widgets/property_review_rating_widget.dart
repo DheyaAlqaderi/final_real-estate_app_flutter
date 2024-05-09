@@ -68,7 +68,7 @@ class _PropertyReviewAndRatingWidgetState
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: const Color(0xFFF4C6BB0),
+        color: const Color(0xfff4c6bb0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
