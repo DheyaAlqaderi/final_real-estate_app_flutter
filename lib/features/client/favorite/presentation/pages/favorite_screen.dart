@@ -210,5 +210,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       ),
     );
   }
+
+  void cancelDelete() {
+    setState(() {
+
+    });
+  }
+
+
 }
 
