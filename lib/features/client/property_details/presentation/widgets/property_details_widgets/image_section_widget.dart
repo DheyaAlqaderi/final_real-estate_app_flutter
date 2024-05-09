@@ -52,7 +52,11 @@ class _ImageSectionPropertyDetailsWidgetState
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: CachedNetworkImageProvider(
-                  "${AppConstants.baseUrl2}${widget.imagesModel![0].image}",
+                  // "${AppConstants.baseUrl2}${widget.imagesModel![0].image}",
+                    widget.imagesModel![0].image!.isEmpty
+                        ? AppConstants.noImageUrl
+                        : "${AppConstants.baseUrl3}${widget.imagesModel!.first.image}"
+
                 ),
                 fit: BoxFit.cover
               ),
@@ -268,7 +272,7 @@ class _ImageSectionPropertyDetailsWidgetState
                               ),
                               image: DecorationImage(
                                   image: CachedNetworkImageProvider(
-                                      "${AppConstants.baseUrl2}${widget
+                                      "${AppConstants.baseUrl3}${widget
                                           .imagesModel![index].image}"),
                                   fit: BoxFit.cover
                               )
