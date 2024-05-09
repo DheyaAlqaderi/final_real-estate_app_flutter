@@ -1,4 +1,7 @@
 
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -10,7 +13,6 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
-import 'package:smart_real_estate/features/client/add_reviews/domain/repositories/rating_repository.dart';
 import 'package:smart_real_estate/features/client/category_property/data/remote_api/property_category_api.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/main_property_category_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
@@ -38,6 +40,9 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/screen_review/review_property_rateNo_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
+import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
@@ -83,11 +88,65 @@ Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
       flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
     );
   }
-}//
+}
+
+// Future<void> _connectToWebsocket() async {
+//   // WebSocket server URL
+//   final wsUrl = Uri.parse('ws://192.168.0.117:8000/ws/notifications/');
+//
+//   // Additional headers
+//   final headers = {
+//     'Authorization': 'cd1078633312c7a901f81ba427bf641b8f5113f2',
+//     // Add any other headers if needed
+//   };
+//
+//   try {
+//     // Connect to WebSocket server with headers
+//     final channel = IOWebSocketChannel.connect(wsUrl, headers: headers);
+//
+//     // Wait for the connection to be established
+//     await channel.stream.first;
+//
+//     // Send a message
+//     final message = jsonEncode({
+//       "command": " ",
+//       "page_number": 1
+//     });
+//     channel.sink.add(message);
+//
+//     // Listen for messages from the server
+//     final subscription = channel.stream.listen((message) {
+//       print('Received: $message');
+//       // Close the connection
+//       channel.sink.close();
+//     });
+//
+//     // Set a timer for timeout
+//     const timeoutDuration = Duration(seconds: 10);
+//     Timer(timeoutDuration, () {
+//       if (!subscription.isPaused) {
+//         // If no message received within timeout, print a message
+//         print('No message received within timeout.');
+//         // Close the connection
+//         channel.sink.close();
+//       }
+//     });
+//
+//     // Catch any errors during the process
+//     channel.stream.handleError((error) {
+//       print('Error: $error');
+//       // Close the connection
+//       channel.sink.close();
+//     });
+//   } catch (e) {
+//     print('Error connecting to WebSocket: $e');
+//   }
+// }
 void main() async {
 
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
+
 
   /// 2. initialize firebase
   await _initializeFirebase();
@@ -109,12 +168,21 @@ void main() async {
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
+  await SharedPrefManager.saveData(AppConstants.token, 'cd1078633312c7a901f81ba427bf641b8f5113f2');
+  String? token = await SharedPrefManager.getData(AppConstants.token);
 
-  runApp(const MyApp(),);
+  print('token is $token');
+  runApp(MyApp(channel: IOWebSocketChannel.connect(
+      'ws://192.168.0.117:8000/ws/notifications/',
+      headers: {
+    'Authorization': token ?? "",
+      }),
+  ));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.channel});
+  final WebSocketChannel channel;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -132,8 +200,39 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     _userId = AppConstants.userIdFake;
     WidgetsBinding.instance.addObserver(this);
     _updateUserStatus(true);
+    getMessage();
   }
 
+  void getMessage(){
+    // final message = jsonEncode({
+    //   "command": " ",
+    //   "page_number": 1
+    // });
+    // widget.channel.sink.add(message);
+    widget.channel.stream.listen((event) async {
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+      // Initialize notifications if not already initialized
+      NotificationInitialize.initializeNotifications(flutterLocalNotificationsPlugin);
+
+      // Parse the JSON string into a Map
+      Map<String, dynamic> data = jsonDecode(event);
+
+      // Access the properties
+      String title1 = data['notifications']['notifications']['verb'];
+      String body = data['notifications']['notifications']['verb'];
+
+      // Initialize FlutterLocalNotificationsPlugin and show notification
+      await NotificationInitialize.showNotification(
+        title: title1,
+        body: body,
+        flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+      );
+
+      print(event);
+    });
+  }
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);

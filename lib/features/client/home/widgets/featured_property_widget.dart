@@ -62,7 +62,7 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
                       widget.propertyModel.results![widget.index].image!.isNotEmpty
                       ? DecorationImage(
                       image: CachedNetworkImageProvider(
-                          "${AppConstants.baseUrl2}${widget.propertyModel.results![widget.index].image![0].image}"),
+                          "${AppConstants.baseUrl3}${widget.propertyModel.results![widget.index].image![0].image}"),
                       fit: BoxFit.cover)
                       : null,
                 ),

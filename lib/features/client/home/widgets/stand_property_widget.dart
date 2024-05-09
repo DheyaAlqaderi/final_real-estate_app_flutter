@@ -58,7 +58,10 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                       borderRadius: BorderRadius.circular(15),
                       image:  DecorationImage(
                           image: CachedNetworkImageProvider(
-                            "${AppConstants.baseUrl2}${widget.propertyModel.results![widget.index].image![0].image}",
+                              // AppConstants.noImageUrl
+                            widget.propertyModel.results![widget.index].image!.isEmpty
+                                ? AppConstants.noImageUrl
+                                : "${AppConstants.baseUrl3}${widget.propertyModel.results![widget.index].image!.first.image}"
                           ),
                           fit: BoxFit.cover
                       )
