@@ -147,7 +147,7 @@ class _PropertyReviewAndRatingWidgetState
                                 borderRadius: BorderRadius.circular(50.0),
                                 image: DecorationImage(
                                   image: CachedNetworkImageProvider(
-                                    "${AppConstants.baseUrl2}${widget.reviewModel.results![index].profile}",
+                                    "${AppConstants.baseUrl3}${widget.reviewModel.results![index].profile}",
                                   ),
                                 ),
                               ),
@@ -201,7 +201,7 @@ class _PropertyReviewAndRatingWidgetState
                         borderRadius: BorderRadius.circular(50.0),
                         image: DecorationImage(
                           image: CachedNetworkImageProvider(
-                            "${AppConstants.baseUrl2}$profile",
+                            "${AppConstants.baseUrl3}$profile",
                           ),
                           fit: BoxFit.cover,
                         ),

@@ -55,7 +55,10 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
             const SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
+                children: [
 
+
+                ],
               ),
             ),
           ],
