@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -20,9 +21,6 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/notification.dart';
-import 'package:smart_real_estate/features/client/favorite/data/models/favorite_model.dart';
-import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
-import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_widget_temp.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -49,8 +47,6 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
-import 'features/client/add_reviews/presentation/pages/add_reviews.dart';
-import 'features/client/category_property/widget/subCategory_widget.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
@@ -90,69 +86,21 @@ Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
   }
 }
 
-// Future<void> _connectToWebsocket() async {
-//   // WebSocket server URL
-//   final wsUrl = Uri.parse('ws://192.168.0.117:8000/ws/notifications/');
-//
-//   // Additional headers
-//   final headers = {
-//     'Authorization': 'cd1078633312c7a901f81ba427bf641b8f5113f2',
-//     // Add any other headers if needed
-//   };
-//
-//   try {
-//     // Connect to WebSocket server with headers
-//     final channel = IOWebSocketChannel.connect(wsUrl, headers: headers);
-//
-//     // Wait for the connection to be established
-//     await channel.stream.first;
-//
-//     // Send a message
-//     final message = jsonEncode({
-//       "command": " ",
-//       "page_number": 1
-//     });
-//     channel.sink.add(message);
-//
-//     // Listen for messages from the server
-//     final subscription = channel.stream.listen((message) {
-//       print('Received: $message');
-//       // Close the connection
-//       channel.sink.close();
-//     });
-//
-//     // Set a timer for timeout
-//     const timeoutDuration = Duration(seconds: 10);
-//     Timer(timeoutDuration, () {
-//       if (!subscription.isPaused) {
-//         // If no message received within timeout, print a message
-//         print('No message received within timeout.');
-//         // Close the connection
-//         channel.sink.close();
-//       }
-//     });
-//
-//     // Catch any errors during the process
-//     channel.stream.handleError((error) {
-//       print('Error: $error');
-//       // Close the connection
-//       channel.sink.close();
-//     });
-//   } catch (e) {
-//     print('Error connecting to WebSocket: $e');
-//   }
-// }
 void main() async {
 
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
-
 
   /// 2. initialize firebase
   await _initializeFirebase();
   await FirebaseMessagingRepository.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
+
+  /// 2.1 initialize background service
+  await NotificationWsRepository.init();
+  // FlutterBackgroundService().invoke('setAsBackground');
+  // FlutterBackgroundService().invoke('setAsForeground');
 
   /// initialize languages
   await Locales.init([ 'ar', 'en']); // get last saved language
@@ -172,17 +120,11 @@ void main() async {
   String? token = await SharedPrefManager.getData(AppConstants.token);
 
   print('token is $token');
-  runApp(MyApp(channel: IOWebSocketChannel.connect(
-      'ws://192.168.0.117:8000/ws/notifications/',
-      headers: {
-    'Authorization': token ?? "",
-      }),
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key, required this.channel});
-  final WebSocketChannel channel;
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -194,45 +136,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   late String _userId;
 
   @override
-  void initState() {//
+  void initState() {
     super.initState();
     _userRepository = ChatRepository();
     _userId = AppConstants.userIdFake;
     WidgetsBinding.instance.addObserver(this);
     _updateUserStatus(true);
-    getMessage();
   }
 
-  void getMessage(){
-    // final message = jsonEncode({
-    //   "command": " ",
-    //   "page_number": 1
-    // });
-    // widget.channel.sink.add(message);
-    widget.channel.stream.listen((event) async {
-      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
-      // Initialize notifications if not already initialized
-      NotificationInitialize.initializeNotifications(flutterLocalNotificationsPlugin);
-
-      // Parse the JSON string into a Map
-      Map<String, dynamic> data = jsonDecode(event);
-
-      // Access the properties
-      String title1 = data['notifications']['notifications']['verb'];
-      String body = data['notifications']['notifications']['verb'];
-
-      // Initialize FlutterLocalNotificationsPlugin and show notification
-      await NotificationInitialize.showNotification(
-        title: title1,
-        body: body,
-        flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
-      );
-
-      print(event);
-    });
-  }
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -245,6 +156,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     if (state == AppLifecycleState.resumed) {
       // App is in foreground
       _updateUserStatus(true);
+
     } else {
       // App is in background or closed
       _updateUserStatus(false);
