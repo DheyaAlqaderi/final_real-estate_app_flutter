@@ -49,6 +49,7 @@ import 'features/client/home/domain/manager/main_category/main_category_cubit.da
 import 'firebase_options.dart';
 
 Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
+  // NotificationWsRepository.getMessage as BackgroundMessageHandler;
   if (message.notification != null) {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -65,6 +66,7 @@ Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
   }
 }
 Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
+  // NotificationWsRepository.getMessage as BackgroundMessageHandler;
   if (message.notification != null) {
     print(message.notification!.title);
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -92,6 +94,7 @@ void main() async {
   await FirebaseMessagingRepository.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
+  // NotificationWsRepository.getMessage();
 
   /// 2.1 initialize background service
   await NotificationWsRepository.init();

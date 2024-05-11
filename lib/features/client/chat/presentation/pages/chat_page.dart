@@ -138,7 +138,9 @@ class _ChatPageState extends State<ChatPage> {
                                     borderRadius: BorderRadius.circular(25.0),
                                     color: Theme.of(context).cardColor,
                                     image: DecorationImage(
-                                      image: CachedNetworkImageProvider(userData!['imageUrl'].toString()),
+                                      image: CachedNetworkImageProvider(userData!['imageUrl'] == "null" || userData["imageUrl"] == ""
+                                          ? Images.userImageIfNull
+                                          : userData["imageUrl"].toString()),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -154,7 +156,7 @@ class _ChatPageState extends State<ChatPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(userData["email"], style: fontMediumBold),
+                                    Text(userData["fullName"], style: fontMediumBold),
                                     Text(
                                       userData["isOnline"] == null || userData["isOnline"] ? "Online" : _getLastSeenText(userData),
                                       style: fontSmall.copyWith(color: userData["isOnline"]== null || userData["isOnline"] ? Colors.green : Colors.grey),
@@ -278,7 +280,7 @@ class _ChatPageState extends State<ChatPage> {
                             child: MessageFieldWidget(
                               chatRoomId: widget.chatRoomId,
                               receiverId: widget.receiverId,
-                              fcmToken: fcmTokene,
+                              fcmToken: AppConstants.fcmToken,
                             ),
                           ),
                         ],

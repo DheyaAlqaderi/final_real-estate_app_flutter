@@ -174,9 +174,9 @@ class _HomeApiService implements HomeApiService {
   }
 
   @override
-  Future<List<StateModel>> getHighStates() async {
+  Future<List<StateModel>> getHighStates(int mainCategory) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'main_category': mainCategory};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio

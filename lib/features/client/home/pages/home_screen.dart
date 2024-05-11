@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainCategory.getMainCategory(),
         subCategory.getSubCategory(parentId: categoryId),
         banners.getBanners(),
-        highStateCubit.getHighStates(),
+        highStateCubit.getHighStates(categoryId: categoryId),
         featureCubit.getFeatured(),
         getPropertyCubit.getPropertyByAllCategory()
       ]);
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await Future.wait([
         mainCategory.getMainCategory(),
         banners.getBanners(),
-        highStateCubit.getHighStates(),
+        highStateCubit.getHighStates(categoryId: categoryId),
         featureCubit.getFeatured(),
         getPropertyCubit.getPropertyByAllCategory()
       ]);
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainCategory.getMainCategory(),
         banners.getBannersWithCategory(categoryId: categoryId),
         subCategoryCubit.getSubCategory(parentId: categoryId),
-        highStateCubit.getHighStates(),
+        highStateCubit.getHighStates(categoryId: categoryId),
         featureCubit.getFeaturedWithCategory(categoryId: categoryId),
         getPropertyCubit.getPropertyByMainCategory(mainCategory: categoryId)
 
@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Add default chip widget here
@@ -307,6 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
                           context.read<FeaturedCubit>().getFeatured();
                           context.read<PropertyHomeCubit>().getPropertyByAllCategory();
+                          context.read<HighStateCubit>().getHighStates();
 
                         }
 
@@ -346,6 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.read<BannersCubit>().getBannersWithCategory(categoryId: categoryId);
                           context.read<SubCategoryCubit>().getSubCategory(parentId: categoryId);
                           // context.read<FeaturedCubit>().getFeatured();
+                          context.read<HighStateCubit>().getHighStates(categoryId: categoryId);
                           context.read<FeaturedCubit>().getFeaturedWithCategory(categoryId: categoryId);
                           context.read<PropertyHomeCubit>().getPropertyByMainCategory(mainCategory: categoryId);
 

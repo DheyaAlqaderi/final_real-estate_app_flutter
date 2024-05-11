@@ -157,7 +157,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
 
 
-                  return !isDesign1 ? GridView.builder(
+                  return !isDesign1
+                      ? GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 1,

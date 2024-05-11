@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -17,14 +18,14 @@ class NotificationWsRepository {
 
     await service.configure(
         iosConfiguration: IosConfiguration(
-          autoStart: true,
           onBackground: onIosBackground,
           onForeground: onStart,
+          autoStart: true
         ),
         androidConfiguration: AndroidConfiguration(
             onStart: onStart,
             isForegroundMode: true,
-            autoStart: true,
+            autoStart: true
         )
     );
   }
@@ -52,6 +53,7 @@ class NotificationWsRepository {
     service.on('stopService').listen((event) {
       service.stopSelf();
     });
+
 
     getMessage();
   }

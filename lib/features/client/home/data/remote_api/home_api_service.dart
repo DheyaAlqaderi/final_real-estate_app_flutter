@@ -50,7 +50,9 @@ abstract class HomeApiService{
 
   /// get states address
   @GET('api/address/state')
-  Future<List<StateModel>> getHighStates();
+  Future<List<StateModel>> getHighStates(
+      @Query("main_category") int mainCategory
+      );
 
 
 

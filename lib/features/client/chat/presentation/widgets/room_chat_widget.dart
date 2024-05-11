@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
+
+import '../../../../../core/utils/images.dart';
 
 class RoomChatWidget extends StatefulWidget {
   const RoomChatWidget({super.key, required this.userId, required this.time, required this.lastMessage});
@@ -30,9 +33,9 @@ class _RoomChatWidgetState extends State<RoomChatWidget> {
           return Text('User not found for ID: ${widget.userId}');
         }
         final userData = snapshot.data!.data()!;
-        final userName = userData['email'] ?? 'Unknown';
+        final userName = userData['fullName'] ?? 'Unknown';
         final isOnline = userData['isOnline'] ?? false;
-        final imageUrl = userData['imageUrl'] as String?;
+        final imageUrl = userData['imageUrl'];
 
 
         return Container(
@@ -56,7 +59,9 @@ class _RoomChatWidgetState extends State<RoomChatWidget> {
                     borderRadius: BorderRadius.circular(100.0),
                     image: imageUrl!.isNotEmpty
                         ?  DecorationImage(
-                      image: CachedNetworkImageProvider(imageUrl.toString()),
+                      image: CachedNetworkImageProvider(imageUrl == "null"  || imageUrl == ""
+                          ? Images.userImageIfNull
+                          : imageUrl),
                       fit: BoxFit.cover,
                     )
                         : null, // Handle empty imageUrl
