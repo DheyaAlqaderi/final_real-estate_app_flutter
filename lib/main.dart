@@ -1,14 +1,11 @@
 
 import 'dart:async';
-import 'dart:isolate';
-import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -52,6 +49,7 @@ import 'features/client/home/domain/manager/main_category/main_category_cubit.da
 import 'firebase_options.dart';
 
 Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
+  // NotificationWsRepository.getMessage as BackgroundMessageHandler;
   if (message.notification != null) {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -68,6 +66,7 @@ Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
   }
 }
 Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
+  // NotificationWsRepository.getMessage as BackgroundMessageHandler;
   if (message.notification != null) {
     print(message.notification!.title);
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -95,15 +94,11 @@ void main() async {
   await FirebaseMessagingRepository.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
+  // NotificationWsRepository.getMessage();
 
   /// 2.1 initialize background service
-  final ReceivePort receivePort = ReceivePort();
-  IsolateNameServer.registerPortWithName(receivePort.sendPort, 'isolate');
+  await NotificationWsRepository.init();
 
-  await NotificationWsRepository.init(); // Initialize the background service
-
-  final SendPort? sendPort = IsolateNameServer.lookupPortByName('isolate');
-  sendPort?.send({'sendPort': receivePort.sendPort});
 
   /// initialize languages
   await Locales.init([ 'ar', 'en']); // get last saved language
@@ -145,6 +140,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     _userId = AppConstants.userIdFake;
     WidgetsBinding.instance.addObserver(this);
     _updateUserStatus(true);
+    // FlutterBackgroundService().invoke("stopService");
   }
 
   @override
@@ -261,14 +257,6 @@ _initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-}
-
-void isolateEntryPoint(Map<String, dynamic> message) {
-  final SendPort send = message['sendPort'];
-  final ReceivePort port = ReceivePort();
-  send.send(port.sendPort);
-
-  NotificationWsRepository.init();
 }
 
 

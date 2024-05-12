@@ -122,7 +122,7 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
                     Text(" ${widget.rate}⭐ ", style: fontSmall,),
                   ],
                 ),
-                SizedBox(height: 10.0,)
+                const SizedBox(height: 10.0,)
               ],
             ),
           ),

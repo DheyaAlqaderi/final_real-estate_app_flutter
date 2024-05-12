@@ -1,18 +1,14 @@
 
 
-import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smart_real_estate/core/constant/app_constants.dart';
-import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_appbar.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_widget_temp.dart';
-import 'package:smart_real_estate/features/client/home/widgets/featured_property_widget.dart';
 
 import '../../data/models/favorite_model.dart';
 import '../../data/repositories/network.dart';
@@ -48,12 +44,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   void fetchData()async{
     try{
       var response = await favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89");
-      if (response != null) {
-        setState(() {
-          list = response.results?.length ?? 0; // Update list with the length of the results
-        });
-      }
-    }catch(e){
+      setState(() {
+        list = response.results?.length ?? 0; // Update list with the length of the results
+      });
+        }catch(e){
       print('Error fetching data: $e');
     }
 
@@ -163,7 +157,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
 
 
-                  return !isDesign1 ? GridView.builder(
+                  return !isDesign1
+                      ? GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 1,
@@ -199,9 +194,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       );
                     },
                   )
-                      : SizedBox();
+                      : const SizedBox();
                 } else{
-                  return SizedBox();
+                  return const SizedBox();
                 }
               }
             ),
@@ -210,5 +205,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       ),
     );
   }
+
+  void cancelDelete() {
+    setState(() {
+
+    });
+  }
+
+
 }
 

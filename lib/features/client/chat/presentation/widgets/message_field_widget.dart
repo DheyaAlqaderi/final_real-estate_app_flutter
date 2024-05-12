@@ -169,8 +169,8 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
     if (video != null) {
       String? error = await chatRepository.sendFileMessage(
         file: video,
-        chatroomId: 'd7f09d40-fae1-11ee-84a4-8393c7a39bb5',
-        receiverId: '18',
+        chatroomId: chatroomId,
+        receiverId: receiverId,
         messageType: 'video',
       );
 

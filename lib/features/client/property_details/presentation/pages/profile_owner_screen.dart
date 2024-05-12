@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/helper/toast_message.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import 'package:smart_real_estate/features/client/chat/presentation/pages/chat_page.dart';
@@ -90,7 +93,11 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                     return const CircularProgressIndicator();
                   } else if(state is PropertyOwnerProfileLoaded){
                     imageUrl = state.profile.image.toString();
-                    return Column(
+
+                    String rating = state.profile.rating.toString();
+                    String displayedRating = rating.length >= 4 ? rating.substring(0, 4) : rating;
+
+                  return Column(
                       children: [
                         Text(state.profile.name.toString(), style: fontMediumBold,),
                         Text(state.profile.email.toString(), style: fontSmall,),
@@ -180,7 +187,8 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text(state.profile.rating.toString(), style: fontMediumBold,),
+
+                                    Text(displayedRating, style: fontMediumBold,),
                                     const Text(
                                         "⭐ ⭐ ⭐ ⭐ ⭐",
                                         style: fontSmallBold
@@ -223,6 +231,13 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
 
                             if(AppConstants.userIdFake == widget.userId.toString()){
                               print("sorry you can not chat yourself");
+                              ToastAlert.show(context, "Sorry, you cannot chat with yourself");
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   const SnackBar(
+                              //     content: ToastMessage(message: "Sorry, you cannot chat with yourself"),
+                              //     duration: Duration(seconds: 2),
+                              //   ),
+                              // );
                               return;
                             }
                             print("start");
@@ -305,3 +320,4 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
     );
   }
 }
+

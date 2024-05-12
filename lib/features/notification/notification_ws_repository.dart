@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -17,9 +18,9 @@ class NotificationWsRepository {
 
     await service.configure(
         iosConfiguration: IosConfiguration(
-          autoStart: true,
           onBackground: onIosBackground,
           onForeground: onStart,
+          autoStart: true
         ),
         androidConfiguration: AndroidConfiguration(
             onStart: onStart,
@@ -42,10 +43,10 @@ class NotificationWsRepository {
     DartPluginRegistrant.ensureInitialized();
     if(service is AndroidServiceInstance){
       service.on('setAsForeground').listen((event) {
-        service.setAsForegroundService();
+        service.setAsForegroundService().ignore();
       });
       service.on('setAsBackground').listen((event) {
-        service.setAsBackgroundService();
+        service.setAsBackgroundService().ignore();
       });
     }
 
@@ -54,20 +55,7 @@ class NotificationWsRepository {
     });
 
 
-
     getMessage();
-
-    Timer.periodic(const Duration(seconds: 1), (timer) async{
-      if(service is AndroidServiceInstance){
-        if(await service.isForegroundService()){
-
-        }
-      }
-
-      print("Background Service running");
-      service.invoke('update');
-
-    });
   }
 
   static void getMessage(){

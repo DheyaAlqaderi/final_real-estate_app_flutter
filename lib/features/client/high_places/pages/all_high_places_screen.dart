@@ -83,7 +83,7 @@ class _AllHighPlacesScreenState extends State<AllHighPlacesScreen> {
                 spacing: 30.0,
                 runSpacing: 10.0,
                 children: List.generate(
-                  5,
+                  widget.stateModel.length,
                       (index) =>  StandPlaceWidget(
                         image: Images.onBoardingOne,
                         name: widget.stateModel[index].name.toString(),

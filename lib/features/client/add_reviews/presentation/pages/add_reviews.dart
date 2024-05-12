@@ -6,7 +6,6 @@ import 'package:smart_real_estate/features/client/add_reviews/data/review_model.
 import 'package:smart_real_estate/features/client/add_reviews/domain/repositories/rating_repository.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
 
-import '../../../home/pages/home_screen.dart';
 class AddReview extends StatefulWidget {
   const AddReview({super.key, required this.propertyId});
   final int propertyId;

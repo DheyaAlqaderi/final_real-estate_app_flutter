@@ -100,7 +100,15 @@
   "text_in_empty_favorite_page": "your favorite page is empty",
   "text_in_empty_favorite_page2": "click the add button to start exploring and chooses your favorite real estate",
   "title_favorite": "favorite",
-  "favorite_list": "list "
+  "favorite_list": "list ",
+  "delete_favorite": "delete favorite",
+  "delete_all_favorite": "are you sure to delete all favorite items",
+  "delete": "delete",
+  "cancel": "cancel"
+
+
+
+
 
 
 

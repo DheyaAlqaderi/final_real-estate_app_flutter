@@ -9,13 +9,13 @@ class HighStateCubit extends Cubit<HighStateState>{
   HighStateCubit(this._getHighStates) : super(InitHighStateState());
 
   Future<void> getHighStates(
-      // {int categoryId = 0}
+      {int categoryId = 0}
       ) async {
     // Emit loading state
     emit(LoadingHighStateState());
     try {
       // Perform login operation
-      final response = await _getHighStates.getHighStates();
+      final response = await _getHighStates.getHighStates(mainCategory: categoryId);
       // Emit success state with response data
       emit(SuccessHighStateState(response));
 

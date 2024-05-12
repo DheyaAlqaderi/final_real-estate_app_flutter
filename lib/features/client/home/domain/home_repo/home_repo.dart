@@ -70,9 +70,9 @@ class HomeRepository{
 
 
   /// get high states
-  Future<List<StateModel>> getHighStates() async{
+  Future<List<StateModel>> getHighStates({required int mainCategory}) async{
     try{
-      final response = await _homeApiService.getHighStates();
+      final response = await _homeApiService.getHighStates(mainCategory);
 
       if (kDebugMode) {
         print("high state  success");

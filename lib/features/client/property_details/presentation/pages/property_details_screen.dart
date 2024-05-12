@@ -158,7 +158,10 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                       borderRadius: BorderRadius.circular(100),
                                       image: DecorationImage(
                                         image: CachedNetworkImageProvider(
-                                            "${AppConstants.baseUrl3}${propertyDetails.user!.image}"),
+                                            propertyDetails.user!.image == null
+                                                ? Images.userImageIfNull
+                                                :"${AppConstants.baseUrl3}${propertyDetails.user!.image}"
+                                            ),
                                         fit: BoxFit.cover,
                                       )
                                   ),
