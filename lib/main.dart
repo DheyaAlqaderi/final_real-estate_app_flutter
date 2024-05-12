@@ -43,6 +43,7 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
+import 'features/client/best_seller/presentation/pages/best_seller_screen.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
@@ -245,7 +246,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:  const RootScreen(),
+          home:  const BestSellerScreen(),
         ),
       ),
     );

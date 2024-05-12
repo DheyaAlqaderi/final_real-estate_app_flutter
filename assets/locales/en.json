@@ -104,7 +104,10 @@
   "delete_favorite": "delete favorite",
   "delete_all_favorite": "are you sure to delete all favorite items",
   "delete": "delete",
-  "cancel": "cancel"
+  "cancel": "cancel",
+  "best_seller": "top real estate agent",
+  "text_in_best_seller_page": "find the best recommendations for place to live"
+
 
 
 

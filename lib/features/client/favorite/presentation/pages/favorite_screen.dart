@@ -153,7 +153,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     return Text('Error ${snapshot.error}');
                   } else if (snapshot.hasData && snapshot.data != null) {
                     var data = snapshot.data!.results;
-                    list=data!.length;
+                    list = data!.length;
 
 
 

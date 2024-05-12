@@ -15,6 +15,7 @@ dependencies:
 
   # rating section
   flutter_rating_bar: ^4.0.1
+
   # firebase
   firebase_core: ^2.29.0
   cloud_firestore: ^4.16.1
