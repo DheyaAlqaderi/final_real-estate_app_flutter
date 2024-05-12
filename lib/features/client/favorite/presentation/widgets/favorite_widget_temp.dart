@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 
+import '../../../../../core/constant/app_constants.dart';
+
 class FavoriteWidget extends StatefulWidget {
   const FavoriteWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.onTapDelete});
   final String imagePath;
@@ -44,7 +46,12 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider("http://192.168.0.117:8000${widget.imagePath}"),
+                    image: CachedNetworkImageProvider(
+                        // "http://192.168.0.117:8000${widget.imagePath}"
+                        widget.imagePath == " "
+                            ? AppConstants.noImageUrl
+                            : "${AppConstants.baseUrl3}${widget.imagePath}"
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),

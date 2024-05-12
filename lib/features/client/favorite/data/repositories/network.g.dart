@@ -76,6 +76,37 @@ class _FavoriteRepository implements FavoriteRepository {
         ))));
   }
 
+  @override
+  Future<ResponseDeleteFavorite> deleteAllFavorite(
+    String token,
+    List<DeleteFavoriteModel> deleteList,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = deleteList.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ResponseDeleteFavorite>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/user/favorite/delete-all/',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = ResponseDeleteFavorite.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||
