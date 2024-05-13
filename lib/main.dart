@@ -19,6 +19,8 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/notification.dart';
+import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
+import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -246,7 +248,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:  const BestSellerScreen(),
+          home:  const FavoriteScreen(),
         ),
       ),
     );

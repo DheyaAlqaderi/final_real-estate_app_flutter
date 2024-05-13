@@ -15,6 +15,7 @@ import '../../data/models/delete_favorite_model.dart';
 import '../../data/models/favorite_model.dart';
 import '../../data/models/rest_modle_favorite.dart';
 import '../../data/repositories/network.dart';
+import '../widgets/favorite_widget_list.dart';
 
 
 
@@ -229,7 +230,41 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   );
                 },
               )
-                  : const SizedBox())
+                  : ListView.builder(
+                      itemCount: list,
+                      itemBuilder: (context, index) {
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: FavoriteListWidget(
+                          imagePath: data[index].prop!.image!.isEmpty
+                              ? " "
+                              : data[index].prop!.image!.first.image!,
+                          title: data[index].prop!.name!,
+                          price: data[index].prop!.price!,
+                          address: data[index].prop!.address!,
+                          isFavorite: data[index].prop!.inFavorite!,
+                          rate: data[index].prop!.rateReview!,
+                            onTapDelete: () async {
+                              await favoriteRepository.deleteFavorite(
+                                "token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89",
+                                data[index].prop!.id!,
+                              );
+                              // reload the widget
+                              setState(() {
+                                // Remove the item from the data list
+                                data.removeAt(index);
+                                list = data.length;
+                              });
+                            },
+                          ),
+                        );
+                    },
+                  )
+
+
+
+
+              )
 
             ],
           );

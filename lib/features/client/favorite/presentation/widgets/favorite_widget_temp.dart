@@ -91,7 +91,9 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: Text(widget.price, style: fontMediumBold.copyWith(color: Colors.white)),
+                          child: Text(
+                              widget.price,
+                              style: fontMediumBold.copyWith(color: Colors.white)),
                         ),
                       ),
                     )

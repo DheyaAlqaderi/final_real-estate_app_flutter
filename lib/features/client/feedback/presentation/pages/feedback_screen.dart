@@ -2,13 +2,18 @@
 
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/feedback/data/models/request_feedback.dart';
+import 'package:smart_real_estate/features/client/feedback/data/repositories/feedback_api.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
 import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
+
+import '../../data/models/types/type_feedback_model.dart';
 
 
 class FeedbackScreen extends StatefulWidget {
@@ -24,12 +29,20 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   TextEditingController emailAddress = TextEditingController();
   TextEditingController whatsProblem = TextEditingController();
   final _feedbackForm = GlobalKey<FormState>();
-    String _selectedItem="problem_type";
-   @override
+  late FeedbackApi feedbackApi;
+  late int selectedItem = 1;
+   List<TypesFeedbackModel> listType = [];
+
+  @override
   void initState() {
     super.initState();
-    // _selectedItem=Locales.string(context, "problem_type");
+    // selectedItem=0;
+    feedbackApi = FeedbackApi(Dio());
+
+
+
   }
+
 
 
 
@@ -139,15 +152,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           ),
                           hintText:Locales.string(context, "full_name"),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return Locales.string(context, "please_name");
-                          }
-                          if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
-                            return Locales.string(context, "just_letter");
-                          }
-                          return null;
-                        },
+                        // validator: (value) {
+                        //   if (value == null || value.isEmpty) {
+                        //     return Locales.string(context, "please_name");
+                        //   }
+                        //   if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value!)) {
+                        //     return Locales.string(context, "just_letter");
+                        //   }
+                        //   return null;
+                        // },
                         onSaved: (value) {
                           fullName = fullName;
                           // = value!;
@@ -248,28 +261,46 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
                               width: double.infinity,
-                              child: DropdownButton<String>(
-                                value: _selectedItem,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _selectedItem = newValue!;
-                                  });
-                                },
-                                icon: null,//
-                                underline: null, // Removes the underline border
-                                items: <String>["problem_type",'Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 4', 'Option 4']
-                                    .map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value, style: fontMedium.copyWith(color: Colors.grey),),
+                              child:FutureBuilder<List<TypesFeedbackModel>>(
+                                future: feedbackApi.getFeedbackTypes(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    listType = snapshot.data!;
 
-                                  );
-                                }).toList(),
-                              ),
+                                    return DropdownButton<int>(
+                                      value: selectedItem,
+                                      onChanged: (int? newValue) {
+                                        if (newValue != null) {
+                                          setState(() {
+                                            selectedItem = newValue;
+                                          });
+                                        }
+                                      },
+                                      icon: null,
+                                      underline: null,
+                                      items: listType.map((TypesFeedbackModel type) {
+                                        return DropdownMenuItem<int>(
+                                          value: type.id ?? 1, // Use a default value if id is null
+                                          child: Text(
+                                            type.type ?? "",
+                                            style: fontMedium.copyWith(color: Colors.grey),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return Text("Error: ${snapshot.error}");
+                                  } else {
+                                    return CircularProgressIndicator(); // Or any other loading indicator
+                                  }
+                                },
+                              )
+
+
+                            ),
                             ),
                           ),
                         ),
-                      ),
                       const SizedBox(height: 15,),
                       ////////////////////////////////////////////////////////////////////
 
@@ -309,18 +340,27 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 child: SizedBox(
                   height: 70,
                   width: double.infinity,
-                  child: ElevatedButton(onPressed: (){
-                    if(imageFile == null){
-                      print("no image");
-                    }
+                  child: ElevatedButton(
+                      onPressed: (){
+                    // if(imageFile == null){
+                    //   print("no image");
+                    // }
                     if(_feedbackForm.currentState!.validate()){
+                      feedbackApi.postFeedback(RequestFeedback(
+                          status: "opened",
+                          phoneNumber:phoneNumber.text ,
+                          email: emailAddress.text,
+                          problemText: whatsProblem.text,
+                          type: selectedItem)
+                      );
 
-
-
-                      _feedbackForm.currentState!.save();
-                      print('Submitted name: $fullName ');
-
+                      // _feedbackForm.currentState!.save();
+                      // print('Submitted name: $fullName ');
                     }
+
+                    
+
+
                   },
                       child: Text(Locales.string(context, "send"),style: fontLarge,)),
                 ),
