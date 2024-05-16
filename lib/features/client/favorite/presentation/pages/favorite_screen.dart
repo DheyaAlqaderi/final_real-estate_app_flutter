@@ -15,6 +15,7 @@ import '../../data/models/delete_favorite_model.dart';
 import '../../data/models/favorite_model.dart';
 import '../../data/models/rest_modle_favorite.dart';
 import '../../data/repositories/network.dart';
+import '../widgets/add_favorite.dart';
 import '../widgets/favorite_widget_list.dart';
 
 
@@ -105,137 +106,120 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         });
         Navigator.pop(context);
       },),
-      body: FutureBuilder<FavoriteModel?>(
-        future: favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89"),
-        builder: (context, snapshot) {
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          fetchData();
+        },
+        child: FutureBuilder<FavoriteModel>(
+          future: favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89"),
+          builder: (context, snapshot) {
 
-            data = snapshot.data!.results!;
-            list = data.length;
-
-          print(data);
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
+              data = snapshot.data!.results!;
+              list = data.length;
+              if(list<1){
+                return const SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Column(
                       children: [
-                        Text("$list ", style: fontMediumBold,),
-                        Text(Locales.string(context, 'favorite_list'),
-                          style: fontLarge,)
+                        SizedBox(height: 200.0,),
+                        AddFavorite(),
                       ],
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Container(
-                      height: 40,
-                      width: 100,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Theme
-                              .of(context)
-                              .cardColor
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    )
+                );
+              }
+              else {
+                return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: showDesign1,
-                              child: Container(
-                                height: 24,
-                                width: 34,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: isDesign1 ? Colors.white : Colors
-                                      .transparent,
-                                ),
-
-                                child: Center(child: SvgPicture.asset(
-                                  Images.listIcon,
-                                  color: isDesign1 ? null : Colors.grey,)),
-                              ),
-                            ),
-                            InkWell(
-                                onTap: showDesign2,
-                                child:
-                                Container(
-                                  height: 24,
-                                  width: 34,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: isDesign1
-                                        ? Colors.transparent
-                                        : Colors.white,
-                                  ),
-                                  child: Center(child: SvgPicture.asset(
-                                    Images.grideIcon, fit: BoxFit.contain,
-                                    color: isDesign1 ? null : Colors.blue,)),
-                                ))
-
-
+                            Text("$list ", style: fontMediumBold,),
+                            Text(Locales.string(context, 'favorite_list'),
+                              style: fontLarge,)
                           ],
                         ),
                       ),
-                    ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Container(
+                          height: 40,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: Theme
+                                  .of(context)
+                                  .cardColor
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  onTap: showDesign1,
+                                  child: Container(
+                                    height: 24,
+                                    width: 34,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: isDesign1 ? Colors.white : Colors
+                                          .transparent,
+                                    ),
+
+                                    child: Center(child: SvgPicture.asset(
+                                      Images.listIcon,
+                                      color: isDesign1 ? null : Colors.grey,)),
+                                  ),
+                                ),
+                                InkWell(
+                                    onTap: showDesign2,
+                                    child:
+                                    Container(
+                                      height: 24,
+                                      width: 34,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100),
+                                        color: isDesign1
+                                            ? Colors.transparent
+                                            : Colors.white,
+                                      ),
+                                      child: Center(child: SvgPicture.asset(
+                                        Images.grideIcon, fit: BoxFit.contain,
+                                        color: isDesign1 ? null : Colors.blue,)),
+                                    ))
+
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+
                   ),
-                ],
-
-              ),
-              const SizedBox(height: 10,),
-              Flexible(child: !isDesign1 ? GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                ),
-                itemCount: list,
-
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0),
-                    child: FavoriteWidget(
-                      imagePath: data[index].prop!.image!.isEmpty
-                          ? " "
-                          : data[index].prop!.image!.first.image!,
-                      title: data[index].prop!.name!,
-                      price: data[index].prop!.price!,
-                      address: data[index].prop!.address!,
-                      isFavorite: data[index].prop!.inFavorite!,
-                      rate: data[index].prop!.rateReview!,
-                      onTapDelete: () async {
-                        await favoriteRepository.deleteFavorite(
-                            "token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89",
-                            data[index].prop!.id!);
-
-
-                        // reload the widget
-                        setState(() {
-                          // Remove the item from the data list
-                          data.removeAt(index);
-                          list = data.length;
-                        });
-                      },
+                  const SizedBox(height: 10,),
+                  Flexible(child: !isDesign1 ? GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
                     ),
-                  );
-                },
-              )
-                  : ListView.builder(
-                      itemCount: list,
-                      itemBuilder: (context, index) {
+                    itemCount: list,
+
+                    itemBuilder: (context, index) {
                       return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: FavoriteListWidget(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0),
+                        child: FavoriteWidget(
                           imagePath: data[index].prop!.image!.isEmpty
                               ? " "
                               : data[index].prop!.image!.first.image!,
@@ -244,31 +228,65 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           address: data[index].prop!.address!,
                           isFavorite: data[index].prop!.inFavorite!,
                           rate: data[index].prop!.rateReview!,
-                            onTapDelete: () async {
-                              await favoriteRepository.deleteFavorite(
+                          onTapDelete: () async {
+                            await favoriteRepository.deleteFavorite(
                                 "token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89",
-                                data[index].prop!.id!,
-                              );
-                              // reload the widget
-                              setState(() {
-                                // Remove the item from the data list
-                                data.removeAt(index);
-                                list = data.length;
-                              });
-                            },
-                          ),
-                        );
+                                data[index].prop!.id!);
+
+
+                            // reload the widget
+                            setState(() {
+                              // Remove the item from the data list
+                              data.removeAt(index);
+                              list = data.length;
+                            });
+                          },
+                        ),
+                      );
                     },
                   )
+                      : ListView.builder(
+                          itemCount: list,
+                          itemBuilder: (context, index) {
+                          return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: FavoriteListWidget(
+                              id: data[index].prop!.id!,
+                              imagePath: data[index].prop!.image!.isEmpty
+                                  ? " "
+                                  : data[index].prop!.image!.first.image!,
+                              title: data[index].prop!.name!,
+                              price: data[index].prop!.price!,
+                              address: data[index].prop!.address!,
+                              isFavorite: data[index].prop!.inFavorite!,
+                              rate: data[index].prop!.rateReview!,
+                                onTapDelete: () async {
+                                  await favoriteRepository.deleteFavorite(
+                                    "token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89",
+                                    data[index].prop!.id!,
+                                  );
+                                  // reload the widget
+                                  setState(() {
+                                    // Remove the item from the data list
+                                    data.removeAt(index);
+                                    list = data.length;
+                                  });
+                                },
+                              ),
+                            );
+                        },
+                      )
 
 
 
 
-              )
+                  )
 
-            ],
-          );
-        }
+                ],
+                          );
+              }
+          }
+        ),
       ),
     );
   }

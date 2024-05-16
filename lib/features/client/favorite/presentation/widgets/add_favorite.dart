@@ -14,9 +14,7 @@ class AddFavorite extends StatefulWidget {
 class _AddFavoriteState extends State<AddFavorite> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-
-      child: Center(
+    return  Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -48,7 +46,6 @@ class _AddFavoriteState extends State<AddFavorite> {
               ),
             ),
           ],        ),
-      ),
-    );
+      );
   }
 }
