@@ -39,6 +39,7 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/screen_review/review_property_rateNo_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
+import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
@@ -248,7 +249,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:   RootScreen(),
+          home:   SearchScreen(),
         ),
       ),
     );

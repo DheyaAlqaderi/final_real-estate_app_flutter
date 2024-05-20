@@ -106,7 +106,17 @@
   "delete": "delete",
   "cancel": "cancel",
   "best_seller": "top real estate agent",
-  "text_in_best_seller_page": "find the best recommendations for place to live"
+  "text_in_best_seller_page": "find the best recommendations for place to live",
+  "search": "search",
+  "search_here": "search here",
+  "have": "have",
+  "dont_found_search": "no search found",
+  "dont_found_search1": "sorry.we cant find the properties you are looking for.maybe a little typo?"
+
+
+
+
+
 
 
 

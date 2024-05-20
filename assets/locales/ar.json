@@ -100,13 +100,19 @@
   "text_in_empty_favorite_page": "الصفحة المفضلة لديك فارغة",
   "text_in_empty_favorite_page2": "انقر فوق زر 'إضافة' اعلاه لبدء الاستكشاف واختيار العقارات المفضلة لديك",
   "title_favorite": "مفظلتي",
-  "favorite_list": "القائمه ",
+  "favorite_list": "قائمه ",
   "delete_favorite": "حذف المفضلة",
   "delete_all_favorite": "هل انت متأكد من حذف جميع عناصر المفضلة",
   "delete": "حذف",
   "cancel": "الغاء",
   "best_seller": "أفضل وكيل عقارات",
-  "text_in_best_seller_page": "العثور على أفضل التوصيات لمكان الإقامة"
+  "text_in_best_seller_page": "العثور على أفضل التوصيات لمكان الإقامة",
+  "search": "بحث",
+  "search_here": "ابحث هنا",
+  "have": "يوجد ",
+  "dont_found_search": "لم يتم العثور على البحث",
+  "dont_found_search1": "عذرًا، لا يمكننا العثور على العقارات التي تبحث عنها. ربما، خطأ إملائي قليلا؟"
+
 
 
 

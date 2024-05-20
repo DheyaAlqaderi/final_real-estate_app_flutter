@@ -42,6 +42,11 @@ class Images {
   static const String trustIcon="assets/svg/trust_icon.svg";
   static const String grideIcon="assets/svg/gride_icon.svg";
   static const String listIcon="assets/svg/list_icon.svg";
+  static const String searchSvg="assets/svg/search_svg.svg";
+  static const String notFound="assets/svg/not_found.svg";
+
+
+
 
 
 
