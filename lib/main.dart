@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
@@ -117,7 +118,7 @@ void main() async {
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
-  await SharedPrefManager.saveData(AppConstants.token, 'cd1078633312c7a901f81ba427bf641b8f5113f2');
+  await SharedPrefManager.saveData(AppConstants.token, '3cbe099b83e79ab703f50eb1a09f9ad658f9fe89');
   String? token = await SharedPrefManager.getData(AppConstants.token);
 
   print('token is $token');
@@ -177,7 +178,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-
         /// home page
         BlocProvider<MainCategoryCubit>(
           create: (_) => MainCategoryCubit(HomeRepository(HomeApiService(Dio()))),
@@ -240,7 +240,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
         ),
       ],
       child: LocaleBuilder(
-        builder: (locale) => MaterialApp(
+        builder: (locale) => GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppConstants.appName,
           theme: light,
@@ -248,7 +248,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:  const RootScreen(),
+          home:   RootScreen(),
         ),
       ),
     );

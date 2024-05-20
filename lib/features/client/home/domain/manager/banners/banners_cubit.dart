@@ -1,3 +1,5 @@
+import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
 
 import 'banners_state.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BannersCubit extends Cubit<BannersState>{
   final HomeRepository _getBanners;
+
 
   BannersCubit(this._getBanners) : super(InitBannersState());
 
@@ -23,9 +26,7 @@ class BannersCubit extends Cubit<BannersState>{
     }
   }
 
-  Future<void> getBannersWithCategory(
-      {required int categoryId}
-      ) async {
+  Future<void> getBannersWithCategory({required int categoryId}) async {
     // Emit loading state
     emit(LoadingBannersState());
     try {

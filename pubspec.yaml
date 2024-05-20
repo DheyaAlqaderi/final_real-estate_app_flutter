@@ -78,6 +78,9 @@ dependencies:
   web_socket_channel: ^2.4.5
 
   path_icon: ^0.7.2
+  # get management
+  get: ^4.6.6
+
 
 
   cupertino_icons: ^1.0.6

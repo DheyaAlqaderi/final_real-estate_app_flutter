@@ -137,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           SharedPrefManager.saveData(AppConstants.token, response.userAuth.token.toString());
                           SharedPrefManager.saveData(AppConstants.userId, response.id.toString());
                           SharedPrefManager.saveData(AppConstants.userType, response.userType.toString());
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
                         });
                         return _buildButton(context);
                       } else if (state is SignUpFailure) {

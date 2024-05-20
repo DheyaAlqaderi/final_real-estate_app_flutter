@@ -56,15 +56,15 @@ class _SplashScreenState extends State<SplashScreen> {
           MaterialPageRoute(builder: (context) => const WelcomeSelectScreen()),
         );
       } else if(userType == "owner" && token.isNotEmpty && firstTime.isNotEmpty){
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const RootScreen()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const RootScreen()),
+        // );
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const RootScreen()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const RootScreen()),
+        // );
       }
     } catch (e) {
       // Handle error

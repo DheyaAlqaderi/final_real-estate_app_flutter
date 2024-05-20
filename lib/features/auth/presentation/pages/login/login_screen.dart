@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         );
                         SharedPrefManager.saveData(AppConstants.token, response.token.toString());
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
 
                       } else if (state is LoginFailure) {
                         // Show error message on login failure

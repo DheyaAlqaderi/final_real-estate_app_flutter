@@ -1,16 +1,19 @@
 
 
 
+import 'dart:async';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_appbar.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/widgets/favorite_widget_temp.dart';
 
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../data/models/delete_favorite_model.dart';
 import '../../data/models/favorite_model.dart';
 import '../../data/models/rest_modle_favorite.dart';
@@ -36,26 +39,36 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   List<DeleteFavoriteModel> deleteList = [];
 
   late List<FavoriteResult> data;
-  // List<DeleteFavoriteModel> d = [{"id": 1},{"id": 2}];
-  // late String token;
+
+   String token = " ";
 
   @override
   void initState()  {
     super.initState();
-
-
+    fetchToken();
     favoriteRepository = FavoriteRepository(Dio());
     fetchData();
 
-
-    // token = await SharedPrefManager.getData(AppConstants.token) as String;
   }
 
+
+
+  Future<void> fetchToken() async {
+    try{
+      await SharedPrefManager.init();
+
+      String? tokenFlag = await SharedPrefManager.getData(AppConstants.token);
+      token = tokenFlag ?? " ";
+    } catch(e){
+      print("error load token: $e");
+    }
+
+  }
 
   //this to definition the number of items in the list
   void fetchData()async{
     try{
-      var response = await favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89");
+      var response = await favoriteRepository.getFavorite("token $token");
       setState(() {
         list = response.results?.length ?? 0; // Update list with the length of the results
       });
@@ -99,7 +112,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
     return  Scaffold(
       appBar:  FavoriteAppBar(onTap: ()async{
-        await favoriteRepository.deleteAllFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89", deleteList);
+        await favoriteRepository.deleteAllFavorite("token $token", deleteList);
         setState(() {
           data =  [];
           list = 0;
@@ -110,8 +123,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         onRefresh: ()async{
           fetchData();
         },
-        child: FutureBuilder<FavoriteModel>(
-          future: favoriteRepository.getFavorite("token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89"),
+        child: FutureBuilder<FavoriteModel?>(
+          future: favoriteRepository.getFavorite("token $token"),
           builder: (context, snapshot) {
 
               data = snapshot.data!.results!;
@@ -127,7 +140,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     )
                 );
               }
-              else {
+              else if(snapshot.hasData) {
                 return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +243,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           rate: data[index].prop!.rateReview!,
                           onTapDelete: () async {
                             await favoriteRepository.deleteFavorite(
-                                "token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89",
+                                "token $token",
                                 data[index].prop!.id!);
 
 
@@ -262,7 +275,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                               rate: data[index].prop!.rateReview!,
                                 onTapDelete: () async {
                                   await favoriteRepository.deleteFavorite(
-                                    "token 3cbe099b83e79ab703f50eb1a09f9ad658f9fe89",
+                                    "token ${token ?? " "}",
                                     data[index].prop!.id!,
                                   );
                                   // reload the widget
@@ -284,6 +297,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
                 ],
                           );
+              }
+              else if(snapshot.hasError){
+                return SizedBox();
+              }
+              else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              else  {
+                return SizedBox();
               }
           }
         ),

@@ -79,8 +79,8 @@ class _WelcomeSelectScreenState extends State<WelcomeSelectScreen> {
               child: OutlinedButton(
                 onPressed: () async {
                   await SharedPrefManager.saveData("FirstTime", "yes");
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                  // Navigator.pushReplacement(
+                  //     context, MaterialPageRoute(builder: (context) => const RootScreen()));
                 },
                 child: Text(
                   Locales.string(context, "join_as_owner"),

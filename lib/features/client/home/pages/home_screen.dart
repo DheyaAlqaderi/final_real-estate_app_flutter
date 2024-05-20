@@ -19,6 +19,7 @@ import 'package:smart_real_estate/features/client/home/domain/manager/main_categ
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_state.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
+import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import '../../property_details/presentation/pages/property_details_screen.dart';
 import '../domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import '../domain/manager/main_category/subCategory/subCategory_state.dart';
@@ -408,6 +409,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return BannerSectionWidget(
             bannerList: state.bannerModel,
             onTapBanner: (index) {
+
               if (kDebugMode) {
                 print(state.bannerModel[index].id);
               }
