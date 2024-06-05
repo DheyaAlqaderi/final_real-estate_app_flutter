@@ -13,17 +13,12 @@ import '../../../../../core/utils/styles.dart';
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
-
-
-
-
-
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  late int list=0;
+   final int list=0;
 
 
   bool isDesign1 = true;
@@ -44,6 +39,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBarSearch(
           onPressed: (){
@@ -73,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
             ),
 
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,6 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ],
                     ),
                   ),
+
 
                   Padding(
                     padding: const EdgeInsets.all(15.0),
@@ -154,15 +152,15 @@ class _SearchScreenState extends State<SearchScreen> {
           const SizedBox(height: 30,),
 
 
-          Center(
-            child: Column(
+            Center(
+              child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: (){
-                    ////
-                    print("ooooooo");
-                  },
+                  // onTap: (){
+                  //   ////
+                  //   print("ooooooo");
+                  // },
                   child: SvgPicture.asset(Images.notFound,
                     width: 142,
                     height: 142,
@@ -184,11 +182,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              ],        ),
+              ]),
           )
-
-
-
       ]
         )),
 

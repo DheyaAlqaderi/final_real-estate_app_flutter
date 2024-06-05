@@ -40,7 +40,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   late List<FavoriteResult> data;
 
-   String token = " ";
+    String token=" " ;
 
   @override
   void initState()  {
@@ -58,7 +58,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       await SharedPrefManager.init();
 
       String? tokenFlag = await SharedPrefManager.getData(AppConstants.token);
-      token = tokenFlag ?? " ";
+      setState(() {
+        token = tokenFlag!;
+      });
     } catch(e){
       print("error load token: $e");
     }
@@ -126,7 +128,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         child: FutureBuilder<FavoriteModel?>(
           future: favoriteRepository.getFavorite("token $token"),
           builder: (context, snapshot) {
-
               data = snapshot.data!.results!;
               list = data.length;
               if(list<1){

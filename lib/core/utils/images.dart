@@ -44,6 +44,10 @@ class Images {
   static const String listIcon="assets/svg/list_icon.svg";
   static const String searchSvg="assets/svg/search_svg.svg";
   static const String notFound="assets/svg/not_found.svg";
+  static const String rightArrow="assets/svg/right_arrow_icon.svg";
+  static const String leftArrow="assets/svg/left_arrow_icon.svg";
+
+
 
 
 

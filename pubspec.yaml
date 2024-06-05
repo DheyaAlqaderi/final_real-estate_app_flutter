@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   flutter_locales: ^3.0.1
 
+
   # rating section
   flutter_rating_bar: ^4.0.1
 
@@ -58,7 +59,8 @@ dependencies:
   # formatting dates and timeAgo
   jiffy: ^6.2.1
   # pick images
-  image_picker: ^1.1.0
+  image_picker: ^0.8.5+3
+  path_provider: ^2.0.11
   image_cropper: ^5.0.1
   permission_handler: ^11.3.1
   # play videos
