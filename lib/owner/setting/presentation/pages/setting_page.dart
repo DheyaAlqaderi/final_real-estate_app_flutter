@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
-import 'package:smart_real_estate/features/client/profile/pages/profile_screen.dart';
+import 'package:smart_real_estate/features/client/profile/pages/profile_update_screen.dart';
 
 import '../../../../features/client/feedback/presentation/widgets/appBar.dart';
 import '../../../../features/client/home/pages/home_screen.dart';

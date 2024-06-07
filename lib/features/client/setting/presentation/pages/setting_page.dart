@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
-import 'package:smart_real_estate/features/client/profile/pages/profile_screen.dart';
-
+import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import '../../../feedback/presentation/widgets/appBar.dart';
 import '../../../home/pages/home_screen.dart';
+import '../../../profile/presentation/pages/profile_screen.dart';
 import '../widgets/profile.dart';
 
 
@@ -26,7 +26,7 @@ class _SettingScreenState extends State<SettingScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context)=>const HomeScreen(),));
+                builder: (context)=>const RootScreen(),));
         },
       ),
       body: SingleChildScrollView(

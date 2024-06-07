@@ -34,6 +34,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController passwordController = TextEditingController();
 
   bool isConditionAccepted = false;
+
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -169,7 +171,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: <Widget>[
                       InkWell(
                         onTap: (){
-                          // _handleGoogleBtnClick();
+                           // _handleGoogleBtnClick();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),

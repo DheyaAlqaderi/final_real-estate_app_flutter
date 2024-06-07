@@ -5,8 +5,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
 import 'package:smart_real_estate/features/client/home/pages/home_screen.dart';
-import 'package:smart_real_estate/features/client/profile/pages/profile_screen.dart';
-
+import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 import '../../../../core/utils/styles.dart';
 import '../../../common_widget/bottom_nav.dart';
 import '../../alarm/presentation/pages/add_alarm_screen.dart';
@@ -28,7 +27,7 @@ class _RootScreenState extends State<RootScreen>{
     const HomeScreen(),
     const RoomsScreen(),
     const FavoriteScreen(),
-    const ProfileScreen(),
+    const SettingScreen(),
   ];
 
 
