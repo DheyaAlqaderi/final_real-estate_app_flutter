@@ -75,6 +75,9 @@ class _BestSellerScreenState extends State<BestSellerScreen> {
                   } else if (snapshot.hasData && snapshot.data != null) {
                     var data = snapshot.data!.results;
 
+                    // Sort data based on rateReview (assuming rateReview is a double)
+                    data!.sort((a, b) => b.rateReview!.compareTo(a.rateReview!));
+
                     return SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Wrap(
