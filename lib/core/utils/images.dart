@@ -46,6 +46,10 @@ class Images {
   static const String notFound="assets/svg/not_found.svg";
   static const String rightArrow="assets/svg/right_arrow_icon.svg";
   static const String leftArrow="assets/svg/left_arrow_icon.svg";
+  static const String smallProfile="assets/svg/small_profile.svg";
+  static const String smallCallIcon="assets/svg/small_call_icon.svg";
+  static const String smallEmailIcon="assets/svg/small_email_icon.svg";
+  static const String editIcon="assets/svg/edit_icon.svg";
 
 
 

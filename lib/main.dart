@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
@@ -20,8 +19,6 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/repo_property/property_repo.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/notification.dart';
-import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
-import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
@@ -31,6 +28,7 @@ import 'package:smart_real_estate/features/client/home/domain/manager/featured_p
 import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_cubit.dart';
+import 'package:smart_real_estate/features/client/profile/presentation/pages/profile_screen.dart';
 import 'package:smart_real_estate/features/client/property_details/data/remote_api/property_details_api.dart';
 import 'package:smart_real_estate/features/client/property_details/domain/repo/property_details_repo.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/owner_properties/property_owner_properties._cubit.dart';
@@ -38,10 +36,7 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/screen_review/review_property_rateNo_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
-import 'package:smart_real_estate/features/client/property_details/presentation/pages/image_details.dart';
-import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
-import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
@@ -53,6 +48,7 @@ import 'features/client/best_seller/presentation/pages/best_seller_screen.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
+import 'features/client/profile/presentation/pages/profile_update_screen.dart';
 import 'firebase_options.dart';
 
 Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
@@ -98,7 +94,6 @@ void main() async {
 
   /// 2. initialize firebase
   await _initializeFirebase();
-
   await FirebaseMessagingRepository.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
@@ -122,10 +117,15 @@ void main() async {
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
-  await SharedPrefManager.saveData(AppConstants.token, '3cbe099b83e79ab703f50eb1a09f9ad658f9fe89');
+
+  await SharedPrefManager.saveData(AppConstants.token, 'cd1078633312c7a901f81ba427bf641b8f5113f2');
+  await SharedPrefManager.saveData(AppConstants.userId, '1');
   String? token = await SharedPrefManager.getData(AppConstants.token);
+  String? id = await SharedPrefManager.getData(AppConstants.userId);
 
   print('token is $token');
+  print('token is $id');
+
   runApp(const MyApp());
 }
 
@@ -182,6 +182,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+
         /// home page
         BlocProvider<MainCategoryCubit>(
           create: (_) => MainCategoryCubit(HomeRepository(HomeApiService(Dio()))),
@@ -244,7 +245,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
         ),
       ],
       child: LocaleBuilder(
-        builder: (locale) => GetMaterialApp(
+        builder: (locale) => MaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppConstants.appName,
           theme: light,
@@ -252,7 +253,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:   ImageDetails(),
+          home:  const ProfileUpdateScreen(),
         ),
       ),
     );
@@ -265,6 +266,5 @@ _initializeFirebase() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 }
-
 
 
