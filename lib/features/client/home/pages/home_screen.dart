@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/category_property/pages/category_property_screen.dart';
@@ -20,6 +22,7 @@ import 'package:smart_real_estate/features/client/home/domain/manager/main_categ
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
+import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
 import '../../property_details/presentation/pages/property_details_screen.dart';
 import '../domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import '../domain/manager/main_category/subCategory/subCategory_state.dart';
@@ -227,7 +230,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Locales.change(context, "ar");
         },
         onSearchBarTap: () {
-          Locales.change(context, "en");
+          // Locales.change(context, "en");
+          Get.to(SearchScreen());
         },
       ),
     );

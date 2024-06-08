@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,27 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
    final int list=0;
+   late FocusNode _focusNode;
+
+
+   @override
+   void initState() {
+     super.initState();
+     _focusNode = FocusNode();
+     // Request focus when the widget is built
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+       FocusScope.of(context).requestFocus(_focusNode);
+     });
+   }
+
+   @override
+   void dispose() {
+     _focusNode.dispose();
+     super.dispose();
+   }
+
+
+
 
 
   bool isDesign1 = true;
@@ -57,6 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             const SizedBox(height: 30,),
             TextField(
+              focusNode: _focusNode,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Theme.of(context).cardColor,

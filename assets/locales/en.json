@@ -109,10 +109,15 @@
   "text_in_best_seller_page": "find the best recommendations for place to live",
   "search": "search",
   "search_here": "search here",
-  "have": "have",
+  "have": "have ",
   "dont_found_search": "no search found",
   "dont_found_search1": "sorry.we cant find the properties you are looking for.maybe a little typo?",
+  "add": "add",
+  "home_page": "home page",
   "personal_profile": "personal profile"
+
+
+
 
 
 

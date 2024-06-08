@@ -50,6 +50,9 @@ class Images {
   static const String smallCallIcon="assets/svg/small_call_icon.svg";
   static const String smallEmailIcon="assets/svg/small_email_icon.svg";
   static const String editIcon="assets/svg/edit_icon.svg";
+  static const String notificIcon="assets/svg/notific.svg";
+  static const String addNavIcon="assets/svg/add_navbar_icon.svg";
+
 
 
 
