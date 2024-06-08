@@ -1,36 +1,54 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/styles.dart';
+import '../../../../features/client/home/pages/home_screen.dart';
+import '../../../../features/common_widget/circle_button_widget_icon.dart';
 
 class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
-  const OwnerHomeAppbar({super.key, required this.onTapBack});
+  const OwnerHomeAppbar({super.key, });
 
 
-  final VoidCallback onTapBack;
+
 
   @override
   Widget build(BuildContext context) {
+
     return AppBar(
       title: Text(Locales.string(context, "home_page"),style: fontLargeBold,),
       centerTitle: true,
 
-      leading:IconButton(
-        style: ButtonStyle(
+      leading:Container(
+        padding: EdgeInsets.symmetric(horizontal: 7),
+        child: CircleButtonWidgetIcon(
+            icon: Icons.notifications_none,
+            onTap: () {
+               Get.to(const HomeScreen());
+              },)),
 
-        ),
-        icon: SvgPicture.asset(Images.notificIcon),
-        onPressed: onTapBack,
-      ) ,
+        //icon: SvgPicture.asset(Images.notificIcon),
+
+
 
       actions: [
-        IconButton(
-          style: ButtonStyle(),
-          icon: Image.asset(Images.mePicture),
-          onPressed: (){},
-        )
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 7),
+          child: ClipOval(
+            child: Image.asset(Images.mePicture),
+          )
+          ),
+
+
+        // IconButton(
+        //   style: ButtonStyle(),
+        //   onPressed: (){},
+
       ],
     );
   }

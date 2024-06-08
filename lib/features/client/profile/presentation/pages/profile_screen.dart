@@ -100,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: FutureBuilder<ProfileModel>(
+        child: FutureBuilder<ProfileModel?>(
           future: profileRepository.getProfile(id!),
           builder: (context, snapshot){
             if(snapshot.hasError){

@@ -40,12 +40,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   late List<FavoriteResult> data;
 
-    String token=" " ;
+    String? token=" " ;
 
   @override
   void initState()  {
     super.initState();
-    fetchToken();
+      fetchToken();
     favoriteRepository = FavoriteRepository(Dio());
     fetchData();
 
@@ -128,7 +128,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         child: FutureBuilder<FavoriteModel?>(
           future: favoriteRepository.getFavorite("token $token"),
           builder: (context, snapshot) {
-              data = snapshot.data!.results!;
+              data =snapshot.data!.results!;
               list = data.length;
               if(list<1){
                 return const SingleChildScrollView(
