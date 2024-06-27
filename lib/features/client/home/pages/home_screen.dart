@@ -1,4 +1,5 @@
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +24,10 @@ import 'package:smart_real_estate/features/client/home/domain/manager/property_h
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
+import '../../../../core/constant/app_constants.dart';
+import '../../../../core/helper/local_data/shared_pref.dart';
+import '../../profile/domain/repositories/profile_repository.dart';
+import '../../profile/presentation/pages/profile_screen.dart';
 import '../../property_details/presentation/pages/property_details_screen.dart';
 import '../domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import '../domain/manager/main_category/subCategory/subCategory_state.dart';
@@ -49,10 +54,43 @@ class _HomeScreenState extends State<HomeScreen> {
   late List<bool> chipSelected;
   late List<bool> defaultChipSelected;
   late int categoryId;
+  late ProfileRepository profileRepository;
+  String imageProfile = " ";
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Load data and navigate based on its presence
+    loadData();
+  }
+
+
+  Future<void> loadData() async {
+    try {
+      // Retrieve
+      // String? token = await SharedPrefManager.getData(AppConstants.token);
+      String? userId = await SharedPrefManager.getData(AppConstants.userId);
+      if(userId != null){
+        profileRepository = ProfileRepository(Dio());
+
+        final response = await profileRepository.getProfile(int.parse(userId));
+        if(response.image!.isEmpty){
+          imageProfile = AppConstants.noImageUrl;
+        } else{
+          setState(() {
+            imageProfile = response.image ?? " ";
+          });
+        }
+      }
+    } catch (e){
+      print(e);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+
     chipSelected = List.generate(10, (index) => false);
     defaultChipSelected = List.generate(1, (index) => false);
     setState(() {
@@ -131,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 200, // Set a fixed width for the SizedBox
                   child: Row(
                     children: [
-                      Expanded(child: _buildAppBarSection()), // Assuming _buildAppBarSection returns a widget
+                      Expanded(child: _buildAppBarSection(imageProfile == " "? AppConstants.noImageUrl: imageProfile)), // Assuming _buildAppBarSection returns a widget
                     ],
                   ),
                 ),
@@ -189,15 +227,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAppBarSection() {
+  Widget _buildAppBarSection(String image) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: AppBarHomeWidget(
-        image: Images.mePicture,
+        image: image,
         onAvatarTap: () {
-          setState(() {
-            Locales.change(context, "en");
-          });
+          // setState(() {
+          //   Locales.change(context, "en");
+          // });
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context)=> const ProfileScreen())
+          );
         },
         onBillTap: () {
           // Handle bill tap
@@ -231,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         onSearchBarTap: () {
           // Locales.change(context, "en");
-          Get.to(SearchScreen());
+          Get.to(const SearchScreen());
         },
       ),
     );

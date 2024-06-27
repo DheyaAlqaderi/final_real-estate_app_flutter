@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
@@ -29,7 +30,6 @@ import 'package:smart_real_estate/features/client/home/domain/manager/featured_p
 import 'package:smart_real_estate/features/client/home/domain/manager/high_state/high_state_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/subCategory/subCategory_cubit.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_cubit.dart';
-import 'package:smart_real_estate/features/client/profile/presentation/pages/profile_screen.dart';
 import 'package:smart_real_estate/features/client/property_details/data/remote_api/property_details_api.dart';
 import 'package:smart_real_estate/features/client/property_details/domain/repo/property_details_repo.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/owner_properties/property_owner_properties._cubit.dart';
@@ -52,6 +52,9 @@ import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'features/client/profile/presentation/pages/profile_update_screen.dart';
 import 'firebase_options.dart';
+
+
+
 
 Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
   // NotificationWsRepository.getMessage as BackgroundMessageHandler;
@@ -102,7 +105,7 @@ void main() async {
   await FirebaseMessagingRepository.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
-  NotificationWsRepository.getMessage();
+  // NotificationWsRepository.getMessage();
 
 
 
@@ -248,7 +251,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
         ),
       ],
       child: LocaleBuilder(
-        builder: (locale) => MaterialApp(
+        builder: (locale) => GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppConstants.appName,
           theme: light,

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -65,6 +64,16 @@ class NotificationWsRepository {
         headers: {
           'Authorization': "cd1078633312c7a901f81ba427bf641b8f5113f2" ?? "",
         });
+
+    // Define the JSON body
+    final Map<String, dynamic> body = {
+      "command": "string",
+      "page_number": 0,
+    };
+
+    // Send the JSON body once the connection is open
+    channel.sink.add(jsonEncode(body));
+
     channel.stream.listen((event) async {
       final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();

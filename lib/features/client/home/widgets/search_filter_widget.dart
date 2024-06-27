@@ -26,37 +26,40 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
         children: [
           InkWell(
             onTap: widget.onSearchBarTap,
-            child: Container(
-              height: 70.0,
-              width: 266.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Theme.of(context).cardColor,
-                // boxShadow: [
-                //   BoxShadow(
-                //     color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
-                //     spreadRadius: 2, // Spread radius of the shadow
-                //     blurRadius: 4, // Blur radius of the shadow
-                //     offset: const Offset(0, 2), // Offset of the shadow
-                //   ),
-                // ],
-              ),
+            child: Hero(
+              tag: "search",
+              child: Container(
+                height: 70.0,
+                width: 266.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Theme.of(context).cardColor,
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
+                  //     spreadRadius: 2, // Spread radius of the shadow
+                  //     blurRadius: 4, // Blur radius of the shadow
+                  //     offset: const Offset(0, 2), // Offset of the shadow
+                  //   ),
+                  // ],
+                ),
 
-              child: Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.search),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      Locales.string(context, "search_hint"),
-                      style: fontMedium.copyWith(color: Colors.grey),
+                child: Row(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.search),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        Locales.string(context, "search_hint"),
+                        style: fontMedium.copyWith(color: Colors.grey),
+                      ),
+                    ),
 
-                ],
+                  ],
+                ),
               ),
             ),
           ),

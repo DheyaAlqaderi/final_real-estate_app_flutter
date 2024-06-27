@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_real_estate/core/utils/dimensions.dart';
 import 'package:smart_real_estate/features/common_widget/circle_button_widget_icon.dart';
@@ -25,8 +26,10 @@ class _AppBarHomeWidgetState extends State<AppBarHomeWidget> {
               radius: 25, // Adjust the radius as needed
               backgroundColor: Colors.white,
               child: ClipOval(
-                child: Image.asset(
-                  widget.image,
+                child: CachedNetworkImage(
+                  imageUrl: widget.image,
+                  placeholder: (context, url) => const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                   fit: BoxFit.cover,
                 ),
               ),
