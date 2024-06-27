@@ -3,7 +3,7 @@ class RequestFeedback {
   String phoneNumber;
   String email;
   String problemText;
-  int type;
+  String type;
 
   RequestFeedback({
     required this.status,
@@ -15,21 +15,21 @@ class RequestFeedback {
 
   factory RequestFeedback.fromJson(Map<String, dynamic> json) {
     return RequestFeedback(
-      status: json['status'],
-      phoneNumber: json['phone_number'],
-      email: json['email'],
-      problemText: json['problem_text'],
-      type: json['type'],
+      status: json['status'] ?? '',
+      phoneNumber: json['phone_number'] ?? '',
+      email: json['email'] ?? '',
+      problemText: json['problem_text'] ?? '',
+      type: json['type'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'status': status,
-      'phone_number': phoneNumber,
-      'email': email,
-      'problem_text': problemText,
-      'type': type,
-    };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['phone_number'] = this.phoneNumber;
+    data['email'] = this.email;
+    data['problem_text'] = this.problemText;
+    data['type'] = this.type;
+    return data;
   }
 }

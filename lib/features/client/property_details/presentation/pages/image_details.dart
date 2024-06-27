@@ -9,13 +9,18 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 
 import '../../../../../core/utils/images.dart';
+import '../../data/model/image_model.dart';
 
 class ImageDetails extends StatefulWidget {
-  const ImageDetails({super.key});
+  const ImageDetails({super.key, required this.images, required this.ownerName, required this.ownerImage});
+  final  List<ImageModel2>? images;
+  final String ownerName;
+  final String ownerImage;
 
   @override
   State<ImageDetails> createState() => _ImageDetailsState();
@@ -57,11 +62,11 @@ class _ImageDetailsState extends State<ImageDetails> {
                         _currentIndex = index;
                       });
                     },
-                    itemCount: images.length,
+                    itemCount: widget.images!.length,
                     itemBuilder: (context, index) {
                       return Image.network(
-                        images[index],
-                        fit: BoxFit.cover,
+                        "${AppConstants.baseUrl3}${widget.images![index].image!}",
+                        fit: BoxFit.contain,
                         width: double.infinity,
                       );
                     },
@@ -74,9 +79,9 @@ class _ImageDetailsState extends State<ImageDetails> {
                       child: IconButton(
                         style: IconButton.styleFrom(fixedSize: const Size(50, 50),
                         backgroundColor:Theme.of(context).cardColor  ),
-                        icon:Icon(Icons.arrow_back_ios_new,),
+                        icon:const Icon(Icons.arrow_back_ios_new,),
                         onPressed: () {
-                          //Get.to(PropertyDetailsScreen());
+                          Navigator.pop(context);
                         },
                   )): Positioned(
                      left: 20,
@@ -84,9 +89,9 @@ class _ImageDetailsState extends State<ImageDetails> {
                      child: IconButton(
                        style: IconButton.styleFrom(fixedSize: const Size(50, 50),
                            backgroundColor:Theme.of(context).cardColor  ),
-                       icon:Icon(Icons.arrow_forward_ios),
+                       icon:const Icon(Icons.arrow_forward_ios),
                        onPressed: () {
-                         //Get.to(PropertyDetailsScreen());
+                         Navigator.pop(context);
                        },
                      )),
                   Positioned(
@@ -96,7 +101,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                       icon: SvgPicture.asset(Images.leftArrow ),
                       onPressed: () {
                         if (_currentIndex > 0) {
-                          _pageController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+                          _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                         }
                       },
                     ),
@@ -107,7 +112,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                       // style: IconButton.styleFrom(backgroundColor: Theme.of(context).cardColor),
                       icon: SvgPicture.asset(Images.rightArrow),
                       onPressed: () {
-                        if (_currentIndex < images.length - 1) {
+                        if (_currentIndex < widget.images!.length - 1) {
                           _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
                         }
                       },
@@ -127,19 +132,30 @@ class _ImageDetailsState extends State<ImageDetails> {
                     child: Row(
                       children: [
                         CircleAvatar(
+                          backgroundImage: NetworkImage(widget.ownerImage),
+                          onBackgroundImageError: (exception, stackTrace) {
+                            // Handle the error, for example, by using a fallback image
+                            print('Failed to load image: $exception');
+                          },
+                          backgroundColor: Colors.transparent, // Optional: set a background color
+                          child: widget.ownerImage == null || widget.ownerImage.isEmpty
+                              ? Icon(Icons.person) // Optional: show an icon if there's no image
+                              : null,
                         ),
+
                         SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('حمزة محمد حمزة القطاع',style: fontMediumBold,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                              Text(widget.ownerName,style: fontMediumBold,maxLines: 1,overflow: TextOverflow.ellipsis,),
                               Row(
                                 children: List.generate(5, (index) => Icon(Icons.star, color: Colors.orange, size: 16)),
                               ),
                             ],
                           ),
                         ),
+                        const SizedBox(width: 10),
                       ],
                     ),
                   ),
@@ -160,8 +176,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end, // Align content to the end of the column
                             children: [
-                              const Text(
-                                'Alilkjhgffghjklhjlhjkljk Ali',
+                              Text(
+                                widget.ownerName,
                                 style: fontMediumBold,
                                 overflow: TextOverflow.ellipsis, // Ensure text doesn't overflow
                                 maxLines: 1, // Set maximum lines for text
@@ -181,10 +197,17 @@ class _ImageDetailsState extends State<ImageDetails> {
                         ),
                         const SizedBox(width: 10),
                         CircleAvatar(
-                          backgroundImage: NetworkImage(
-                            'https://via.placeholder.com/150',
-                          ),
-                        ),
+                          backgroundImage: NetworkImage(widget.ownerImage),
+                          onBackgroundImageError: (exception, stackTrace) {
+                            // Handle the error, for example, by using a fallback image
+                            print('Failed to load image: $exception');
+                          },
+                          backgroundColor: Colors.transparent, // Optional: set a background color
+                          child: widget.ownerImage == null || widget.ownerImage.isEmpty
+                              ? Icon(Icons.person) // Optional: show an icon if there's no image
+                              : null,
+                        )
+
                       ],
                     ),
                   ),
@@ -204,14 +227,14 @@ class _ImageDetailsState extends State<ImageDetails> {
 
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: images.length,
+                      itemCount: widget.images!.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
-                            _pageController.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+                            _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                           },
                           child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 3),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: _currentIndex == index ? Colors.blue : Colors.transparent,
@@ -222,7 +245,7 @@ class _ImageDetailsState extends State<ImageDetails> {
 
                             ),
                             child: Image.network(
-                              images[index],
+                              "${AppConstants.baseUrl3}${widget.images![index].image!}",
                               width: 100,
                               height: 100,
                               fit: BoxFit.cover,
@@ -244,7 +267,7 @@ class _ImageDetailsState extends State<ImageDetails> {
 
                       child: ListView.builder(
                         scrollDirection: Axis.vertical,
-                        itemCount: images.length,
+                        itemCount: widget.images!.length,
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
@@ -262,7 +285,7 @@ class _ImageDetailsState extends State<ImageDetails> {
 
                               ),
                               child: Image.network(
-                                images[index],
+                                "${AppConstants.baseUrl3}${widget.images![index].image!}",
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover,

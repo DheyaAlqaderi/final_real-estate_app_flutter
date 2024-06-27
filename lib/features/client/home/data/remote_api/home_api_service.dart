@@ -10,7 +10,7 @@ import '../models/category/category_model.dart';
 
 part 'home_api_service.g.dart';
 
-@RestApi(baseUrl: AppConstants.baseUrl)
+@RestApi(baseUrl: AppConstants.baseUrl2)
 abstract class HomeApiService{
   factory HomeApiService(Dio dio, {String baseUrl}) = _HomeApiService;
 

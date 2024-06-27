@@ -61,7 +61,7 @@ class _RoomChatWidgetState extends State<RoomChatWidget> {
                         ?  DecorationImage(
                       image: CachedNetworkImageProvider(imageUrl == "null"  || imageUrl == ""
                           ? Images.userImageIfNull
-                          : imageUrl),
+                          : imageUrl.startsWith('http') ? imageUrl : "${AppConstants.baseUrl3} $imageUrl"),
                       fit: BoxFit.cover,
                     )
                         : null, // Handle empty imageUrl

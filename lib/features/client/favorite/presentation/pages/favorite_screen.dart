@@ -75,13 +75,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         list = response.results?.length ?? 0; // Update list with the length of the results
       });
 
-      for(int i=0; i<=list; i++){
+      for(int i=0; i<list; i++){
         setState(() {
           deleteList.add(DeleteFavoriteModel(id: response.results![i].id));
         });
 
       }
-      print(deleteList);
         }catch(e){
       print('Error fetching data: $e');
     }
@@ -128,142 +127,155 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         child: FutureBuilder<FavoriteModel?>(
           future: favoriteRepository.getFavorite("token $token"),
           builder: (context, snapshot) {
-              data =snapshot.data!.results!;
-              list = data.length;
-              if(list<1){
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data == null) {
+              return const SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    SizedBox(height: 200.0,),
+                    AddFavorite(),
+                  ],
+                ),
+              );
+            } else {
+              var data = snapshot.data!.results;
+              var list = data!.length;
+
+              if (list < 1) {
                 return const SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 200.0,),
-                        AddFavorite(),
-                      ],
-                    )
-                );
-              }
-              else if(snapshot.hasData) {
-                return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          children: [
-                            Text("$list ", style: fontMediumBold,),
-                            Text(Locales.string(context, 'favorite_list'),
-                              style: fontLarge,)
-                          ],
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Container(
-                          height: 40,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: Theme
-                                  .of(context)
-                                  .cardColor
+                      SizedBox(height: 200.0,),
+                      AddFavorite(),
+                    ],
+                  ),
+                );
+              } else {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Row(
+                            children: [
+                              Text("$list ", style: fontMediumBold),
+                              Text(
+                                Locales.string(context, 'favorite_list'),
+                                style: fontLarge,
+                              ),
+                            ],
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                InkWell(
-                                  onTap: showDesign1,
-                                  child: Container(
-                                    height: 24,
-                                    width: 34,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: isDesign1 ? Colors.white : Colors
-                                          .transparent,
-                                    ),
-
-                                    child: Center(child: SvgPicture.asset(
-                                      Images.listIcon,
-                                      color: isDesign1 ? null : Colors.grey,)),
-                                  ),
-                                ),
-                                InkWell(
-                                    onTap: showDesign2,
-                                    child:
-                                    Container(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Container(
+                            height: 40,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: Theme.of(context).cardColor,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                    onTap: showDesign1,
+                                    child: Container(
                                       height: 24,
                                       width: 34,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(100),
-                                        color: isDesign1
-                                            ? Colors.transparent
-                                            : Colors.white,
+                                        color: isDesign1 ? Colors.white : Colors.transparent,
                                       ),
-                                      child: Center(child: SvgPicture.asset(
-                                        Images.grideIcon, fit: BoxFit.contain,
-                                        color: isDesign1 ? null : Colors.blue,)),
-                                    ))
-
-
-                              ],
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          Images.listIcon,
+                                          color: isDesign1 ? null : Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: showDesign2,
+                                    child: Container(
+                                      height: 24,
+                                      width: 34,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100),
+                                        color: isDesign1 ? Colors.transparent : Colors.white,
+                                      ),
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          Images.grideIcon,
+                                          fit: BoxFit.contain,
+                                          color: isDesign1 ? null : Colors.blue,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-
-                  ),
-                  const SizedBox(height: 10,),
-                  Flexible(child: !isDesign1 ? GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 4,
-                      crossAxisSpacing: 4,
+                      ],
                     ),
-                    itemCount: list,
-
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0),
-                        child: FavoriteWidget(
-                          imagePath: data[index].prop!.image!.isEmpty
-                              ? " "
-                              : data[index].prop!.image!.first.image!,
-                          title: data[index].prop!.name!,
-                          price: data[index].prop!.price!,
-                          address: data[index].prop!.address!,
-                          isFavorite: data[index].prop!.inFavorite!,
-                          rate: data[index].prop!.rateReview!,
-                          onTapDelete: () async {
-                            await favoriteRepository.deleteFavorite(
-                                "token $token",
-                                data[index].prop!.id!);
-
-
-                            // reload the widget
-                            setState(() {
-                              // Remove the item from the data list
-                              data.removeAt(index);
-                              list = data.length;
-                            });
-                          },
+                    const SizedBox(height: 10),
+                    Flexible(
+                      child: !isDesign1
+                          ? GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                          mainAxisSpacing: 4,
+                          crossAxisSpacing: 4,
                         ),
-                      );
-                    },
-                  )
-                      : ListView.builder(
-                          itemCount: list,
-                          itemBuilder: (context, index) {
+                        itemCount: list,
+                        itemBuilder: (context, index) {
                           return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: FavoriteWidget(
+                              imagePath: data[index].prop!.image!.isEmpty
+                                  ? " "
+                                  : data[index].prop!.image!.first.image!,
+                              title: data[index].prop!.name!,
+                              price: data[index].prop!.price!,
+                              address: data[index].prop!.address!,
+                              isFavorite: data[index].prop!.inFavorite!,
+                              rate: data[index].prop!.rateReview!,
+                              onTapDelete: () async {
+                                await favoriteRepository.deleteFavorite(
+                                  "token $token",
+                                  data[index].prop!.id!,
+                                );
+                                // reload the widget
+                                setState(() {
+                                  // Remove the item from the data list
+                                  data.removeAt(index);
+                                  list = data.length;
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      )
+                          : ListView.builder(
+                        itemCount: list,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: FavoriteListWidget(
                               id: data[index].prop!.id!,
                               imagePath: data[index].prop!.image!.isEmpty
@@ -274,42 +286,30 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                               address: data[index].prop!.address!,
                               isFavorite: data[index].prop!.inFavorite!,
                               rate: data[index].prop!.rateReview!,
-                                onTapDelete: () async {
-                                  await favoriteRepository.deleteFavorite(
-                                    "token ${token ?? " "}",
-                                    data[index].prop!.id!,
-                                  );
-                                  // reload the widget
-                                  setState(() {
-                                    // Remove the item from the data list
-                                    data.removeAt(index);
-                                    list = data.length;
-                                  });
-                                },
-                              ),
-                            );
-                        },
-                      )
-
-
-
-
-                  )
-
-                ],
+                              onTapDelete: () async {
+                                await favoriteRepository.deleteFavorite(
+                                  "token $token",
+                                  data[index].prop!.id!,
+                                );
+                                // reload the widget
+                                setState(() {
+                                  // Remove the item from the data list
+                                  data.removeAt(index);
+                                  list = data.length;
+                                });
+                              },
+                            ),
                           );
+                        },
+                      ),
+                    ),
+                  ],
+                );
               }
-              else if(snapshot.hasError){
-                return SizedBox();
-              }
-              else if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              else  {
-                return SizedBox();
-              }
-          }
+            }
+          },
         ),
+
       ),
     );
   }

@@ -37,7 +37,7 @@ class _FavoriteListWidgetState extends State<FavoriteListWidget> {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             height: 156.0,
-            width: 268.0,
+            width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Theme.of(context).cardColor,
@@ -58,7 +58,7 @@ class _FavoriteListWidgetState extends State<FavoriteListWidget> {
                   padding: const EdgeInsets.only(top: 8.0,right: 8.0,bottom: 8.0),
                   child: Container(
                     height: double.infinity,
-                    width: 226,
+                    width: MediaQuery.sizeOf(context).width / 2,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(

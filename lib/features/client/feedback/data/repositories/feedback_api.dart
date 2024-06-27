@@ -14,7 +14,7 @@ abstract class FeedbackApi{
 
   @POST('api/ticket/create/')
   Future<FeedbackResponse> postFeedback(
-      @Body() RequestFeedback requestFeedback
+      @Body() RequestFeedback requestFeedback,
       );
 
   

@@ -174,10 +174,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
       appBar:AppBarWidget(
         title: 'personal_profile',
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context)=>const ProfileScreen(),));
+          Navigator.pop(context);
         },
       ),
       body:  SingleChildScrollView(

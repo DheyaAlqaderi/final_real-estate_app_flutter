@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -93,15 +94,17 @@ void main() async {
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// 2. initialize firebase
+  /// 2 initialize background service
+  await NotificationWsRepository.init();
+
+  /// 2.1 initialize firebase
   await _initializeFirebase();
   await FirebaseMessagingRepository.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
-  // NotificationWsRepository.getMessage();
+  NotificationWsRepository.getMessage();
 
-  /// 2.1 initialize background service
-  await NotificationWsRepository.init();
+
 
 
   /// initialize languages
@@ -176,7 +179,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
        _userRepository.updateUserStatus(_userId, isOnline);
     }
   }
-
 
   /// This widget is the root of your application.
   @override
@@ -254,7 +256,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:  const OwnerRootScreen(),
+          home:  const RootScreen(),
         ),
       ),
     );
@@ -266,6 +268,41 @@ _initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+}
+
+/// Class to handle isolating any function
+class IsolateRunner<T> {
+  final Function function;
+  final List<dynamic> params;
+
+  IsolateRunner(this.function, this.params);
+
+  Future<T> run() async {
+    // Create a ReceivePort for communication with the isolate
+    final receivePort = ReceivePort();
+
+    // Spawn an isolate
+    await Isolate.spawn(_isolateEntry, [receivePort.sendPort, function, params]);
+
+    // Wait for the result from the isolate
+    final result = await receivePort.first as T;
+
+    // Return the result
+    return result;
+  }
+
+  // Entry point for the isolate
+  static void _isolateEntry(List<dynamic> args) {
+    final sendPort = args[0] as SendPort;
+    final function = args[1] as Function;
+    final params = args[2] as List<dynamic>;
+
+    // Execute the function with the provided parameters
+    final result = Function.apply(function, params);
+
+    // Send the result back to the main isolate
+    sendPort.send(result);
+  }
 }
 
 

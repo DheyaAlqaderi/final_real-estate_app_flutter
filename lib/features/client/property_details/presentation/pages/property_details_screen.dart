@@ -73,11 +73,17 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
 
                   /// Display property image and some details
                   ImageSectionPropertyDetailsWidget(
-                    isFavorite: propertyDetails.inFavorite!,
-                    imagesModel: imageList,
-                    rating: propertyDetails.rate!,
+                    isFavorite: propertyDetails.inFavorite ?? false,
+                    imagesModel: imageList.isNotEmpty ? imageList : [], // Ensure non-null, non-empty list
+                    rating: propertyDetails.rate ?? 0,
                     categoryName: propertyDetails.category?.name ?? "",
+                    ownerName: propertyDetails.user?.name ?? "Unknown",
+                    ownerImage: propertyDetails.user?.image != null && propertyDetails.user!.image!.isNotEmpty
+                        ? "${AppConstants.baseUrl3}${propertyDetails.user!.image!}"
+                        : "",
                   ),
+
+
 
                   /// Displaying property rest details
                   PropertyDetailsDescriptionWidget(

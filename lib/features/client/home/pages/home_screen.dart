@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const SizedBox(height: kToolbarHeight + 10), // Adjust height as needed
+                          const SizedBox(height: kToolbarHeight), // Adjust height as needed
                           _buildGreetingSection(),
                           const SizedBox(height: 20),
                           _buildSearchBarAndFilter(),

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/pages/image_details.dart';
 
 import '../../../../../../core/utils/images.dart';
 
@@ -14,13 +15,15 @@ class ImageSectionPropertyDetailsWidget extends StatefulWidget {
   final List<ImageModel2>? imagesModel;
   final double rating;
   final String categoryName;
+  final String ownerName;
+  final String ownerImage;
 
   const ImageSectionPropertyDetailsWidget({
     super.key,
     required this.isFavorite,
     required this.imagesModel,
     required this.rating,
-    required this.categoryName
+    required this.categoryName, required this.ownerName, required this.ownerImage
   });
 
   @override
@@ -34,6 +37,7 @@ class _ImageSectionPropertyDetailsWidgetState
   late bool isSelected;
 
 
+
   @override
   void initState() {
     super.initState();
@@ -41,94 +45,98 @@ class _ImageSectionPropertyDetailsWidgetState
   }
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 514.0,
-      width: double.infinity,
-      child: Stack(
-        children: [
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  // "${AppConstants.baseUrl2}${widget.imagesModel![0].image}",
-                    widget.imagesModel![0].image!.isEmpty
-                        ? AppConstants.noImageUrl
-                        : "${AppConstants.baseUrl3}${widget.imagesModel!.first.image}"
-
+    return InkWell(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> ImageDetails(images: widget.imagesModel,ownerName: widget.ownerName,ownerImage: widget.ownerImage,)));
+      },
+      child: SizedBox(
+        height: 514.0,
+        width: double.infinity,
+        child: Stack(
+          children: [
+            Container(
+              height: double.infinity,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: CachedNetworkImageProvider(
+                    widget.imagesModel != null && widget.imagesModel!.isNotEmpty && widget.imagesModel![0].image!.isNotEmpty
+                        ? "${AppConstants.baseUrl3}${widget.imagesModel!.first.image}"
+                        : AppConstants.noImageUrl,
+                  ),
+                  fit: BoxFit.cover
                 ),
-                fit: BoxFit.cover
-              ),
-              borderRadius: const BorderRadius.only(
-                  bottomRight: Radius.circular(50.0),
-                  bottomLeft: Radius.circular(50.0)
+
+                borderRadius: const BorderRadius.only(
+                    bottomRight: Radius.circular(50.0),
+                    bottomLeft: Radius.circular(50.0)
+                ),
               ),
             ),
-          ),
 
-          /// appBar Section
-          _appBarSection(),
+            /// appBar Section
+            _appBarSection(),
 
-          /// rest of the images
-          _restImagesSection(),
+            /// rest of the images
+            _restImagesSection(),
 
-          Positioned(
-            bottom: 53.0,
-            right: 15.0,
-            child: Row(
-              children: [
-                Container(
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xAF1F4C6B),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child:  Center(
-                    child: Text(
-                      widget.categoryName,
-                      style: fontSmallBold.copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Container(
-                  width: 95,
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xAF1F4C6B),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '⭐',
-                        style: fontSmallBold.copyWith(color: Colors.white)
+            Positioned(
+              bottom: 53.0,
+              right: 15.0,
+              child: Row(
+                children: [
+                  Container(
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xAF1F4C6B),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
                       ),
-                      const SizedBox(width: 5),
-                      Text(
-                        '${widget.rating}',
-                        style: fontSmallBold.copyWith(color: Colors.white)
+                    ),
+                    child:  Center(
+                      child: Text(
+                        widget.categoryName,
+                        style: fontSmallBold.copyWith(color: Colors.white),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 95,
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xAF1F4C6B),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '⭐',
+                          style: fontSmallBold.copyWith(color: Colors.white)
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          '${widget.rating}',
+                          style: fontSmallBold.copyWith(color: Colors.white)
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
 
 
 
-        ],
+          ],
+        ),
+
       ),
-
     );
     
   }

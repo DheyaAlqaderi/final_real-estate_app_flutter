@@ -112,10 +112,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       appBar: AppBarWidget(
         title: "feedback",
         onTap: (){
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context)=>const SettingScreen(),));
+          Navigator.pop(context);
         },
       ),
 
@@ -335,36 +332,51 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               ),
 
               //button
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
-                  height: 70,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: (){
-                    // if(imageFile == null){
-                    //   print("no image");
-                    // }
-                    if(_feedbackForm.currentState!.validate()){
-                      feedbackApi.postFeedback(RequestFeedback(
-                          status: "opened",
-                          phoneNumber:phoneNumber.text ,
-                          email: emailAddress.text,
-                          problemText: whatsProblem.text,
-                          type: selectedItem)
-                      );
-
-                      // _feedbackForm.currentState!.save();
-                      // print('Submitted name: $fullName ');
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SizedBox(
+              height: 70,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (_feedbackForm.currentState!.validate()) {
+                    try {
+                      await feedbackApi.postFeedback(RequestFeedback(
+                        status: "Opened",
+                        phoneNumber: phoneNumber.text.toString(),
+                        email: emailAddress.text.toString(),
+                        problemText: whatsProblem.text.toString(),
+                        type: selectedItem.toString(),
+                      ));
+                      // Handle successful feedback submission
+                      showSuccessSnackbar(context, "Submit your opinion successfully"); // Example of showing a success message
+                    } catch (e) {
+                      if (e is DioError) {
+                        // Handle DioError specifically
+                        if (e.response != null) {
+                          // Server responded with an error
+                          print("Server error: ${e.response!.statusCode} - ${e.response!.data}");
+                          showErrorSnackbar(context,"Server Error: ${e.response!.statusCode}"); // Example of showing a server error message
+                        } else {
+                          // No response from the server (network error, timeout, etc.)
+                          print("Request failed: ${e.message}");
+                          showErrorSnackbar(context,"Request Failed: ${e.message}"); // Example of showing a generic error message
+                        }
+                      } else {
+                        // Handle other types of exceptions if necessary
+                        print("Unexpected error: $e");
+                        showErrorSnackbar(context,"Unexpected Error"); // Example of showing an unexpected error message
+                      }
                     }
-
-                    
-
-
-                  },
-                      child: Text(Locales.string(context, "send"),style: fontLarge,)),
+                  }
+                },
+                child: Text(
+                  Locales.string(context, "send"),
+                  style: fontLarge,
                 ),
-              )
+              ),
+            ),
+          )
 
 
 
@@ -419,6 +431,25 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
 
 
+    );
+  }
+  void showSuccessSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void showErrorSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
+      ),
     );
   }
 }

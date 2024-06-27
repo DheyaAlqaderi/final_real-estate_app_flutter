@@ -138,9 +138,14 @@ class _ChatPageState extends State<ChatPage> {
                                     borderRadius: BorderRadius.circular(25.0),
                                     color: Theme.of(context).cardColor,
                                     image: DecorationImage(
-                                      image: CachedNetworkImageProvider(userData!['imageUrl'] == "null" || userData["imageUrl"] == ""
-                                          ? Images.userImageIfNull
-                                          : userData["imageUrl"].toString()),
+                                      image: CachedNetworkImageProvider(
+                                          (userData!['imageUrl'] == "null" || userData['imageUrl'] == "")
+                                              ? Images.userImageIfNull
+                                              : (userData['imageUrl'].startsWith('http'))
+                                              ? userData['imageUrl']
+                                              : "${AppConstants.baseUrl3}${userData['imageUrl']}"
+                                      ),
+
                                       fit: BoxFit.cover,
                                     ),
                                   ),

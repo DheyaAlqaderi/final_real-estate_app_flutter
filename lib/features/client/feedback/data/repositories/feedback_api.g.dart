@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'best_seller_repository.dart';
+part of 'feedback_api.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'best_seller_repository.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _BestSellerRepository implements BestSellerRepository {
-  _BestSellerRepository(
+class _FeedbackApi implements FeedbackApi {
+  _FeedbackApi(
     this._dio, {
     this.baseUrl,
   }) {
@@ -21,20 +21,21 @@ class _BestSellerRepository implements BestSellerRepository {
   String? baseUrl;
 
   @override
-  Future<BestSellerModel> getFavorite() async {
+  Future<FeedbackResponse> postFeedback(RequestFeedback requestFeedback) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(requestFeedback.toJson());
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<BestSellerModel>(Options(
-      method: 'GET',
+        .fetch<Map<String, dynamic>>(_setStreamType<FeedbackResponse>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'api/property/bast-seller/',
+              'api/ticket/create/',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -43,7 +44,37 @@ class _BestSellerRepository implements BestSellerRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = BestSellerModel.fromJson(_result.data!);
+    final value = FeedbackResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<List<TypesFeedbackModel>> getFeedbackTypes() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<List<TypesFeedbackModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/ticket/ticket-type/',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var value = _result.data!
+        .map((dynamic i) =>
+            TypesFeedbackModel.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 

@@ -12,7 +12,6 @@ import 'package:smart_real_estate/features/client/profile/presentation/pages/pro
 import 'package:smart_real_estate/features/client/profile/presentation/widgets/profile_appbar.dart';
 
 import '../../../../../core/helper/local_data/shared_pref.dart';
-import '../../../setting/presentation/pages/setting_page.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../widgets/user_data_widget.dart';
 
@@ -83,10 +82,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: ProfileAppBarWidget(
         editIcon: Images.editIcon,
         onTapBack: (){
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context)=>const SettingScreen(),));
+
+          Navigator.pop(context);
           print("onTapback");
         },
         onTapEdit: (){

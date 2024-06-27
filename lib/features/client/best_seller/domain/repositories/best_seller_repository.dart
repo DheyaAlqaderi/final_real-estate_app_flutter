@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 import 'package:smart_real_estate/features/client/best_seller/data/models/best_seller_model.dart';
 import '../../../../../core/constant/app_constants.dart';
 

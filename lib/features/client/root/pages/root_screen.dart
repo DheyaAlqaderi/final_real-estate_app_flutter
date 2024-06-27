@@ -188,7 +188,7 @@ class _RootScreenState extends State<RootScreen>{
                     ),
                     onTap: () {
                       Navigator.pop(context);
-                      Get.to(const AddAlarmScreen());
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> const AddAlarmScreen()));
                     },
                   ),
                 ),
