@@ -165,7 +165,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                                 borderRadius: BorderRadius.circular(20.0),
                                 image: DecorationImage(
                                     image: CachedNetworkImageProvider(
-                                      "${AppConstants.baseUrl3}${propertyDetails.image![0].image}",
+                                      propertyDetails.image![0].image != "null" ?"${AppConstants.baseUrl3}${propertyDetails.image![0].image}" : AppConstants.noImageUrl,
                                     ),
                                     fit: BoxFit.cover)),
                           ),

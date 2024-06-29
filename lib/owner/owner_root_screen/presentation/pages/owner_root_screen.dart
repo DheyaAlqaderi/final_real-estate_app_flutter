@@ -53,7 +53,7 @@ class _OwnerRootScreenState extends State<OwnerRootScreen> {
     Images.homeIcon,
     Images.chatIcon,
     Images.addNavIcon,
-    Images.userIcon,
+    Images.settingIcon,
   ];
 
 
