@@ -206,6 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+
                   const SizedBox(height: 20),
                   _buildMainCategoriesRowList(),
                   const SizedBox(height: 25),
