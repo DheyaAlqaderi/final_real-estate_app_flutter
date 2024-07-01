@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/category_property/pages/category_property_screen.dart';
@@ -22,7 +21,6 @@ import 'package:smart_real_estate/features/client/home/domain/manager/main_categ
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_state.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
-import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
@@ -56,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late int categoryId;
   late ProfileRepository profileRepository;
   String imageProfile = " ";
+  String userId = " ";
 
   @override
   void didChangeDependencies() {
@@ -69,9 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       // Retrieve
       // String? token = await SharedPrefManager.getData(AppConstants.token);
-      String? userId = await SharedPrefManager.getData(AppConstants.userId);
-      if(userId != null){
+      userId = (await SharedPrefManager.getData(AppConstants.userId))!;
+      if(userId != " " || userId != null){
         profileRepository = ProfileRepository(Dio());
+        print("id ${userId}");
 
         final response = await profileRepository.getProfile(int.parse(userId));
         if(response.image!.isEmpty){
@@ -233,14 +233,21 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: AppBarHomeWidget(
         image: image,
-        onAvatarTap: () {
+        onAvatarTap: () async{
           // setState(() {
           //   Locales.change(context, "en");
           // });
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context)=> const ProfileScreen())
-          );
+
+          String? id = await SharedPrefManager.getData(AppConstants.userId);
+          if(id == null){
+
+          } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> const ProfileScreen())
+            );
+          }
+
         },
         onBillTap: () {
           // Handle bill tap

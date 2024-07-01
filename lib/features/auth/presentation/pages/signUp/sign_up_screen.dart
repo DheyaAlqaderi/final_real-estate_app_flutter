@@ -6,7 +6,6 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/SRValidator.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
-import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
 import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../cubit/signup/signup_cubit.dart';
@@ -19,8 +18,9 @@ final _formKey = GlobalKey<FormState>();
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
-    super.key,
+    super.key, required this.isOwner,
   });
+  final bool isOwner;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();

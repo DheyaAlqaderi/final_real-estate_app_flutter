@@ -5,9 +5,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
-import 'package:smart_real_estate/features/client/favorite/data/repositories/network.dart';
 
-import '../../data/models/delete_favorite_model.dart';
 
 
 class FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {

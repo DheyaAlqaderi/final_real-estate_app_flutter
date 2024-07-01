@@ -8,7 +8,8 @@ import 'package:smart_real_estate/features/auth/presentation/pages/signUp/sign_u
 
 
 class BothAuthScreen extends StatefulWidget {
-  const BothAuthScreen({super.key});
+  const BothAuthScreen({super.key, required this.isOwner});
+  final bool isOwner;
 
   @override
   State<BothAuthScreen> createState() => _BothAuthScreenState();
@@ -132,8 +133,8 @@ class _BothAuthScreenState extends State<BothAuthScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 isDesign1
-                    ?  const LoginScreen()
-                    :  const SignUpScreen(),
+                    ?  LoginScreen(isOwner: widget.isOwner,)
+                    :  SignUpScreen(isOwner: widget.isOwner,),
               ],
             )
           ],

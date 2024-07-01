@@ -11,7 +11,6 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/feedback/data/models/request_feedback.dart';
 import 'package:smart_real_estate/features/client/feedback/data/repositories/feedback_api.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
-import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 
 import '../../data/models/types/type_feedback_model.dart';
 
@@ -288,7 +287,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                   } else if (snapshot.hasError) {
                                     return Text("Error: ${snapshot.error}");
                                   } else {
-                                    return CircularProgressIndicator(); // Or any other loading indicator
+                                    return const CircularProgressIndicator(); // Or any other loading indicator
                                   }
                                 },
                               )
@@ -438,7 +437,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -448,7 +447,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/profile_owner_screen.dart';
 
 import '../../../../../core/constant/app_constants.dart';
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../data/models/message_model.dart';
 import '../../domain/repository/chat_repository.dart';
 import '../widgets/message_field_widget.dart';
@@ -30,10 +31,23 @@ class _ChatPageState extends State<ChatPage> {
   // var userData;
   // bool isIconAppeared = false;
 
+  String? userId;
+
   @override
-  void initState()  {
+  void initState() {
     super.initState();
+    _loadUserId();
   }
+
+  Future<void> _loadUserId() async {
+    final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
+    print(loadedUserId.toString());
+    print(widget.receiverId);
+    setState(() {
+      userId = loadedUserId ?? '';
+    });
+  }
+
 
   bool isDarkMode(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark;
@@ -259,7 +273,7 @@ class _ChatPageState extends State<ChatPage> {
                                     ),
                                     // Display messages for the date
                                     ...reversedMessages.map((message) {
-                                      final isMyMessage = message.senderId == AppConstants.userIdFake;
+                                      final isMyMessage = message.senderId == userId;
 
                                       if (!isMyMessage && !message.seen) {
                                         chatRepository.seenMessage(

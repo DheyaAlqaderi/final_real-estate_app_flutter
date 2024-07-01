@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 
 import '../../../../../core/constant/app_constants.dart';
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../widgets/room_chat_widget.dart';
 import 'chat_page.dart';
 
@@ -16,21 +17,20 @@ class RoomsScreen extends StatefulWidget {
 }
 
 class _RoomsScreenState extends State<RoomsScreen> {
-  late String userId = AppConstants.userIdFake;
+   String? userId;
 
   @override
   void initState() {
     super.initState();
-    // _loadUserId();
+    _loadUserId();
   }
 
-  // Future<void> _loadUserId() async {
-  //   final loadedUserId = await SharedPrefManager.getData("user_id");
-  //   print(loadedUserId.toString());
-  //   setState(() {
-  //     userId = loadedUserId ?? '';
-  //   });
-  // }
+  Future<void> _loadUserId() async {
+    final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
+    setState(() {
+      userId = loadedUserId ?? "";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,9 @@ class _RoomsScreenState extends State<RoomsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (userId.isNotEmpty)
+                if (userId!.isNotEmpty)
                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: ChatRepository().getChatRoomsForMemberStream(userId),
+                    stream: ChatRepository().getChatRoomsForMemberStream(userId!),
                       builder: (context, AsyncSnapshot<dynamic> snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(child: CircularProgressIndicator());
@@ -124,7 +124,32 @@ class _RoomsScreenState extends State<RoomsScreen> {
                       }
                   )
                 else
-                  const Center(child: Text("You have to login")),
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        "You have to login",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.redAccent,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

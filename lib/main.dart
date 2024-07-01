@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:isolate';
 
@@ -14,6 +13,8 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
+import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/category_property/data/remote_api/property_category_api.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/main_property_category_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/subCategory/property_subCategory_cubit.dart';
@@ -39,32 +40,27 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
-import 'package:smart_real_estate/owner/first/pages/first.dart';
-import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
+import 'package:smart_real_estate/owner/home/presentation/pages/owner_home_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
-import 'features/client/best_seller/presentation/pages/best_seller_screen.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
-import 'features/client/profile/presentation/pages/profile_update_screen.dart';
 import 'firebase_options.dart';
-
-
-
 
 Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
   // NotificationWsRepository.getMessage as BackgroundMessageHandler;
   if (message.notification != null) {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
 
     // Initialize notifications if not already initialized
-    NotificationInitialize.initializeNotifications(flutterLocalNotificationsPlugin);
+    NotificationInitialize.initializeNotifications(
+        flutterLocalNotificationsPlugin);
 
     // Show notification
     await NotificationInitialize.showNotification(
@@ -74,15 +70,17 @@ Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
     );
   }
 }
+
 Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
   // NotificationWsRepository.getMessage as BackgroundMessageHandler;
   if (message.notification != null) {
     print(message.notification!.title);
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
 
     // Initialize notifications if not already initialized
-    NotificationInitialize.initializeNotifications(flutterLocalNotificationsPlugin);
+    NotificationInitialize.initializeNotifications(
+        flutterLocalNotificationsPlugin);
 
     // Show notification
     await NotificationInitialize.showNotification(
@@ -94,7 +92,6 @@ Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
 }
 
 void main() async {
-
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -108,12 +105,8 @@ void main() async {
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
   // NotificationWsRepository.getMessage();
 
-
-
-
   /// initialize languages
-  await Locales.init([ 'ar', 'en']); // get last saved language
-
+  await Locales.init(['ar', 'en']); // get last saved language
 
   /// 3. for buttery icons and notifications to be fixable in colors
   SystemChrome.setSystemUIOverlayStyle(
@@ -121,12 +114,16 @@ void main() async {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
       statusBarIconBrightness: Brightness.dark,
-    ),);
+    ),
+  );
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
 
-  await SharedPrefManager.saveData(AppConstants.token, 'cd1078633312c7a901f81ba427bf641b8f5113f2');
+  // await SharedPrefManager.deleteData(AppConstants.userId);
+  // await SharedPrefManager.deleteData(AppConstants.token);
+  await SharedPrefManager.saveData(
+      AppConstants.token, 'cd1078633312c7a901f81ba427bf641b8f5113f2');
   await SharedPrefManager.saveData(AppConstants.userId, '1');
   String? token = await SharedPrefManager.getData(AppConstants.token);
   String? id = await SharedPrefManager.getData(AppConstants.userId);
@@ -144,8 +141,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
-
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late ChatRepository _userRepository;
   late String _userId;
 
@@ -171,16 +167,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     if (state == AppLifecycleState.resumed) {
       // App is in foreground
       _updateUserStatus(true);
-
     } else {
       // App is in background or closed
       _updateUserStatus(false);
     }
   }
 
-  void _updateUserStatus(bool isOnline)  {
+  void _updateUserStatus(bool isOnline) {
     if (_userId.isNotEmpty) {
-       _userRepository.updateUserStatus(_userId, isOnline);
+      _userRepository.updateUserStatus(_userId, isOnline);
     }
   }
 
@@ -189,16 +184,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-
         /// home page
         BlocProvider<MainCategoryCubit>(
-          create: (_) => MainCategoryCubit(HomeRepository(HomeApiService(Dio()))),
+          create: (_) =>
+              MainCategoryCubit(HomeRepository(HomeApiService(Dio()))),
         ),
         BlocProvider<BannersCubit>(
           create: (_) => BannersCubit(HomeRepository(HomeApiService(Dio()))),
         ),
         BlocProvider<SubCategoryCubit>(
-          create: (_) => SubCategoryCubit(HomeRepository(HomeApiService(Dio()))),
+          create: (_) =>
+              SubCategoryCubit(HomeRepository(HomeApiService(Dio()))),
         ),
         BlocProvider<HighStateCubit>(
           create: (_) => HighStateCubit(HomeRepository(HomeApiService(Dio()))),
@@ -207,48 +203,60 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           create: (_) => FeaturedCubit(HomeRepository(HomeApiService(Dio()))),
         ),
         BlocProvider<PropertyHomeCubit>(
-          create: (_) => PropertyHomeCubit(HomeRepository(HomeApiService(Dio()))),
+          create: (_) =>
+              PropertyHomeCubit(HomeRepository(HomeApiService(Dio()))),
         ),
 
         /// category page
         BlocProvider<MainPropertyCategoryCubit>(
-          create: (_) => MainPropertyCategoryCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+          create: (_) => MainPropertyCategoryCubit(
+              PropertyRepo(PropertyCategoryApi(Dio()))),
         ),
         BlocProvider<PropertySubCategoryCubit>(
-          create: (_) => PropertySubCategoryCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+          create: (_) => PropertySubCategoryCubit(
+              PropertyRepo(PropertyCategoryApi(Dio()))),
         ),
         BlocProvider<PropertyCubit>(
-          create: (_) => PropertyCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
+          create: (_) =>
+              PropertyCubit(PropertyRepo(PropertyCategoryApi(Dio()))),
         ),
 
         /// high state page
         BlocProvider<PropertyStateCubit>(
-          create: (_) => PropertyStateCubit(HighPlacesRepo(HighStateApi(Dio()))),
+          create: (_) =>
+              PropertyStateCubit(HighPlacesRepo(HighStateApi(Dio()))),
         ),
 
         /// property details page
         BlocProvider<PropertyDetailsCubit>(
-          create: (_) => PropertyDetailsCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+          create: (_) => PropertyDetailsCubit(
+              PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
         BlocProvider<ReviewsPropertyCubit>(
-          create: (_) => ReviewsPropertyCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+          create: (_) => ReviewsPropertyCubit(
+              PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
         BlocProvider<ReviewsPropertyByRateNoCubit>(
-          create: (_) => ReviewsPropertyByRateNoCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+          create: (_) => ReviewsPropertyByRateNoCubit(
+              PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
         BlocProvider<PropertyOwnerProfileCubit>(
-          create: (_) => PropertyOwnerProfileCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+          create: (_) => PropertyOwnerProfileCubit(
+              PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
         BlocProvider<PropertyOwnerPropertiesCubit>(
-          create: (_) => PropertyOwnerPropertiesCubit(PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
+          create: (_) => PropertyOwnerPropertiesCubit(
+              PropertyDetailsRepository(PropertyDetailsApi(Dio()))),
         ),
 
         /// Auth
         BlocProvider<SignUpCubit>(
-          create: (_) =>  SignUpCubit(authRepository: AuthRepository(authApi: AuthApi(Dio()))),
+          create: (_) => SignUpCubit(
+              authRepository: AuthRepository(authApi: AuthApi(Dio()))),
         ),
         BlocProvider<LoginCubit>(
-          create: (_) =>  LoginCubit(authRepository: AuthRepository(authApi: AuthApi(Dio()))),
+          create: (_) => LoginCubit(
+              authRepository: AuthRepository(authApi: AuthApi(Dio()))),
         ),
       ],
       child: LocaleBuilder(
@@ -260,7 +268,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home:  const OwnerRootScreen(),
+          // home: const BothAuthScreen(isOwner: false,),
+          home: const RootScreen(),
         ),
       ),
     );
@@ -286,7 +295,8 @@ class IsolateRunner<T> {
     final receivePort = ReceivePort();
 
     // Spawn an isolate
-    await Isolate.spawn(_isolateEntry, [receivePort.sendPort, function, params]);
+    await Isolate.spawn(
+        _isolateEntry, [receivePort.sendPort, function, params]);
 
     // Wait for the result from the isolate
     final result = await receivePort.first as T;
@@ -308,5 +318,3 @@ class IsolateRunner<T> {
     sendPort.send(result);
   }
 }
-
-

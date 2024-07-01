@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,6 +12,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../../core/constant/firebase/firebase_collections_names.dart';
 import '../../../../../core/constant/firebase/firebase_field_names.dart';
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../data/models/chatRoom_model.dart';
 import '../../data/models/message_model.dart';
 
@@ -18,20 +20,29 @@ import '../../data/models/message_model.dart';
 class ChatRepository {
   late final String myUid;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final Completer<void> _initCompleter = Completer<void>();
 
   ChatRepository() {
     _init();
   }
 
   Future<void> _init() async {
-    final prefs = await SharedPreferences.getInstance();
-    myUid = prefs.getString('user_id') ?? '';
+    final prefs = await SharedPrefManager.getData(AppConstants.userId);
+    myUid = prefs ?? '';
+    _initCompleter.complete();
+  }
+
+  Future<void> _ensureInitialized() async {
+    if (!_initCompleter.isCompleted) {
+      await _initCompleter.future;
+    }
   }
 
   Future<String> createChatroom({
     required String userId,
   }) async {
     try {
+      await _ensureInitialized();
       // if (myUid.isEmpty) {
       //   throw Exception('User ID is empty');
       // }
@@ -41,7 +52,7 @@ class ChatRepository {
       );
 
       // sorted members
-      final sortedMembers = [/*myUid*/ AppConstants.userIdFake, userId]..sort((a, b) => a.compareTo(b));
+      final sortedMembers = [myUid , userId]..sort((a, b) => a.compareTo(b));
 
       // existing chatRooms
       final existingChatRooms = await chatRooms
@@ -83,6 +94,7 @@ class ChatRepository {
     required String chatroomId,
     required String receiverId,
     required String fcmToken,
+    required String userId
   }) async {
     try {
       final messageId = const Uuid().v1();
@@ -91,7 +103,7 @@ class ChatRepository {
       MessageModel newMessage = MessageModel(
         message: message,
         messageId: messageId,
-        senderId: AppConstants.userIdFake,
+        senderId: userId,
         receiverId: receiverId,
         timestamp: now,
         seen: false,

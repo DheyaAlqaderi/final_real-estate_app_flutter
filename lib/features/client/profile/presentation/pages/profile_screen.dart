@@ -99,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: FutureBuilder<ProfileModel?>(
-          future: profileRepository.getProfile(id!),
+          future: profileRepository.getProfile(id ?? 0),
           builder: (context, snapshot){
             if(snapshot.hasError){
               return const SizedBox();
@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
                         image: DecorationImage(
-                          image: CachedNetworkImageProvider(snapshot.data!.image!),
+                          image: CachedNetworkImageProvider(snapshot.data!.image ?? AppConstants.noImageUrl),
                           fit: BoxFit.cover,
                         ),
                       ),

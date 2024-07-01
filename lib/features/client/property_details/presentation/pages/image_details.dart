@@ -1,17 +1,9 @@
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:retrofit/retrofit.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
-import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 
 import '../../../../../core/utils/images.dart';
 import '../../data/model/image_model.dart';
@@ -113,7 +105,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                       icon: SvgPicture.asset(Images.rightArrow),
                       onPressed: () {
                         if (_currentIndex < widget.images!.length - 1) {
-                          _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+                          _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                         }
                       },
                     ),
@@ -124,7 +116,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                     bottom: 10,
                     child: Container(
                       width: 200,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
                       color: Colors.white,
@@ -138,19 +130,19 @@ class _ImageDetailsState extends State<ImageDetails> {
                             print('Failed to load image: $exception');
                           },
                           backgroundColor: Colors.transparent, // Optional: set a background color
-                          child: widget.ownerImage == null || widget.ownerImage.isEmpty
-                              ? Icon(Icons.person) // Optional: show an icon if there's no image
+                          child: widget.ownerImage.isEmpty
+                              ? const Icon(Icons.person) // Optional: show an icon if there's no image
                               : null,
                         ),
 
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(widget.ownerName,style: fontMediumBold,maxLines: 1,overflow: TextOverflow.ellipsis,),
                               Row(
-                                children: List.generate(5, (index) => Icon(Icons.star, color: Colors.orange, size: 16)),
+                                children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.orange, size: 16)),
                               ),
                             ],
                           ),
@@ -203,8 +195,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                             print('Failed to load image: $exception');
                           },
                           backgroundColor: Colors.transparent, // Optional: set a background color
-                          child: widget.ownerImage == null || widget.ownerImage.isEmpty
-                              ? Icon(Icons.person) // Optional: show an icon if there's no image
+                          child: widget.ownerImage.isEmpty
+                              ? const Icon(Icons.person) // Optional: show an icon if there's no image
                               : null,
                         )
 
@@ -271,10 +263,10 @@ class _ImageDetailsState extends State<ImageDetails> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              _pageController.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+                              _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                             },
                             child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 3),
+                              margin: const EdgeInsets.symmetric(horizontal: 3),
                               decoration: BoxDecoration(
                                   border: Border.all(
                                     color: _currentIndex == index ? Colors.blue : Colors.transparent,

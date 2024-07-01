@@ -22,7 +22,7 @@ class _BestSellerWidgetState extends State<BestSellerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 10),
       height: 206,
       width: 160,
       decoration: BoxDecoration(
@@ -34,7 +34,7 @@ class _BestSellerWidgetState extends State<BestSellerWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
-          SizedBox(height: 25.0,),
+          const SizedBox(height: 25.0,),
           Container(
             height: 99,
             width: 99,

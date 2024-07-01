@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 import '../../../../../core/utils/styles.dart';
@@ -39,25 +40,30 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                         ),
                         child: const Align(
                           alignment: Alignment.center,
-                          child: Icon(Icons.arrow_back_ios_new_outlined, size: 20),
+                          child:
+                              Icon(Icons.arrow_back_ios_new_outlined, size: 20),
                         ),
                       ),
                     ),
                     const SizedBox(width: 100.0),
-                    Text(Locales.string(context, "add_alarm"), style: fontMediumBold),
-
+                    Text(Locales.string(context, "add_alarm"),
+                        style: fontMediumBold),
                   ],
                 ),
               ),
             ),
 
             // alarm page section
-            const SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-
-
+                  Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(color: Colors.amber),
+                    child: Text("hello world"),
+                  )
                 ],
               ),
             ),

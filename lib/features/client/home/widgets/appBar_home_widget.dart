@@ -1,7 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_real_estate/core/utils/dimensions.dart';
 import 'package:smart_real_estate/features/common_widget/circle_button_widget_icon.dart';
+
+import '../../../../core/constant/app_constants.dart';
+import '../../../../core/helper/local_data/shared_pref.dart';
+import '../../profile/domain/repositories/profile_repository.dart';
 class AppBarHomeWidget extends StatefulWidget {
   const AppBarHomeWidget({super.key, required this.image, required this.onAvatarTap, required this.onBillTap});
   final String image;
@@ -12,6 +17,7 @@ class AppBarHomeWidget extends StatefulWidget {
 }
 
 class _AppBarHomeWidgetState extends State<AppBarHomeWidget> {
+
   @override
   Widget build(BuildContext context) {
     return Row(

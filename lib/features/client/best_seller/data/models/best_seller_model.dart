@@ -19,12 +19,12 @@ class BestSellerModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['count'] = this.count;
-    data['next'] = this.next;
-    data['previous'] = this.previous;
-    if (this.results != null) {
-      data['results'] = this.results!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['count'] = count;
+    data['next'] = next;
+    data['previous'] = previous;
+    if (results != null) {
+      data['results'] = results!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -68,17 +68,17 @@ class Results {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['email'] = this.email;
-    data['phone_number'] = this.phoneNumber;
-    data['username'] = this.username;
-    data['name'] = this.name;
-    data['is_active'] = this.isActive;
-    data['image'] = this.image;
-    data['property_count'] = this.propertyCount;
-    data['user_type'] = this.userType;
-    data['rate_review'] = this.rateReview;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
+    data['username'] = username;
+    data['name'] = name;
+    data['is_active'] = isActive;
+    data['image'] = image;
+    data['property_count'] = propertyCount;
+    data['user_type'] = userType;
+    data['rate_review'] = rateReview;
     return data;
   }
 }

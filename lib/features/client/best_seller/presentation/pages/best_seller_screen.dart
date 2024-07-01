@@ -85,7 +85,7 @@ class _BestSellerScreenState extends State<BestSellerScreen> {
                         runSpacing: 1,
                         spacing: 1,
                         children: List.generate(
-                          data!.length,
+                          data.length,
                             (index) => Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: BestSellerWidget(
@@ -102,7 +102,7 @@ class _BestSellerScreenState extends State<BestSellerScreen> {
                       ),
                     );
                   } else{
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 }
             ),

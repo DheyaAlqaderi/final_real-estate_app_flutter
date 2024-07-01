@@ -6,7 +6,6 @@ import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
-import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
 class WelcomeSelectScreen extends StatefulWidget {
   const WelcomeSelectScreen({super.key});
@@ -39,6 +38,7 @@ class _WelcomeSelectScreenState extends State<WelcomeSelectScreen> {
               textAlign: TextAlign.center,
               style: fontMedium
             ),
+
             const Padding(padding: EdgeInsets.all(10)),
             SizedBox(
               width: 223,
@@ -60,7 +60,7 @@ class _WelcomeSelectScreenState extends State<WelcomeSelectScreen> {
                     await SharedPrefManager.saveData("FirstTime", "yes");
                   }
                   Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => const BothAuthScreen()));
+                      context, MaterialPageRoute(builder: (context) => const BothAuthScreen(isOwner: false,)));
                 },
                 child: Text(
                   Locales.string(context, "join_as_client"),

@@ -1,5 +1,3 @@
-import 'package:smart_real_estate/core/constant/app_constants.dart';
-import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
 
 import 'banners_state.dart';

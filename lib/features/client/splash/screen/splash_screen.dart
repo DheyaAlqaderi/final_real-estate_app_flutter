@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/onBoarding/pages/onBoarding_screen.dart';
-import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/client/welcome/pages/welcome_select_screen.dart';
 
 import '../../../../core/helper/local_data/shared_pref.dart';

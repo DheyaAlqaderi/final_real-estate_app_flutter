@@ -1,10 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/styles.dart';
@@ -25,7 +21,7 @@ class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
       centerTitle: true,
 
       leading:Container(
-        padding: EdgeInsets.symmetric(horizontal: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 7),
         child: CircleButtonWidgetIcon(
             icon: Icons.notifications_none,
             onTap: () {
@@ -38,7 +34,7 @@ class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
 
       actions: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 7),
           child: ClipOval(
             child: Image.asset(Images.mePicture),
           )

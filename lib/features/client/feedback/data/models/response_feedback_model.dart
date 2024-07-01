@@ -36,16 +36,16 @@ class FeedbackResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['status'] = this.status;
-    data['phone_number'] = this.phoneNumber;
-    data['created_time'] = this.createdTime.toIso8601String();
-    data['solved_time'] = this.solvedTime?.toIso8601String();
-    data['email'] = this.email;
-    data['problem_text'] = this.problemText;
-    data['type'] = this.type;
-    data['ticket_solver'] = this.ticketSolver;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['status'] = status;
+    data['phone_number'] = phoneNumber;
+    data['created_time'] = createdTime.toIso8601String();
+    data['solved_time'] = solvedTime?.toIso8601String();
+    data['email'] = email;
+    data['problem_text'] = problemText;
+    data['type'] = type;
+    data['ticket_solver'] = ticketSolver;
     return data;
   }
 }

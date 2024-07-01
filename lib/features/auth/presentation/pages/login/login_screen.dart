@@ -19,8 +19,9 @@ final formKey = GlobalKey<FormState>();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
-    super.key,
+    super.key, required this.isOwner,
   });
+  final bool isOwner;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -84,7 +85,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         );
                         SharedPrefManager.saveData(AppConstants.token, response.token.toString());
-                        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                        SharedPrefManager.saveData(AppConstants.userId, response.userId.toString());
+                        SharedPrefManager.saveData(AppConstants.userType, widget.isOwner?AppConstants.promoter:AppConstants.customer);
+
+                        if(!widget.isOwner){
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                        } else{
+
+                        }
 
                       } else if (state is LoginFailure) {
                         // Show error message on login failure
@@ -113,12 +121,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: double.infinity,
                             height: 58,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async{
                                 // Sign in button
-                                if(formKey.currentState!.validate()) {
+                                if(formKey.currentState!.validate()){
                                   final email = emailController.text;
                                   final password = passwordController.text;
-                                  loginCubit.login(email, password);
+                                  await loginCubit.login(email, password);
+
                                 }
                               },
                               style: ElevatedButton.styleFrom(

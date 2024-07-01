@@ -13,6 +13,7 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
 import '../../../../../core/constant/firebase/utils.dart';
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../../core/utils/images.dart';
 
 class MessageFieldWidget extends StatefulWidget {
@@ -34,10 +35,21 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
   bool _uploading = false; // Flag to track whether the upload is in progress
   int currentLines = 1;
   final int maxLines = 6;
+  String? userId;
 
+
+
+  Future<void> _loadUserId() async {
+    final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
+    print(loadedUserId.toString());
+    setState(() {
+      userId = loadedUserId;
+    });
+  }
   @override
   void initState() {
     super.initState();
+    _loadUserId();
     chatRepository = ChatRepository();
     _messageController = TextEditingController();
     _messageController.addListener(() {
@@ -399,7 +411,8 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
                             message: messageText,
                             chatroomId: widget.chatRoomId,
                             receiverId: widget.receiverId,
-                            fcmToken: widget.fcmToken
+                            fcmToken: widget.fcmToken,
+                            userId: userId.toString()
                           ).then((result) {
                             if (result != null) {
                               // Handle any errors returned by the sendMessage function

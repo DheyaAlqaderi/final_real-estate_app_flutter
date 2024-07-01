@@ -39,12 +39,22 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   List<DeleteFavoriteModel> deleteList = [];
 
   late List<FavoriteResult> data;
+  String? userId;
 
+
+
+  Future<void> _loadUserId() async {
+    final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
+    setState(() {
+      userId = loadedUserId ?? "";
+    });
+  }
     String? token=" " ;
 
   @override
   void initState()  {
     super.initState();
+    _loadUserId();
       fetchToken();
     favoriteRepository = FavoriteRepository(Dio());
     fetchData();
@@ -112,15 +122,16 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
 
     return  Scaffold(
-      appBar:  FavoriteAppBar(onTap: ()async{
+      appBar:  list != 0?FavoriteAppBar(onTap: ()async{
         await favoriteRepository.deleteAllFavorite("token $token", deleteList);
         setState(() {
           data =  [];
           list = 0;
         });
-        Navigator.pop(context);
-      },),
-      body: RefreshIndicator(
+        // Navigator.pop(context);
+      },):null,
+      body: userId!.isNotEmpty
+          ?RefreshIndicator(
         onRefresh: ()async{
           fetchData();
         },
@@ -310,6 +321,57 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           },
         ),
 
+      )
+          : Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "You are not logged in yet",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.redAccent,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: (){
+
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15), backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Go to Login',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

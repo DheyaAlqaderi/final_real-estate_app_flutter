@@ -24,12 +24,12 @@ class RequestFeedback {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['phone_number'] = this.phoneNumber;
-    data['email'] = this.email;
-    data['problem_text'] = this.problemText;
-    data['type'] = this.type;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['phone_number'] = phoneNumber;
+    data['email'] = email;
+    data['problem_text'] = problemText;
+    data['type'] = type;
     return data;
   }
 }

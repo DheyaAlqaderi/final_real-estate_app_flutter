@@ -2,17 +2,13 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/client/profile/data/models/profile_model.dart';
 import 'package:smart_real_estate/features/client/profile/domain/repositories/profile_repository.dart';
-import 'package:smart_real_estate/features/client/profile/presentation/pages/profile_screen.dart';
-import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../../core/utils/images.dart';
 import '../../../../../core/utils/styles.dart';
@@ -345,7 +341,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                                   }
                                   },
 
-                                child: isLoading?const CircularProgressIndicator(color: Colors.white,):Text("update")
+                                child: isLoading?const CircularProgressIndicator(color: Colors.white,):const Text("update")
                             )
                           ],
                         ),
@@ -355,10 +351,10 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 ),
               );
             }else if (snapshot.hasError){
-              return SizedBox();
+              return const SizedBox();
             }
             else {
-              return  SizedBox();
+              return  const SizedBox();
             }
           }
         ),

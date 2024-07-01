@@ -57,7 +57,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
               var profile = snapshot.data!;
               return Column(
                 children: [
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
