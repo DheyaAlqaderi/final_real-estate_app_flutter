@@ -15,13 +15,14 @@ class HighPlacesRepo{
   Future<PropertyModel> getPropertyByState({
     required int pageSize,
     required int pageNumber,
+    bool isActive = true,
     required int stateId}) async{
 
     try{
       var mToken = await _loadToken();
       String token = mToken.toString();
       final response = await _highStateApi.getPropertyByState(
-          pageNumber, pageSize, stateId, token);
+          pageNumber, pageSize, stateId, token, isActive);
 
       if (kDebugMode) {
         print("state property success ");

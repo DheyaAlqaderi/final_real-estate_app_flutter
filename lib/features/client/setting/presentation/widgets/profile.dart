@@ -28,12 +28,8 @@ class _SettingTempleteState extends State<SettingTemplete> {
             // Text(Locales.string(context, hamzah))
             Text(Locales.string(context, widget.hamzah,),style: fontMediumBold,),
             (widget.flag)
-                ?SvgPicture.asset(widget.path,height: 24.0,width: 24.0,)
+                ?SvgPicture.asset(widget.path,height: 24.0,width: 24.0, color: Theme.of(context).colorScheme.onSurface,)
                 :const SizedBox()
-
-
-
-
           ],
         ),
       ),

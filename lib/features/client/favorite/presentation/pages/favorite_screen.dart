@@ -128,7 +128,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           data =  [];
           list = 0;
         });
-        // Navigator.pop(context);
+        Navigator.pop(context);
       },):null,
       body: userId!.isNotEmpty
           ?RefreshIndicator(

@@ -47,6 +47,8 @@ abstract class PropertyDetailsApi{
   @GET('api/property/')
   Future<PropertyModel> getPropertyOwnerPropertiesByUserId(
       @Query("user") int userId,
+      @Query("is_active") bool isActive,
+      @Header("Authorization") String token,
       );
 
 }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:get/get.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
+import 'package:smart_real_estate/features/auth/domain/repo/auth_repository.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
+import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/common_widget/pop_up_massage.dart';
@@ -197,7 +199,32 @@ class _SettingScreenState extends State<SettingScreen> {
 
               const SizedBox(height: 15.0,),
 
-              Text(Locales.string(context, "logout"),style:const TextStyle(fontSize: 19,color: Colors.blue)),
+              InkWell(
+                onTap: () async {
+                  bool confirmLogout = await Get.defaultDialog(
+                    title: 'Confirm Logout',
+                    middleText: 'Are you sure you want to logout?',
+                    actions: [
+                      TextButton(
+                        onPressed: () => Get.back(result: false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Get.back(result: true),
+                        child: const Text('Logout'),
+                      ),
+                    ],
+                  );
+
+                  if (confirmLogout ?? false) {
+                    // Perform logout action
+                    await AuthRepository.logout();
+                    // Navigate to login screen or root screen
+                    Get.offAll(() => const RootScreen());
+                  }
+
+                },
+                  child: Text(Locales.string(context, "logout"),style:const TextStyle(fontSize: 19,color: Colors.blue))),
 
 
 
@@ -333,9 +360,9 @@ class _SettingScreenState extends State<SettingScreen> {
   void _showLanguageBottomSheet(BuildContext context) {
     Get.bottomSheet(
       Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           ),

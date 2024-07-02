@@ -39,14 +39,16 @@ abstract class HomeApiService{
   @GET('api/property')
   Future<PropertyModel> getFeaturedProperties(
       @Query("is_featured") bool isFeatured,
-      @Header("Authorization") String token
+      @Header("Authorization") String token,
+      @Query("is_active") bool isActive
       );
 
   @GET('api/property')
   Future<PropertyModel> getFeaturedPropertiesWithCategory(
       @Query("main_category") int categoryId,
       @Query("is_featured") bool isFeatured,
-      @Header("Authorization") String token
+      @Header("Authorization") String token,
+      @Query("is_active") bool isActive
       );
 
 
@@ -64,13 +66,15 @@ abstract class HomeApiService{
       @Query("page") int page,
       @Query("page_size") int pageSize,
       @Query("main_category") int category,
-      @Header("Authorization") String token
+      @Header("Authorization") String token,
+      @Query("is_active") bool isActive
       );
 
   @GET('api/property')
   Future<PropertyModel> getPropertyByAllCategory(
       @Query("page") int page,
       @Query("page_size") int pageSize,
-      @Header("Authorization") String token
+      @Header("Authorization") String token,
+      @Query("is_active") bool isActive
       );
 }

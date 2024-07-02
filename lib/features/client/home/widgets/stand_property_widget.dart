@@ -9,6 +9,7 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/styles.dart';
+import '../../../auth/presentation/pages/both_auth_screen.dart';
 import '../../add_favorite/repository/add_favorite_repository.dart';
 import '../../favorite/data/repositories/network.dart';
 import '../data/models/property/property_model.dart';
@@ -32,7 +33,7 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
     final loadUserToken = await SharedPrefManager.getData(AppConstants.token);
     // print(loadUserToken.toString());
     setState(() {
-      token = loadUserToken ?? '';
+      token = loadUserToken ?? ' ';
     });
   }
 
@@ -96,18 +97,41 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                         child: InkWell(
                           onTap: () async {
                             try {
-                              if (isSelected) {
-                                // Perform delete favorite action
-                                await favoriteRepository.deleteFavorite("token ${token!}", widget.propertyModel.results![widget.index].id!);
-                              } else {
-                                // Perform add favorite action
-                                await AddFavoriteRepository.addFavorite(widget.propertyModel.results![widget.index].id!, token!);
-                              }
+                              if (token != " ") {
+                                if (isSelected) {
+                                  // Perform delete favorite action
+                                  await favoriteRepository.deleteFavorite("token ${token!}", widget.propertyModel.results![widget.index].id!);
+                                  Get.snackbar(
+                                    'Success',
+                                    'Favorite deleted successfully',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                } else {
+                                  // Perform add favorite action
+                                  await AddFavoriteRepository.addFavorite(widget.propertyModel.results![widget.index].id!, token!);
+                                }
 
-                              // Toggle isSelected state
-                              setState(() {
-                                isSelected = !isSelected;
-                              });
+                                // Toggle isSelected state
+                                setState(() {
+                                  isSelected = !isSelected;
+                                });
+                              } else {
+                                Get.defaultDialog(
+                                  title: 'Login First',
+                                  middleText: 'You have to login in order to add favorite',
+                                  backgroundColor: Colors.white.withOpacity(0.9),
+                                  titleStyle: const TextStyle(color: Colors.black),
+                                  middleTextStyle: const TextStyle(color: Colors.black),
+                                  confirm: ElevatedButton(
+                                    onPressed: () {
+                                      // Navigate to login page
+                                      Get.to(() =>const BothAuthScreen(isOwner: false));
+                                    },
+                                    child: const Text('Login'),
+                                  ),
+                                  barrierDismissible: true,
+                                );
+                              }
                             } catch (e) {
                               // Handle any errors here
                               Get.snackbar(
@@ -118,6 +142,7 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                                 colorText: Colors.white,
                               );
                             }
+
                           },
                           child: Container(
                             height: 25.0,

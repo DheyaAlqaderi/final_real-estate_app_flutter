@@ -1,13 +1,19 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/image_details.dart';
 
+import '../../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../../../core/utils/images.dart';
+import '../../../../../auth/presentation/pages/both_auth_screen.dart';
+import '../../../../add_favorite/repository/add_favorite_repository.dart';
+import '../../../../favorite/data/repositories/network.dart';
 
 
 class ImageSectionPropertyDetailsWidget extends StatefulWidget {
@@ -17,13 +23,14 @@ class ImageSectionPropertyDetailsWidget extends StatefulWidget {
   final String categoryName;
   final String ownerName;
   final String ownerImage;
+  final int propertyId;
 
   const ImageSectionPropertyDetailsWidget({
     super.key,
     required this.isFavorite,
     required this.imagesModel,
     required this.rating,
-    required this.categoryName, required this.ownerName, required this.ownerImage
+    required this.categoryName, required this.ownerName, required this.ownerImage, required this.propertyId
   });
 
   @override
@@ -35,12 +42,23 @@ class _ImageSectionPropertyDetailsWidgetState
     extends State<ImageSectionPropertyDetailsWidget> {
 
   late bool isSelected;
+  String? token;
+  late FavoriteRepository favoriteRepository;
 
+  Future<void> _loadUserToken() async {
+    final loadUserToken = await SharedPrefManager.getData(AppConstants.token);
+    // print(loadUserToken.toString());
+    setState(() {
+      token = loadUserToken ?? ' ';
+    });
+  }
 
 
   @override
   void initState() {
     super.initState();
+    _loadUserToken();
+    favoriteRepository = FavoriteRepository(Dio());
     isSelected = widget.isFavorite;
   }
   @override
@@ -177,10 +195,53 @@ class _ImageSectionPropertyDetailsWidgetState
             Row(
               children: [
                 InkWell(
-                  onTap: (){
-                    setState(() {
-                      isSelected ? isSelected=false : isSelected=true;
-                    });
+                  onTap: () async {
+                    try {
+                      if (token != " ") {
+                        if (isSelected) {
+                          // Perform delete favorite action
+                          await favoriteRepository.deleteFavorite("token ${token!}", widget.propertyId);
+                          Get.snackbar(
+                            'Success',
+                            'Favorite deleted successfully',
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                        } else {
+                          // Perform add favorite action
+                          await AddFavoriteRepository.addFavorite(widget.propertyId, token!);
+                        }
+
+                        // Toggle isSelected state
+                        setState(() {
+                          isSelected = !isSelected;
+                        });
+                      } else {
+                        Get.defaultDialog(
+                          title: 'Login First',
+                          middleText: 'You have to login in order to add favorite',
+                          backgroundColor: Colors.white.withOpacity(0.9),
+                          titleStyle: const TextStyle(color: Colors.black),
+                          middleTextStyle: const TextStyle(color: Colors.black),
+                          confirm: ElevatedButton(
+                            onPressed: () {
+                              // Navigate to login page
+                              Get.to(() =>const BothAuthScreen(isOwner: false));
+                            },
+                            child: const Text('Login'),
+                          ),
+                          barrierDismissible: true,
+                        );
+                      }
+                    } catch (e) {
+                      // Handle any errors here
+                      Get.snackbar(
+                        'Error',
+                        'Failed to perform action: $e',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                    }
                   },
                   child: Container(
                     height: 50.0,

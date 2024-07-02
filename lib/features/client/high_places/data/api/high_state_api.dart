@@ -17,6 +17,7 @@ abstract class HighStateApi{
       @Query("page") int propertyId,
       @Query("page_size") int pageSize,
       @Query("state") int state,
-      @Header("Authorization") String token
+      @Header("Authorization") String token,
+      @Query("is_active") bool isActive
       );
 }

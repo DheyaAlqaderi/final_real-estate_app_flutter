@@ -31,6 +31,17 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   String? token = " ";
   File? imageFile;
   final picker = ImagePicker();
+  int? userId;
+
+
+
+  Future<void> _loadUserId() async {
+    final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
+    // print(loadedUserId.toString());
+    setState(() {
+      userId = int.parse(loadedUserId ?? "1");
+    });
+  }
 
   void showImagePicker(BuildContext context) {
     showModalBottomSheet(
@@ -154,6 +165,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   @override
   void initState() {
     super.initState();
+    _loadUserId();
     fetchToken();
     profileRepository = ProfileRepository(Dio());
   }
@@ -175,7 +187,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
       ),
       body:  SingleChildScrollView(
         child: FutureBuilder<ProfileModel?>(
-          future: profileRepository.getProfile(31),
+          future: profileRepository.getProfile(userId??1),
           builder: (context, snapshot){
             if (snapshot.hasData){
         

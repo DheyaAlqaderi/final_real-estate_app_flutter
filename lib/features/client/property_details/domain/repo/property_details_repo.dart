@@ -1,5 +1,7 @@
 import 'package:smart_real_estate/features/client/property_details/data/remote_api/property_details_api.dart';
 
+import '../../../../../core/constant/app_constants.dart';
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../home/data/models/property/property_model.dart';
 import '../../data/model/property_details_model.dart';
 import '../../data/model/review_model.dart';
@@ -50,13 +52,25 @@ class PropertyDetailsRepository {
   }
 
   /// to get property owner properties by userId
-  Future<PropertyModel> getPropertyOwnerPropertiesByUserId(int userId) async {
+  Future<PropertyModel> getPropertyOwnerPropertiesByUserId(int userId,
+      {bool isActive = true}) async {
     try {
-      return await _api.getPropertyOwnerPropertiesByUserId(userId);
+      var mToken = await _loadToken();
+      String token = mToken.toString();
+      return await _api.getPropertyOwnerPropertiesByUserId(userId,isActive,token);
     } catch (error) {
       // Handle error
       throw Exception('Failed to fetch property owner properties: $error');
     }
+  }
+
+  Future<String> _loadToken() async {
+    await SharedPrefManager.init();
+    String? loadedToken = await SharedPrefManager.getData(AppConstants.token);
+    if (loadedToken == null || loadedToken.isEmpty) {
+      return " ";
+    }
+    return "token $loadedToken";
   }
 
 }

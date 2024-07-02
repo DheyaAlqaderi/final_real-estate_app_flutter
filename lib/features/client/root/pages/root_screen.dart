@@ -5,6 +5,8 @@ import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
 import 'package:smart_real_estate/features/client/home/pages/home_screen.dart';
 import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
+import '../../../../core/constant/app_constants.dart';
+import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../core/utils/styles.dart';
 import '../../../common_widget/bottom_nav.dart';
 import '../../alarm/presentation/pages/add_alarm_screen.dart';
@@ -21,6 +23,26 @@ class _RootScreenState extends State<RootScreen>{
 
   late List<String> titleList;
   int _bottomNavIndex = 0;
+  int? userId;
+  bool isLoggedIn = false;
+
+  Future<void> _loadUserId() async {
+    final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
+    // print(loadedUserId.toString());
+    setState(() {
+      userId = int.parse(loadedUserId ?? "0");
+    });
+
+    if(userId == 0){
+      setState(() {
+        isLoggedIn = false;
+      });
+    } else {
+      setState(() {
+        isLoggedIn = true;
+      });
+    }
+  }
 
   List<Widget> pages = [
     const HomeScreen(),
@@ -42,6 +64,12 @@ class _RootScreenState extends State<RootScreen>{
     ];
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUserId();
+
+  }
   final List<IconData> lineIconsList = [
     LineIcons.home,
     LineIcons.alternateMedicalChat,
@@ -78,8 +106,8 @@ class _RootScreenState extends State<RootScreen>{
         },
         iconSvg: iconSvg,
       ),
-      floatingActionButton: buildFloatingActionButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: isLoggedIn?buildFloatingActionButton():null,
+      floatingActionButtonLocation: isLoggedIn?FloatingActionButtonLocation.endDocked:null,
     );
   }
 

@@ -117,9 +117,13 @@ class _HomeApiService implements HomeApiService {
   Future<PropertyModel> getFeaturedProperties(
     bool isFeatured,
     String token,
+    bool isActive,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'is_featured': isFeatured};
+    final queryParameters = <String, dynamic>{
+      r'is_featured': isFeatured,
+      r'is_active': isActive,
+    };
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
@@ -149,11 +153,13 @@ class _HomeApiService implements HomeApiService {
     int categoryId,
     bool isFeatured,
     String token,
+    bool isActive,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'main_category': categoryId,
       r'is_featured': isFeatured,
+      r'is_active': isActive,
     };
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
@@ -214,12 +220,14 @@ class _HomeApiService implements HomeApiService {
     int pageSize,
     int category,
     String token,
+    bool isActive,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
       r'page_size': pageSize,
       r'main_category': category,
+      r'is_active': isActive,
     };
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
@@ -250,11 +258,13 @@ class _HomeApiService implements HomeApiService {
     int page,
     int pageSize,
     String token,
+    bool isActive,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
       r'page_size': pageSize,
+      r'is_active': isActive,
     };
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);

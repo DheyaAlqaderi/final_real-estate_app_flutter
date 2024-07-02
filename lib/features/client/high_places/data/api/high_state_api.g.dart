@@ -26,12 +26,14 @@ class _HighStateApi implements HighStateApi {
     int pageSize,
     int state,
     String token,
+    bool isActive,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': propertyId,
       r'page_size': pageSize,
       r'state': state,
+      r'is_active': isActive,
     };
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);

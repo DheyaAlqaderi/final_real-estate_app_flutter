@@ -89,11 +89,11 @@ class HomeRepository{
   }
 
   /// get Featured Property
-  Future<PropertyModel> getAllFeaturedProperty({required bool isFeatured}) async{
+  Future<PropertyModel> getAllFeaturedProperty({required bool isFeatured, bool isActive = true}) async{
     try{
       var mToken = await _loadToken();
       String token = mToken.toString();
-      final response = await _homeApiService.getFeaturedProperties(isFeatured, token);
+      final response = await _homeApiService.getFeaturedProperties(isFeatured, token, isActive);
 
       if (kDebugMode) {
         print(" Featured Property success $token");
@@ -107,11 +107,11 @@ class HomeRepository{
     }
   }
 
-  Future<PropertyModel> getAllFeaturedPropertyWithCategory({required bool isFeatured, required int categoryId}) async{
+  Future<PropertyModel> getAllFeaturedPropertyWithCategory({required bool isFeatured, required int categoryId, bool isActive = true}) async{
     try{
       var mToken = await _loadToken();
       String token = mToken.toString();
-      final response = await _homeApiService.getFeaturedPropertiesWithCategory(categoryId, isFeatured, token);
+      final response = await _homeApiService.getFeaturedPropertiesWithCategory(categoryId, isFeatured, token,isActive);
 
       if (kDebugMode) {
         print(" Featured Property with category success $token");
@@ -131,14 +131,15 @@ class HomeRepository{
   Future<PropertyModel> getPropertyByMainCategory({
     required int pageSize,
     required int pageNumber,
-    required int mainCategory
+    required int mainCategory,
+    bool isActive = true
   }) async{
 
     try{
       var mToken = await _loadToken();
       String token = mToken.toString();
       final response = await _homeApiService.getPropertyByMainCategory(
-          pageNumber, pageSize, mainCategory, token);
+          pageNumber, pageSize, mainCategory, token, isActive);
 
       if (kDebugMode) {
         print("home mainCategory property success $token");
@@ -156,6 +157,7 @@ class HomeRepository{
   Future<PropertyModel> getPropertyByAllCategory({
     required int pageSize,
     required int pageNumber,
+    bool isActive = true
   }) async {
     try {
       String token = await _loadToken();
@@ -163,6 +165,7 @@ class HomeRepository{
         pageNumber,
         pageSize,
         token,
+        isActive
       );
 
       if (kDebugMode) {
