@@ -120,16 +120,16 @@ void main() async {
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
 
-  // await SharedPrefManager.deleteData(AppConstants.userId);
-  // await SharedPrefManager.deleteData(AppConstants.token);
-  await SharedPrefManager.saveData(
-      AppConstants.token, 'cd1078633312c7a901f81ba427bf641b8f5113f2');
-  await SharedPrefManager.saveData(AppConstants.userId, '1');
-  String? token = await SharedPrefManager.getData(AppConstants.token);
-  String? id = await SharedPrefManager.getData(AppConstants.userId);
+  await SharedPrefManager.deleteData(AppConstants.userId);
+  await SharedPrefManager.deleteData(AppConstants.token);
+  // await SharedPrefManager.saveData(
+  //     AppConstants.token, 'cd1078633312c7a901f81ba427bf641b8f5113f2');
+  // await SharedPrefManager.saveData(AppConstants.userId, '1');
+  // String? token = await SharedPrefManager.getData(AppConstants.token);
+  // String? id = await SharedPrefManager.getData(AppConstants.userId);
 
-  print('token is $token');
-  print('token is $id');
+  // print('token is $token');
+  // print('token is $id');
 
   runApp(const MyApp());
 }

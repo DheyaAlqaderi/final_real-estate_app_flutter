@@ -56,6 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
   String imageProfile = " ";
   String userId = " ";
 
+  String? token;
+
+
+
+  Future<void> _loadToken() async {
+    final loadedToken = await SharedPrefManager.getData(AppConstants.token);
+    print(loadedToken.toString());
+    setState(() {
+      userId = loadedToken ?? ' ';
+    });
+  }
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -90,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
+    _loadToken();
     chipSelected = List.generate(10, (index) => false);
     defaultChipSelected = List.generate(1, (index) => false);
     setState(() {

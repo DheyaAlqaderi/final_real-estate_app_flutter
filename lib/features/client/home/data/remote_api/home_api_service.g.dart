@@ -13,7 +13,7 @@ class _HomeApiService implements HomeApiService {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.9:8000/';
+    baseUrl ??= 'http://192.168.1.8:8000/';
   }
 
   final Dio _dio;
@@ -114,10 +114,14 @@ class _HomeApiService implements HomeApiService {
   }
 
   @override
-  Future<PropertyModel> getFeaturedProperties(bool isFeatured) async {
+  Future<PropertyModel> getFeaturedProperties(
+    bool isFeatured,
+    String token,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'is_featured': isFeatured};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
@@ -144,13 +148,15 @@ class _HomeApiService implements HomeApiService {
   Future<PropertyModel> getFeaturedPropertiesWithCategory(
     int categoryId,
     bool isFeatured,
+    String token,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'main_category': categoryId,
       r'is_featured': isFeatured,
     };
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
@@ -207,6 +213,7 @@ class _HomeApiService implements HomeApiService {
     int page,
     int pageSize,
     int category,
+    String token,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -214,7 +221,8 @@ class _HomeApiService implements HomeApiService {
       r'page_size': pageSize,
       r'main_category': category,
     };
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
@@ -241,13 +249,15 @@ class _HomeApiService implements HomeApiService {
   Future<PropertyModel> getPropertyByAllCategory(
     int page,
     int pageSize,
+    String token,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
       r'page_size': pageSize,
     };
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(

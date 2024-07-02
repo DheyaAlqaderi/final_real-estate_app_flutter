@@ -44,6 +44,7 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
     favoriteRepository = FavoriteRepository(Dio());
     _loadUserToken();
     isSelected= widget.propertyModel.results![widget.index].inFavorite!;
+    print("favo ${widget.propertyModel.results![widget.index].inFavorite!}");
   }
   @override
   Widget build(BuildContext context) {

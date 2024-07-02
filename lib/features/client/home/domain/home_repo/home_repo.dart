@@ -4,6 +4,8 @@ import 'package:smart_real_estate/features/client/home/data/models/banner/banner
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
 import 'package:smart_real_estate/features/client/home/data/models/state/state_model.dart';
 
+import '../../../../../core/constant/app_constants.dart';
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../data/models/category/category_model.dart';
 import '../../data/remote_api/home_api_service.dart';
 
@@ -89,10 +91,12 @@ class HomeRepository{
   /// get Featured Property
   Future<PropertyModel> getAllFeaturedProperty({required bool isFeatured}) async{
     try{
-      final response = await _homeApiService.getFeaturedProperties(isFeatured);
+      var mToken = await _loadToken();
+      String token = mToken.toString();
+      final response = await _homeApiService.getFeaturedProperties(isFeatured, token);
 
       if (kDebugMode) {
-        print(" Featured Property success");
+        print(" Featured Property success $token");
       }
       return response;
     } catch(e){
@@ -105,10 +109,12 @@ class HomeRepository{
 
   Future<PropertyModel> getAllFeaturedPropertyWithCategory({required bool isFeatured, required int categoryId}) async{
     try{
-      final response = await _homeApiService.getFeaturedPropertiesWithCategory(categoryId, isFeatured);
+      var mToken = await _loadToken();
+      String token = mToken.toString();
+      final response = await _homeApiService.getFeaturedPropertiesWithCategory(categoryId, isFeatured, token);
 
       if (kDebugMode) {
-        print(" Featured Property with category success");
+        print(" Featured Property with category success $token");
       }
       return response;
     } catch(e){
@@ -125,14 +131,17 @@ class HomeRepository{
   Future<PropertyModel> getPropertyByMainCategory({
     required int pageSize,
     required int pageNumber,
-    required int mainCategory}) async{
+    required int mainCategory
+  }) async{
 
     try{
+      var mToken = await _loadToken();
+      String token = mToken.toString();
       final response = await _homeApiService.getPropertyByMainCategory(
-          pageNumber, pageSize, mainCategory);
+          pageNumber, pageSize, mainCategory, token);
 
       if (kDebugMode) {
-        print("home mainCategory property success");
+        print("home mainCategory property success $token");
       }
       return response;
     } catch(e){
@@ -147,24 +156,36 @@ class HomeRepository{
   Future<PropertyModel> getPropertyByAllCategory({
     required int pageSize,
     required int pageNumber,
-  }) async{
-
-    try{
+  }) async {
+    try {
+      String token = await _loadToken();
       final response = await _homeApiService.getPropertyByAllCategory(
-          pageNumber,
-          pageSize);
+        pageNumber,
+        pageSize,
+        token,
+      );
 
       if (kDebugMode) {
-        print("home All Category properties success");
+        print("home All Category properties success with token: $token");
       }
       return response;
-    } catch(e){
+    } catch (e) {
       if (kDebugMode) {
-        print("error ${e.hashCode}");
+        print("Error in getPropertyByAllCategory: $e");
       }
-      throw Exception("$e");
+      throw Exception("Failed to get properties: $e");
     }
   }
+
+  Future<String> _loadToken() async {
+    await SharedPrefManager.init();
+    String? loadedToken = await SharedPrefManager.getData(AppConstants.token);
+    if (loadedToken == null || loadedToken.isEmpty) {
+      return " ";
+    }
+    return "token $loadedToken";
+  }
+
 
 
 }

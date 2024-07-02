@@ -1,11 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 
+import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/styles.dart';
+import '../../add_favorite/repository/add_favorite_repository.dart';
+import '../../favorite/data/repositories/network.dart';
 import '../data/models/property/property_model.dart';
 
 class StandPropertyWidget extends StatefulWidget {
@@ -20,10 +25,22 @@ class StandPropertyWidget extends StatefulWidget {
 
 class _StandPropertyWidgetState extends State<StandPropertyWidget> {
   late bool isSelected;
+  String? token;
+  late FavoriteRepository favoriteRepository;
+
+  Future<void> _loadUserToken() async {
+    final loadUserToken = await SharedPrefManager.getData(AppConstants.token);
+    // print(loadUserToken.toString());
+    setState(() {
+      token = loadUserToken ?? '';
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    favoriteRepository = FavoriteRepository(Dio());
+    _loadUserToken();
     isSelected= widget.propertyModel.results![widget.index].inFavorite!;
   }
 
@@ -77,10 +94,30 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                             ? null
                             : 10,
                         child: InkWell(
-                          onTap: (){
-                            setState(() {
-                              isSelected ? isSelected=false : isSelected=true;
-                            });
+                          onTap: () async {
+                            try {
+                              if (isSelected) {
+                                // Perform delete favorite action
+                                await favoriteRepository.deleteFavorite("token ${token!}", widget.propertyModel.results![widget.index].id!);
+                              } else {
+                                // Perform add favorite action
+                                await AddFavoriteRepository.addFavorite(widget.propertyModel.results![widget.index].id!, token!);
+                              }
+
+                              // Toggle isSelected state
+                              setState(() {
+                                isSelected = !isSelected;
+                              });
+                            } catch (e) {
+                              // Handle any errors here
+                              Get.snackbar(
+                                'Error',
+                                'Failed to perform action: $e',
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                            }
                           },
                           child: Container(
                             height: 25.0,

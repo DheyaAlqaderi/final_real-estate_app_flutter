@@ -13,7 +13,7 @@ class _HighStateApi implements HighStateApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.9:8000/';
+    baseUrl ??= 'http://192.168.1.8:8000/';
   }
 
   final Dio _dio;
@@ -25,6 +25,7 @@ class _HighStateApi implements HighStateApi {
     int propertyId,
     int pageSize,
     int state,
+    String token,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -32,7 +33,8 @@ class _HighStateApi implements HighStateApi {
       r'page_size': pageSize,
       r'state': state,
     };
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
