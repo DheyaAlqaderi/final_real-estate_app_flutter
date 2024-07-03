@@ -1,8 +1,12 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:get/get.dart';
 
 import '../../../../../core/utils/styles.dart';
+import '../../domain/repository/category_repo.dart';
+import '../manager/selection_controller.dart';
+import '../widget/selection_widget.dart';
 
 class AddAlarmScreen extends StatefulWidget {
   const AddAlarmScreen({super.key});
@@ -12,6 +16,28 @@ class AddAlarmScreen extends StatefulWidget {
 }
 
 class _AddAlarmScreenState extends State<AddAlarmScreen> {
+  final SelectionController controller = Get.put(SelectionController());
+  List<String> options = ['للأيجار', 'للبيــع'];
+  List<String> options2 = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchOptions2(); // Call the function to fetch options2 data
+  }
+
+  Future<void> fetchOptions2() async {
+    try {
+      List<String> fetchedOptions2 = await CategoriesRepository.fetchCategories();
+      setState(() {
+        options2 =  fetchedOptions2;
+      });
+    } catch (e) {
+      // Handle error
+      print('Failed to fetch options2: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,15 +82,40 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
             // alarm page section
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(color: Colors.amber),
-                    child: Text("hello world"),
-                  )
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    const Align(
+                      alignment: Alignment.centerRight,
+                      child: Text("نوع القائمة", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 10, // horizontal spacing between items
+                      runSpacing: 20, // vertical spacing between lines
+                      children: options.map((option) {
+                        return SelectionButton(option: option, controller: controller);
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 20),
+                    const Align(
+                      alignment: Alignment.centerRight,
+                      child: Text("فئة العقار", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 5, // horizontal spacing between items
+                      runSpacing: 10, // vertical spacing between lines
+                      children: options2.map((option) {
+                        return SelectionButton(option: option, controller: controller);
+                      }).toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

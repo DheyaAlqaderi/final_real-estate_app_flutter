@@ -14,6 +14,7 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
+import 'package:smart_real_estate/features/client/alarm/domain/repository/category_repo.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/category_property/data/remote_api/property_category_api.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/main_property_category_cubit.dart';
@@ -24,6 +25,7 @@ import 'package:smart_real_estate/features/client/chat/domain/repository/chat_re
 import 'package:smart_real_estate/features/client/chat/domain/repository/notification.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/high_places_repo/high_places_repo.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_cubit.dart';
+import 'package:smart_real_estate/features/client/home/data/models/category/category_model.dart';
 import 'package:smart_real_estate/features/client/home/data/remote_api/home_api_service.dart';
 import 'package:smart_real_estate/features/client/home/domain/home_repo/home_repo.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/banners/banners_cubit.dart';
@@ -103,7 +105,6 @@ void main() async {
   await FirebaseMessagingRepository.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onMessage.listen(_firebaseForegroundMessage);
-  // NotificationWsRepository.getMessage();
 
   /// initialize languages
   await Locales.init(['ar', 'en']); // get last saved language
@@ -116,6 +117,7 @@ void main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
+
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
@@ -269,7 +271,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home: const OwnerHomeScreen(),
+          home: const AddAlarmScreen(),
         ),
       ),
     );

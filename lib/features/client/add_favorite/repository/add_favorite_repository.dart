@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 
 class AddFavoriteRepository {
-  // static const String token = '744b28bc857ac73af9a88bbf4557f695889b44c4';
 
   static Future<void> addFavorite(int propId, String token) async {
     try {

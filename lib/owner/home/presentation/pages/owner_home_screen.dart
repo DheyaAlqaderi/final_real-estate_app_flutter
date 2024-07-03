@@ -41,6 +41,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
 
     setState(() {
       id = idf != null ? int.parse(idf) : null;
+      print("iddddddddddddddddd$id");
       token = mToken ?? " ";
     });
   }
@@ -48,7 +49,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: OwnerHomeAppbar(),
+      appBar: const OwnerHomeAppbar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: FutureBuilder<ProfileModel?>(
@@ -78,16 +79,15 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
                     const SizedBox(height: 40,),
 
                     FutureBuilder<PropertyModel?>(
-                      future:propertyDetailsApi.getPropertyOwnerByUserId(id!, 200),
+                      future:propertyDetailsApi.getPropertyOwnerByUserId(id!, 200, "token ${token!}"),
                       builder: (context,snapshot){
                         if(snapshot.hasError){
                           return const SizedBox();
                         }else if(snapshot.hasData){
                           var data = snapshot.data!.results!;
-
                           return Wrap(
                             crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 40.0,
+                            spacing: 20.0,
                             runSpacing: 10.0,
                             children: List.generate(
                               data.length,
@@ -104,27 +104,6 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
 
                             ),
                           );
-                          // return Wrap(
-                          //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          //     crossAxisCount: 2, // Number of columns
-                          //     // crossAxisSpacing: 4.0, // Space between columns
-                          //     // mainAxisSpacing: 4.0, // Space between rows
-                          //     //childAspectRatio: 0.75, // Aspect ratio of each grid item
-                          //   ),
-                          //   itemCount: data.length, // Number of items in the grid
-                          //   itemBuilder: (context, index) {
-                          //     return OwnerPropertyWidget(
-                          //       id: data[index].id!,
-                          //       imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
-                          //       title: data[index].name!,
-                          //       price: data[index].price!,
-                          //       address: data[index].address!,
-                          //       isFavorite: data[index].inFavorite!,
-                          //       rate: data[index].rate!,
-                          //     );
-                          //   },
-                          // );
-
                         }else{
                           return const Center(child: CircularProgressIndicator());
                         }

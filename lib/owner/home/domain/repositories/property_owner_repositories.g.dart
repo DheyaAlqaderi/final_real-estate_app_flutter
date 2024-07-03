@@ -13,7 +13,7 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.8:8000/';
+    baseUrl ??= 'http://192.168.0.53:8000/';
   }
 
   final Dio _dio;
@@ -24,13 +24,15 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
   Future<PropertyModel> getPropertyOwnerByUserId(
     int userId,
     int pageSize,
+    String token,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'user': userId,
       r'page_size': pageSize,
     };
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
@@ -55,7 +57,7 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
 
   @override
   Future<ActivatePropertyModel> activateProperty(
-    dynamic ActivateModel,
+    ActivateModel activateModel,
     String id,
     String token,
   ) async {
@@ -63,7 +65,8 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
-    final _data = ActivateModel;
+    final _data = <String, dynamic>{};
+    _data.addAll(activateModel.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ActivatePropertyModel>(Options(
       method: 'PUT',

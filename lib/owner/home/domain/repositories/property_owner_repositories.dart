@@ -18,12 +18,13 @@ abstract class OwnerPropertyRepository{
   @GET('api/property/')
   Future<PropertyModel> getPropertyOwnerByUserId(
       @Query("user") int userId,
-      @Query("page_size") int pageSize
+      @Query("page_size") int pageSize,
+      @Header("Authorization") String token
       );
 
   @PUT('api/property/{id}/update/')
   Future<ActivatePropertyModel> activateProperty(
-      @Body() ActivateModel,
+      @Body() ActivateModel activateModel,
       @Path("id") String id,
       @Header("Authorization") String token
     );

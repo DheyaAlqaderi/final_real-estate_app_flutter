@@ -7,11 +7,14 @@ import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/owner/home/data/models/activate_model.dart';
+import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../features/auth/presentation/pages/both_auth_screen.dart';
 import '../../../../features/client/add_favorite/repository/add_favorite_repository.dart';
 import '../../../../features/client/favorite/data/repositories/network.dart';
+import '../../domain/repositories/property_owner_repositories.dart';
 
 
 class OwnerPropertyWidget extends StatefulWidget {
@@ -36,23 +39,26 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
   late bool isSelected;
   String? token;
   late FavoriteRepository favoriteRepository;
+  late OwnerPropertyRepository ownerPropertyRepository;
 
   Future<void> _loadUserToken() async {
     final loadUserToken = await SharedPrefManager.getData(AppConstants.token);
-    // print(loadUserToken.toString());
-    setState(() {
-      token = loadUserToken ?? '';
-    });
+    print("my token isssssssssss${loadUserToken}");
+      token = loadUserToken ?? ' ';
+
   }
 
   @override
   void initState() {
     super.initState();
-    favoriteRepository = FavoriteRepository(Dio());
     _loadUserToken();
+    favoriteRepository = FavoriteRepository(Dio());
+    ownerPropertyRepository = OwnerPropertyRepository(Dio());
+
     setState(() {
       isSelected= widget.isFavorite;
     });
+    print("issssssssss${widget.isFavorite.toString()}");
 
   }
 
@@ -103,7 +109,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                             );
                           } else {
                             // Perform add favorite action
-                            await AddFavoriteRepository.addFavorite(widget.id, token!);
+                            await AddFavoriteRepository.addFavorite(widget.id,token!);
                           }
 
                           // Toggle isSelected state
@@ -146,7 +152,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                         borderRadius: BorderRadius.circular(50)
                       ),
                       child: Center(
-                        child: SvgPicture.asset(Images.heartIcon, color: widget.isFavorite?Colors.red:Colors.grey,),
+                        child: SvgPicture.asset(Images.heartIcon, color: isSelected?Colors.red:Colors.grey,),
                       ),
                     ),
                   ),
@@ -204,28 +210,108 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                   ],
                 ),
                 !widget.isActivate
-                    ?Container(
-                  height: 20,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Theme.of(context).primaryColor
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                    child: Text("activate", style: fontSmall.copyWith(color: Colors.grey)),
-                  ),
-                )
-                    : Container(
-                  height: 20,
-                  decoration: BoxDecoration(
+                    ?InkWell(
+                  onTap: () async {
+                    try {
+                      ActivateModel activateModel = ActivateModel();
+                      activateModel.isActive = true;
+                      final response = await ownerPropertyRepository.activateProperty(
+                        activateModel,
+                        widget.id.toString(),
+                        "token $token",
+                      );
+
+                      if (response.isActive ?? false) {
+                        Get.snackbar(
+                          'Success',
+                          'Property activated successfully!',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                        Get.offAll(() => const OwnerRootScreen());
+                      } else {
+                        Get.snackbar(
+                          'Error',
+                          'Failed to activate property.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                      }
+                    } catch (error) {
+                      Get.snackbar(
+                        'Error',
+                        'An error occurred: $error',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                      print(error);
+                    }
+                  },
+                      child: Container(
+                                        height: 20,
+                                        decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30.0),
-                      color: Colors.transparent
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                    child: Text("activated", style: fontSmall.copyWith(color: Colors.green)),
-                  ),
-                )
+                      color: Theme.of(context).primaryColor
+                                        ),
+                                        child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Text("activate", style: fontSmall.copyWith(color: Colors.grey)),
+                                        ),
+                                      ),
+                    )
+                    : InkWell(
+                      onTap: () async {
+                        try {
+                          ActivateModel activateModel = ActivateModel();
+                          activateModel.isActive = false;
+                          final response = await ownerPropertyRepository.activateProperty(
+                            activateModel,
+                            widget.id.toString(),
+                            "token $token",
+                          );
+
+                          if (response.isActive ?? false) {
+                            Get.snackbar(
+                              'Error',
+                              'Failed to activate property.',
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                            );
+                            Get.offAll(() => const OwnerRootScreen());
+                          } else {
+                            Get.snackbar(
+                              'Success',
+                              'Property unactivated successfully!',
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                            Get.offAll(() => const OwnerRootScreen());
+
+                          }
+                        } catch (error) {
+                          Get.snackbar(
+                            'Error',
+                            'An error occurred: $error',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                          print(error);
+                        }
+                      },
+                      child: Container(
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0),
+                        color: Colors.transparent
+                                        ),
+                                        child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Text("activated", style: fontSmall.copyWith(color: Colors.green)),
+                                        ),
+                                      ),
+                    )
               ],
             )
 

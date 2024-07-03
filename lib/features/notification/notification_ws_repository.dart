@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -60,19 +61,19 @@ class NotificationWsRepository {
   static void getMessage(){
 
     WebSocketChannel channel = IOWebSocketChannel.connect(
-        'ws://192.168.0.117:8000/ws/notifications/',
+        '${AppConstants.baseUrl4}/ws/notifications/',
         headers: {
-          'Authorization': "cd1078633312c7a901f81ba427bf641b8f5113f2" ?? "",
+          'Authorization': "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4" ?? "",
         });
 
     // Define the JSON body
-    final Map<String, dynamic> body = {
-      "command": "string",
-      "page_number": 0,
-    };
-
-    // Send the JSON body once the connection is open
-    channel.sink.add(jsonEncode(body));
+    // final Map<String, dynamic> body = {
+    //   "command": "string",
+    //   "page_number": 0,
+    // };
+    //
+    // // Send the JSON body once the connection is open
+    // channel.sink.add(jsonEncode(body));
 
     channel.stream.listen((event) async {
       final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
