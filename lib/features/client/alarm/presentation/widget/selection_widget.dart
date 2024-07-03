@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../manager/selection_controller.dart';
 
 class SelectionButton extends StatelessWidget {
   final String option;
-  final SelectionController controller;
+  final controller;
+  final VoidCallback onTap;
 
   const SelectionButton({
     super.key,
     required this.option,
-    required this.controller,
+    required this.controller, required this.onTap,
   });
 
   @override
@@ -19,12 +19,7 @@ class SelectionButton extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
         child: InkWell(
-          onTap: () {
-            controller.selectOption(option);
-            if (kDebugMode) {
-              print(option);
-            }
-          },
+          onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),

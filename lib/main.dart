@@ -14,7 +14,17 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_cubit.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
+import 'package:smart_real_estate/features/client/alarm/data/remote/alarm_api.dart';
+import 'package:smart_real_estate/features/client/alarm/domain/repository/address_repo.dart';
+import 'package:smart_real_estate/features/client/alarm/domain/repository/attribute_alarm_repository.dart';
 import 'package:smart_real_estate/features/client/alarm/domain/repository/category_repo.dart';
+import 'package:smart_real_estate/features/client/alarm/domain/repository/category_repository.dart';
+import 'package:smart_real_estate/features/client/alarm/domain/repository/create_alarm_repo.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/manager/address/address_cubit.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/manager/attribute/attribute_alarm_cubit.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/manager/category/category_cubit.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/manager/category/subCategory/subCategory_cubit.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/manager/create_alarm/create_alarm_cubit.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/category_property/data/remote_api/property_category_api.dart';
 import 'package:smart_real_estate/features/client/category_property/domain/manager/main_category/main_property_category_cubit.dart';
@@ -49,6 +59,7 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
+import 'features/client/alarm/presentation/manager/option_provider.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
@@ -260,6 +271,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create: (_) => LoginCubit(
               authRepository: AuthRepository(authApi: AuthApi(Dio()))),
         ),
+
+        /// alarm page
+        BlocProvider<CreateAlarmCubit>(
+          create: (_) => CreateAlarmCubit(
+              repository: CreateAlarmRepository(alarmApi: AlarmApi(Dio()))),),
+        BlocProvider<AddressCubit>(
+          create: (_) => AddressCubit(repository: AddressRepository(alarmApi: AlarmApi(Dio()))),),
+        BlocProvider<CategoryAlarmCubit>(
+          create: (_) => CategoryAlarmCubit(repository: CategoryAlarmRepository(AlarmApi(Dio()))),),
+        BlocProvider<SubCategoryAlarmCubit>(
+          create: (_) => SubCategoryAlarmCubit(CategoryAlarmRepository(AlarmApi(Dio()))),),
+        BlocProvider<AttributeAlarmCubit>(
+          create: (_) => AttributeAlarmCubit(repository: AttributeAlarmRepository(AlarmApi(Dio()))),),
+
       ],
       child: LocaleBuilder(
         builder: (locale) => GetMaterialApp(

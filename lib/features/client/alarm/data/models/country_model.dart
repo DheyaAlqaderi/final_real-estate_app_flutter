@@ -1,0 +1,22 @@
+class CountryModel {
+  int? id;
+  String? name;
+
+  CountryModel({this.id, this.name});
+
+  // Factory constructor for creating a new `CountryModel` instance from a map.
+  factory CountryModel.fromJson(Map<String, dynamic> json) {
+    return CountryModel(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
+
+  // Method for converting a `CountryModel` instance to a map.
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+}
