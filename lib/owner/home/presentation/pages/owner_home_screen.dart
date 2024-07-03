@@ -1,17 +1,16 @@
 
-
-import 'dart:ffi';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
+import 'package:smart_real_estate/owner/home/domain/repositories/property_owner_repositories.dart';
+import 'package:smart_real_estate/owner/home/presentation/widgets/owner_property_widget.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
-import '../../../../features/client/favorite/presentation/widgets/favorite_widget_list.dart';
 import '../../../../features/client/profile/data/models/profile_model.dart';
 import '../../../../features/client/profile/domain/repositories/profile_repository.dart';
-import '../../../../features/client/property_details/data/remote_api/property_details_api.dart';
 import '../widgets/home_appbar.dart';
 
 class OwnerHomeScreen extends StatefulWidget {
@@ -23,22 +22,26 @@ class OwnerHomeScreen extends StatefulWidget {
 
 class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   late ProfileRepository profileRepository;
-  late PropertyDetailsApi propertyDetailsApi;
+  late OwnerPropertyRepository propertyDetailsApi;
   int? id;
+  String? token;
 
   @override
   void initState() {
     super.initState();
     fetchId();
     profileRepository = ProfileRepository(Dio());
-    propertyDetailsApi= PropertyDetailsApi(Dio());
+    propertyDetailsApi= OwnerPropertyRepository(Dio());
   }
 
   Future<void> fetchId() async {
     await SharedPrefManager.init();
     String? idf = await SharedPrefManager.getData(AppConstants.userId);
+    String? mToken = await SharedPrefManager.getData(AppConstants.token);
+
     setState(() {
-      id =  int.parse(idf!);
+      id = idf != null ? int.parse(idf) : null;
+      token = mToken ?? " ";
     });
   }
 
@@ -49,75 +52,93 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: FutureBuilder<ProfileModel?>(
-          future: profileRepository.getProfile(id!),
+          future: id != null ? profileRepository.getProfile(id!) : Future.value(null),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const SizedBox();
             } else if (snapshot.hasData) {
               var profile = snapshot.data!;
-              return Column(
-                children: [
-                  const SizedBox(height: 40),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildCounter(profile.countReview?.toString() ?? '0', 'التعليقات'),
-                      buildCounter(
-                          (profile.propertyCount != null && profile.soldProperty != null)
-                              ? (profile.propertyCount! - profile.soldProperty!).toString()
-                              : '0',
-                          'القوائم النشطة'),
-                      buildCounter(profile.soldProperty?.toString() ?? '0', 'القوائم غير النشطة'),
-                    ],
-                  ),
-                  SizedBox(height: 40,),
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 40),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        buildCounter(profile.countReview?.toString() ?? '0', 'التعليقات'),
+                        buildCounter(
+                            (profile.propertyCount != null && profile.soldProperty != null)
+                                ? (profile.propertyCount! - profile.soldProperty!).toString()
+                                : '0',
+                            'القوائم النشطة'),
+                        buildCounter(profile.soldProperty?.toString() ?? '0', 'القوائم غير النشطة'),
+                      ],
+                    ),
+                    const SizedBox(height: 40,),
 
-                //   Container(
-                //
-                //
-                //
-                //
-                //
-                //      child:ListView.builder(
-                //       itemCount: list,
-                //       itemBuilder: (context, index) {
-                //         return Padding(
-                //         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                //           child: FavoriteListWidget(
-                //           id: data[index].prop!.id!,
-                //           imagePath: data[index].prop!.image!.isEmpty
-                //               ? " "
-                //               : data[index].prop!.image!.first.image!,
-                //           title: data[index].prop!.name!,
-                //           price: data[index].prop!.price!,
-                //           address: data[index].prop!.address!,
-                //           isFavorite: data[index].prop!.inFavorite!,
-                //           rate: data[index].prop!.rateReview!,
-                //           onTapDelete: () async {
-                //             await favoriteRepository.deleteFavorite(
-                //               "token $token",
-                //               data[index].prop!.id!,
-                //             );
-                //             // reload the widget
-                //             setState(() {
-                //               // Remove the item from the data list
-                //               data.removeAt(index);
-                //               list = data.length;
-                //             });
-                //           },
-                //         ),
-                //       );
-                //     },
-                //   ),
-                //
-                //
-                //
-                //
-                 ],);
+                    FutureBuilder<PropertyModel?>(
+                      future:propertyDetailsApi.getPropertyOwnerByUserId(id!, 200),
+                      builder: (context,snapshot){
+                        if(snapshot.hasError){
+                          return const SizedBox();
+                        }else if(snapshot.hasData){
+                          var data = snapshot.data!.results!;
+
+                          return Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 40.0,
+                            runSpacing: 10.0,
+                            children: List.generate(
+                              data.length,
+                                  (index) => OwnerPropertyWidget(
+                                    id: data[index].id!,
+                                    imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
+                                    title: data[index].name!,
+                                    price: data[index].price!,
+                                    address: data[index].address!,
+                                    isFavorite: data[index].inFavorite!,
+                                    rate: data[index].rate!,
+                                    isActivate: data[index].isActive!,
+                                  )
+
+                            ),
+                          );
+                          // return Wrap(
+                          //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          //     crossAxisCount: 2, // Number of columns
+                          //     // crossAxisSpacing: 4.0, // Space between columns
+                          //     // mainAxisSpacing: 4.0, // Space between rows
+                          //     //childAspectRatio: 0.75, // Aspect ratio of each grid item
+                          //   ),
+                          //   itemCount: data.length, // Number of items in the grid
+                          //   itemBuilder: (context, index) {
+                          //     return OwnerPropertyWidget(
+                          //       id: data[index].id!,
+                          //       imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
+                          //       title: data[index].name!,
+                          //       price: data[index].price!,
+                          //       address: data[index].address!,
+                          //       isFavorite: data[index].inFavorite!,
+                          //       rate: data[index].rate!,
+                          //     );
+                          //   },
+                          // );
+
+                        }else{
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                      },
+
+                    )
+                    ],),
+              );
 
 
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return SizedBox();
+              //return const Center(child: CircularProgressIndicator());
             }
           },
         ),

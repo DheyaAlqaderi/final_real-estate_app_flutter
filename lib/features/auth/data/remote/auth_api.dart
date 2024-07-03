@@ -27,4 +27,5 @@ abstract class AuthApi{
       @Field('username') String username,
       @Field('password') String password,
       );
+
 }
