@@ -9,7 +9,7 @@ class CreateAlarmRepository {
 
   CreateAlarmRepository({required this.alarmApi});
 
-  Future<ResponseCreateAlarm> createAlarm(String token, AlarmModel alarmModel) async {
+  Future<ResponseCreateAlarm> createAlarm(String token, Map<String,dynamic> alarmModel) async {
     try {
       final response = await alarmApi.addAlarm(token, alarmModel);
       return response;

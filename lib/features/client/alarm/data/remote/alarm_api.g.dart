@@ -23,14 +23,14 @@ class _AlarmApi implements AlarmApi {
   @override
   Future<ResponseCreateAlarm> addAlarm(
     String token,
-    AlarmModel alarmModel,
+    Map<String, dynamic> alarmModel,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
-    _data.addAll(alarmModel.toJson());
+    _data.addAll(alarmModel);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ResponseCreateAlarm>(Options(
       method: 'POST',
@@ -176,9 +176,9 @@ class _AlarmApi implements AlarmApi {
 
   @override
   Future<List<AttributesAlarmModel>> getAttributesByCategoryId(
-      int countryId) async {
+      int categoryId) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'category': countryId};
+    final queryParameters = <String, dynamic>{r'category': categoryId};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<List<dynamic>>(

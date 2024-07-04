@@ -11,7 +11,7 @@ class CreateAlarmCubit extends Cubit<CreateAlarmState> {
 
   CreateAlarmCubit({required this.repository}) : super(CreateAlarmInitial());
 
-  Future<void> createAlarm(String token, AlarmModel alarmModel) async {
+  Future<void> createAlarm(String token, Map<String, dynamic> alarmModel) async {
     emit(CreateAlarmLoading());
     try {
       final response = await repository.createAlarm(token, alarmModel);

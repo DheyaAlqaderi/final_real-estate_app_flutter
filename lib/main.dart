@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:dio/dio.dart';
@@ -21,6 +22,8 @@ import 'package:smart_real_estate/features/client/alarm/domain/repository/catego
 import 'package:smart_real_estate/features/client/alarm/domain/repository/category_repository.dart';
 import 'package:smart_real_estate/features/client/alarm/domain/repository/create_alarm_repo.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/manager/address/address_cubit.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/manager/address/country/country_cubit.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/manager/address/state/state_cubit.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/manager/attribute/attribute_alarm_cubit.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/manager/category/category_cubit.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/manager/category/subCategory/subCategory_cubit.dart';
@@ -59,6 +62,7 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
+import 'features/client/alarm/presentation/manager/address/city/city_cubit.dart';
 import 'features/client/alarm/presentation/manager/option_provider.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
@@ -105,6 +109,7 @@ Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
 }
 
 void main() async {
+
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -285,6 +290,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         BlocProvider<AttributeAlarmCubit>(
           create: (_) => AttributeAlarmCubit(repository: AttributeAlarmRepository(AlarmApi(Dio()))),),
 
+        BlocProvider<CountryCubit>(
+          create: (_) => CountryCubit(repository: AddressRepository(alarmApi: AlarmApi(Dio()))),),
+        BlocProvider<CityCubit>(
+          create: (_) => CityCubit(repository: AddressRepository(alarmApi: AlarmApi(Dio()))),),
+        BlocProvider<StateCubit>(
+          create: (_) => StateCubit(repository: AddressRepository(alarmApi: AlarmApi(Dio()))),),
+
       ],
       child: LocaleBuilder(
         builder: (locale) => GetMaterialApp(
@@ -296,7 +308,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home: const AddAlarmScreen(),
+          home: const RootScreen(),
         ),
       ),
     );

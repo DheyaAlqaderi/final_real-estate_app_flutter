@@ -23,7 +23,7 @@ abstract class AlarmApi{
   @POST("api/user/alarms/create")
   Future<ResponseCreateAlarm> addAlarm(
       @Header("Authorization") String token,
-      @Body() AlarmModel alarmModel
+      @Body() Map<String,dynamic> alarmModel
       );
 
   /// get countries

@@ -7,7 +7,7 @@ import '../../data/models/alarm_model.dart';
 
 class AlarmRepository {
 
-  static Future<void> addAlarm(String token, AlarmModel alarmModel) async {
+  static Future<void> addAlarm(String token, Map<String, dynamic> alarmModel) async {
     try {
       final AlarmApi alarmService;
       alarmService = AlarmApi(Dio());

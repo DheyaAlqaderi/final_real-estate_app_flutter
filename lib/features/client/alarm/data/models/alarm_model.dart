@@ -1,76 +1,76 @@
 class AlarmModel {
-  int? state;
-  int? category;
-  bool? isActive;
-  double? maxPrice;
-  double? minPrice;
-  bool? forSale;
-  bool? forRent;
-  List<AlarmValue>? alarmValues;
+  final List<AlarmValue> alarmValues;
+  final bool isActive;
+  final String maxPrice;
+  final String minPrice;
+  final bool forSale;
+  final bool forRent;
+  final int state;
+  final int category;
 
   AlarmModel({
-    this.state,
-    this.category,
-    this.isActive,
-    this.maxPrice,
-    this.minPrice,
-    this.forSale,
-    this.forRent,
-    this.alarmValues,
+    required this.alarmValues,
+    required this.isActive,
+    required this.maxPrice,
+    required this.minPrice,
+    required this.forSale,
+    required this.forRent,
+    required this.state,
+    required this.category,
   });
 
   factory AlarmModel.fromJson(Map<String, dynamic> json) {
+    var alarmValuesList = json['alarm_values'] as List<dynamic>;
+    List<AlarmValue> alarmValues =
+    alarmValuesList.map((e) => AlarmValue.fromJson(e)).toList();
+
     return AlarmModel(
-      state: json['state'] as int?,
-      category: json['category'] as int?,
-      isActive: json['is_active'] as bool?,
-      maxPrice: json['max_price'] as double?,
-      minPrice: json['min_price'] as double?,
-      forSale: json['for_sale'] as bool?,
-      forRent: json['for_rent'] as bool?,
-      alarmValues: (json['alarm_values'] as List<dynamic>?)
-          ?.map((value) => AlarmValue.fromJson(value))
-          .toList(),
+      alarmValues: alarmValues,
+      isActive: json['is_active'],
+      maxPrice: json['max_price'],
+      minPrice: json['min_price'],
+      forSale: json['for_sale'],
+      forRent: json['for_rent'],
+      state: json['state'],
+      category: json['category'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['state'] = state;
-    data['category'] = category;
-    data['is_active'] = isActive;
-    data['max_price'] = maxPrice;
-    data['min_price'] = minPrice;
-    data['for_sale'] = forSale;
-    data['for_rent'] = forRent;
-    if (alarmValues != null) {
-      data['alarm_values'] =
-          alarmValues!.map((value) => value.toJson()).toList();
-    }
-    return data;
+    return {
+      'alarm_values': alarmValues.map((value) => value.toJson()).toList(),
+      'is_active': isActive,
+      'max_price': maxPrice,
+      'min_price': minPrice,
+      'for_sale': forSale,
+      'for_rent': forRent,
+      'state': state,
+      'category': category,
+    };
   }
 }
 
 class AlarmValue {
-  int? attributeId;
-  dynamic value;
+  final int attributeId;
+  final String value;
 
   AlarmValue({
-    this.attributeId,
-    this.value,
+    required this.attributeId,
+    required this.value,
   });
 
   factory AlarmValue.fromJson(Map<String, dynamic> json) {
     return AlarmValue(
-      attributeId: json['attribute_id'] as int?,
+      attributeId: json['attribute_id'],
       value: json['value'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['attribute_id'] = attributeId;
-    data['value'] = value;
-    return data;
+    return {
+      'attribute_id': attributeId,
+      'value': value,
+    };
   }
 }
+

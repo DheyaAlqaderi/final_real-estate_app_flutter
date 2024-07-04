@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/auth/domain/repo/auth_repository.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
+import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
@@ -93,7 +94,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 onTap: (){
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
+                      MaterialPageRoute(builder: (context)=> const AddAlarmScreen())
                   );
                 },
               ),

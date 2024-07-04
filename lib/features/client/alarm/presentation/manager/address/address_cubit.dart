@@ -11,7 +11,7 @@ class AddressCubit extends Cubit<AddressState> {
   AddressCubit({required this.repository}) : super(AddressInitial());
 
   Future<void> fetchCountries() async {
-    emit(AddressLoading());
+    emit(AddressCoLoading());
     try {
       final countries = await repository.getCountries();
       emit(AddressCountriesLoaded(countries));
@@ -21,7 +21,7 @@ class AddressCubit extends Cubit<AddressState> {
   }
 
   Future<void> fetchCities(int countryId) async {
-    emit(AddressLoading());
+    emit(AddressCiLoading());
     try {
       final cities = await repository.getCities(countryId);
       emit(AddressCitiesLoaded(cities));
@@ -31,7 +31,7 @@ class AddressCubit extends Cubit<AddressState> {
   }
 
   Future<void> fetchStates(int cityId) async {
-    emit(AddressLoading());
+    emit(AddressStLoading());
     try {
       final response = await repository.getStates(cityId);
       emit(AddressStatesLoaded(response));

@@ -8,7 +8,9 @@ abstract class AddressState{}
 
 class AddressInitial extends AddressState {}
 
-class AddressLoading extends AddressState {}
+class AddressCoLoading extends AddressState {}
+class AddressCiLoading extends AddressState {}
+class AddressStLoading extends AddressState {}
 
 class AddressCountriesLoaded extends AddressState {
   final List<CountryModel> countries;
