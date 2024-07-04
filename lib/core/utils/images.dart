@@ -53,6 +53,8 @@ class Images {
   static const String notificIcon="assets/svg/notific.svg";
   static const String addNavIcon="assets/svg/add_navbar_icon.svg";
   static const String settingIcon="assets/svg/setting_icon.svg";
+  static const String alarmIcon="assets/svg/alarm.svg";
+
 
 
 

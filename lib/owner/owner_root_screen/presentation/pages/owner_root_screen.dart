@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_real_estate/owner/owner_profile/presentation/pages/owner_profile_screen.dart';
 
 import '../../../../core/utils/images.dart';
 import '../../../../features/client/chat/presentation/pages/rooms_screen.dart';
@@ -26,7 +27,7 @@ class _OwnerRootScreenState extends State<OwnerRootScreen> {
     const OwnerHomeScreen(),
     const RoomsScreen(),
     const FavoriteScreen(),
-    const ProfileScreen(),
+    const OwnerProfileScreen(),
   ];
 
 
