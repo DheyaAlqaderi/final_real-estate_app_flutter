@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:dio/dio.dart';
@@ -56,6 +57,7 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
 import 'package:smart_real_estate/owner/home/presentation/pages/owner_home_screen.dart';
+import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
 import 'core/theme/dark_theme.dart';
@@ -63,11 +65,86 @@ import 'core/theme/light_theme.dart';
 import 'features/auth/data/remote/auth_api.dart';
 import 'features/auth/domain/repo/auth_repository.dart';
 import 'features/client/alarm/presentation/manager/address/city/city_cubit.dart';
-import 'features/client/alarm/presentation/manager/option_provider.dart';
 import 'features/client/chat/domain/repository/firebase_messaging_repository.dart';
 import 'features/client/high_places/data/api/high_state_api.dart';
 import 'features/client/home/domain/manager/main_category/main_category_cubit.dart';
 import 'firebase_options.dart';
+import 'owner/add_property/data/models/create_property_request.dart';
+import 'owner/add_property/data/remote_api/add_property_api.dart';
+
+Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, List<File> imageDataFiles) async {
+  final dio = Dio();
+  final api = AddPropertyApi(dio);
+
+  // Create the CreatePropertyRequest object with example data
+  final createPropertyRequest = CreatePropertyRequest(
+    attributeValues: {"5": "ريال", "6": "Value2", "7": 3},
+    address: Address(
+      longitude: 2102120,
+      latitude: 101210,
+      line1: "102102",
+      line2: "1011",
+      state: 7,
+    ),
+    featureData: [
+      FeatureData(
+        id: 1,
+        images: [
+          ImageData(image: "feature_image_1.jpg"),
+          ImageData(image: "feature_image_2.jpg"),
+        ],
+      ),
+      FeatureData(
+        id: 2,
+        images: [
+          ImageData(image: "feature_image_3.jpg"),
+          ImageData(image: "feature_image_4.jpg"),
+        ],
+      ),
+    ],
+    imageData: [
+      ImageData(image: "main_image_1.jpg"),
+      ImageData(image: "main_image_2.jpg"),
+    ],
+    name: "خخححح",
+    description: "تتتت",
+    price: 100000,
+    size: 10,
+    isActive: false,
+    isDeleted: false,
+    forSale: false,
+    isFeatured: false,
+    forRent: false,
+    category: 25,
+  );
+
+  // Prepare the list of MultipartFile for feature images
+  List<MultipartFile> featureImages = [];
+  for (var imageFile in featureImageFiles) {
+    featureImages.add(await MultipartFile.fromFile(imageFile.path, filename: imageFile.path.split('/').last));
+  }
+
+  // Prepare the list of MultipartFile for image data
+  List<MultipartFile> imageData = [];
+  for (var imageFile in imageDataFiles) {
+    imageData.add(await MultipartFile.fromFile(imageFile.path, filename: imageFile.path.split('/').last));
+  }
+
+  // Call the API
+  try {
+    final response = await api.addProperty(
+      'your_auth_token_here',  // Replace with actual token
+      createPropertyRequest,
+      featureImages,
+      imageData,
+    );
+    // Handle response
+    print('Property created successfully: ${response.id}');
+  } catch (e) {
+    // Handle error
+    print('Error creating property: $e');
+  }
+}
 
 Future<void> _firebaseBackgroundMessage(RemoteMessage message) async {
   // NotificationWsRepository.getMessage as BackgroundMessageHandler;
@@ -133,7 +210,6 @@ void main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
