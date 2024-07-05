@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -135,8 +134,6 @@ Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, 
     final response = await api.addProperty(
       'your_auth_token_here',  // Replace with actual token
       createPropertyRequest,
-      featureImages,
-      imageData,
     );
     // Handle response
     print('Property created successfully: ${response.id}');
