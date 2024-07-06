@@ -27,4 +27,18 @@ class AppConstants {
   static const String customer = 'customer';
   static const String admin = 'admin';
 
+
+  // add property variables
+  static const String propertyName = 'name';
+  static const String propertyDescription = 'description';
+  static const String propertyPrice = 'price';
+  static const String propertySize = 'size';
+  static const String isActive = 'is_active';
+  static const String isDeleted = 'is_deleted';
+  static const String forSale = 'for_sale';
+  static const String isFeatured = 'is_featured';
+  static const String forRent = 'for_rent';
+  static const String propertyCategoryId = 'category';
+  static const String featureData = 'feature_data';
+  static const String attributeValues = 'attribute_values';
 }

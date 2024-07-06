@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/pages/first_add_property.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/pages/navigate_add_property.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/pages/owner_profile_screen.dart';
 
 import '../../../../core/utils/images.dart';
@@ -26,7 +28,7 @@ class _OwnerRootScreenState extends State<OwnerRootScreen> {
   List<Widget> pages = [
     const OwnerHomeScreen(),
     const RoomsScreen(),
-    const FavoriteScreen(),
+    const NavigateToAddProperty(),
     const OwnerProfileScreen(),
   ];
 
@@ -76,6 +78,9 @@ class _OwnerRootScreenState extends State<OwnerRootScreen> {
           onTabChange: (index) {
             setState(() {
               _bottomNavIndex = index;
+              if(index == 2){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const FirstAddProperty()));
+              }
             });
           },
           iconSvg: iconSvg,

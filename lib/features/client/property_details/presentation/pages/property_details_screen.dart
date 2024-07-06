@@ -130,7 +130,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
 
                               },
                               name: propertyDetails.featureProperty![index].feature!.name!,
-                              image: propertyDetails.featureProperty![index].image![0].image,
+                              image:propertyDetails.featureProperty![index].image!.isNotEmpty? "${propertyDetails.featureProperty![index].image?.first.image}":AppConstants.noImageUrl,
                             );
                           }
                       ),

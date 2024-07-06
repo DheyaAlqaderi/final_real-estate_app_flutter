@@ -65,6 +65,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
         edit: () {
           Get.to(const ProfileUpdateScreen());
         },
+        title: "profile_title",
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

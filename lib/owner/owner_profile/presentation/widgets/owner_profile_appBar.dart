@@ -7,9 +7,10 @@ import '../../../../core/utils/styles.dart';
 
 
 class OwnerProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const OwnerProfileAppBar({super.key, required this.edit, required this.alarm, });
+  const OwnerProfileAppBar({super.key, required this.edit, required this.alarm, required this.title, });
   final VoidCallback edit;
   final VoidCallback alarm;
+  final String title;
 
 
 
@@ -18,7 +19,7 @@ class OwnerProfileAppBar extends StatelessWidget implements PreferredSizeWidget 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: AppBar(
-        title: Text(Locales.string(context, "profile_title"),style: fontLargeBold,),
+        title: Text(Locales.string(context, title),style: fontLargeBold,),
         centerTitle: true,
 
         leading: IconButton(
