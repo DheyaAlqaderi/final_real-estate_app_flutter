@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
@@ -11,12 +10,12 @@ import '../../../../features/client/home/data/models/property/property_model.dar
 
 part 'property_owner_repositories.g.dart';
 
-@RestApi(baseUrl: AppConstants.baseUrl)
+@RestApi(baseUrl: AppConstants.baseUrl2)
 abstract class OwnerPropertyRepository{
   factory OwnerPropertyRepository(Dio dio, {String baseUrl}) = _OwnerPropertyRepository;
 
   @GET('api/property/')
-  Future<PropertyModel> getPropertyOwnerByUserId(
+  Future<PropertyModel?> getPropertyOwnerByUserId(
       @Query("user") int userId,
       @Query("page_size") int pageSize,
       @Header("Authorization") String token

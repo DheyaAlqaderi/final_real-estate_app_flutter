@@ -56,6 +56,7 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
 import 'package:smart_real_estate/owner/home/presentation/pages/owner_home_screen.dart';
+import 'package:smart_real_estate/owner/owner_profile/presentation/pages/owner_profile_screen.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import 'core/helper/local_data/shared_pref.dart';
@@ -381,7 +382,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home: const RootScreen(),
+          home: const OwnerRootScreen(),
         ),
       ),
     );
