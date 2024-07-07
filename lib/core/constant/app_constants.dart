@@ -29,6 +29,7 @@ class AppConstants {
 
 
   // add property variables
+  static const String propertyId = 'id';
   static const String propertyName = 'name';
   static const String propertyDescription = 'description';
   static const String propertyPrice = 'price';
@@ -41,4 +42,6 @@ class AppConstants {
   static const String propertyCategoryId = 'category';
   static const String featureData = 'feature_data';
   static const String attributeValues = 'attribute_values';
+  static const String addressData = 'address';
+
 }

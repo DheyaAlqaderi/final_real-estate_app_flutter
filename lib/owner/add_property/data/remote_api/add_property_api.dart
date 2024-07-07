@@ -19,7 +19,7 @@ abstract class AddPropertyApi {
   @POST("api/property/create/")
   Future<CreatePropertyResponse> addProperty(
       @Header("Authorization") String token,
-      @Body() CreatePropertyRequest createPropertyRequest,
+      @Body() Map<String, dynamic> createPropertyRequest,
       );
 
 }

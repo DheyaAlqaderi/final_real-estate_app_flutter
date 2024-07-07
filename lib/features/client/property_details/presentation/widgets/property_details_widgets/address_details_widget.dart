@@ -77,8 +77,8 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
               child: GoogleMap(
                 mapType: MapType.normal,
                 onMapCreated: _onMapCreated,
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(14.5678337, 43.2232772),
+                initialCameraPosition:  CameraPosition(
+                  target: LatLng(widget.addressLine.latitude!, widget.addressLine.longitude!),
                   zoom: 7,
                 ),
                 markers: _markers,

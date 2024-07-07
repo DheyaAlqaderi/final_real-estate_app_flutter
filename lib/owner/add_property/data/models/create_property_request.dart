@@ -5,7 +5,7 @@ class CreatePropertyRequest {
   List<ImageData>? imageData;
   String? name;
   String? description;
-  int? price;
+  String? price;
   int? size;
   bool? isActive;
   bool? isDeleted;

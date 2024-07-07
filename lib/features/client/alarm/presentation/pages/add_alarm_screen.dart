@@ -1,11 +1,10 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
-import 'package:smart_real_estate/features/client/alarm/data/models/alarm_model.dart';
 import 'package:smart_real_estate/features/client/alarm/data/models/city_model.dart';
 import 'package:smart_real_estate/features/client/alarm/data/models/country_model.dart';
 import 'package:smart_real_estate/features/client/alarm/data/models/state_model.dart';
@@ -31,6 +30,8 @@ import '../../../home/widgets/chip_widget_home.dart';
 import '../../data/models/attribute_alarm_model.dart';
 import '../manager/address/address_cubit.dart';
 import '../widget/custom_dropdown_field.dart';
+
+
 class AddAlarmScreen extends StatefulWidget {
   const AddAlarmScreen({super.key});
 

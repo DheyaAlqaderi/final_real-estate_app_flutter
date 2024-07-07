@@ -55,6 +55,9 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
+import 'package:smart_real_estate/owner/add_property/domain/create_property_repository.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/manager/create_property/create_property_cubit.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/pages/forth_feature_add_property.dart';
 import 'package:smart_real_estate/owner/home/presentation/pages/owner_home_screen.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/pages/owner_profile_screen.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
@@ -71,7 +74,7 @@ import 'features/client/home/domain/manager/main_category/main_category_cubit.da
 import 'firebase_options.dart';
 import 'owner/add_property/data/models/create_property_request.dart';
 import 'owner/add_property/data/remote_api/add_property_api.dart';
-import 'owner/add_property/presentation/widgets/dropDown_widget.dart';
+import 'owner/add_property/presentation/pages/third_attribute_add_property.dart';
 
 Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, List<File> imageDataFiles) async {
   final dio = Dio();
@@ -109,7 +112,7 @@ Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, 
     ],
     name: "خخححح",
     description: "تتتت",
-    price: 100000,
+    price: "100000",
     size: 10,
     isActive: false,
     isDeleted: false,
@@ -135,7 +138,7 @@ Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, 
   try {
     final response = await api.addProperty(
       'your_auth_token_here',  // Replace with actual token
-      createPropertyRequest,
+      createPropertyRequest as Map<String, dynamic>,
     );
     // Handle response
     print('Property created successfully: ${response.id}');
@@ -212,7 +215,6 @@ void main() async {
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
-
   // await SharedPrefManager.deleteData(AppConstants.userId);
   // await SharedPrefManager.deleteData(AppConstants.token);
   await SharedPrefManager.saveData(
@@ -372,6 +374,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         BlocProvider<StateCubit>(
           create: (_) => StateCubit(repository: AddressRepository(alarmApi: AlarmApi(Dio()))),),
 
+
+        /// add property
+        BlocProvider<CreatePropertyCubit>(
+          create: (_) => CreatePropertyCubit(repository: CreatePropertyRepository(api: AddPropertyApi(Dio())))),
+
       ],
       child: LocaleBuilder(
         builder: (locale) => GetMaterialApp(
@@ -383,7 +390,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home:  CustomDropdownButton(),
+          home: const OwnerRootScreen(),
         ),
       ),
     );

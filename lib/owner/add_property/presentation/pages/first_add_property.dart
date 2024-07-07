@@ -51,7 +51,7 @@ class _FirstAddPropertyState extends State<FirstAddProperty> {
 
   @override
   void initState() {
-    saveDataAndNavigateToSecondPage(context);
+    getDataAndNavigateToSecondPage(context);
     super.initState();
     _loadUserData();
 
@@ -186,7 +186,7 @@ class _FirstAddPropertyState extends State<FirstAddProperty> {
       await SharedPrefManager.saveData(AppConstants.forSale, chipSelected3!.last.toString());
       await SharedPrefManager.saveData(AppConstants.forRent, chipSelected3!.first.toString());
 
-      saveDataAndNavigateToSecondPage(context);
+      getDataAndNavigateToSecondPage(context);
     } catch (e) {
       Get.snackbar(
         "Error",
@@ -204,7 +204,7 @@ class _FirstAddPropertyState extends State<FirstAddProperty> {
 
 
 
-  Future<void> saveDataAndNavigateToSecondPage(BuildContext context) async {
+  Future<void> getDataAndNavigateToSecondPage(BuildContext context) async {
 
     // Retrieve data
     final propertyName = await SharedPrefManager.getData(AppConstants.propertyName);

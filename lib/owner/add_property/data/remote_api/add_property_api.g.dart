@@ -23,14 +23,14 @@ class _AddPropertyApi implements AddPropertyApi {
   @override
   Future<CreatePropertyResponse> addProperty(
     String token,
-    CreatePropertyRequest createPropertyRequest,
+    Map<String, dynamic> createPropertyRequest,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
-    _data.addAll(createPropertyRequest.toJson());
+    _data.addAll(createPropertyRequest);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CreatePropertyResponse>(Options(
       method: 'POST',

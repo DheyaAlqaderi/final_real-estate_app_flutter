@@ -185,7 +185,7 @@ class _StandPropertyWidgetState extends State<StandPropertyWidget> {
                             child: Padding(
                               padding: const EdgeInsets.all(6.0),
                               child: Text(
-                                widget.propertyModel.results![widget.index].price!,
+                                widget.propertyModel.results![widget.index].price ?? "null",
                                  style: fontSmall.copyWith(color: Theme.of(context).colorScheme.secondary)
                               ),
                             ),

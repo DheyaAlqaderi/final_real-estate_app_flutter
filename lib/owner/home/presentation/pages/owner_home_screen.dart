@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
 import 'package:smart_real_estate/owner/home/domain/repositories/property_owner_repositories.dart';
@@ -12,10 +13,15 @@ import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../features/client/profile/data/models/profile_model.dart';
 import '../../../../features/client/profile/domain/repositories/profile_repository.dart';
+import '../../../../features/client/property_details/presentation/pages/property_details_screen.dart';
 import '../widgets/home_appbar.dart';
 
+import 'dart:async';
+
+
+
 class OwnerHomeScreen extends StatefulWidget {
-  const OwnerHomeScreen({super.key});
+  const OwnerHomeScreen({Key? key}) : super(key: key);
 
   @override
   State<OwnerHomeScreen> createState() => _OwnerHomeScreenState();
@@ -26,13 +32,14 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   late OwnerPropertyRepository propertyDetailsApi;
   int? id;
   String? token;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     fetchId();
     profileRepository = ProfileRepository(Dio());
-    propertyDetailsApi= OwnerPropertyRepository(Dio());
+    propertyDetailsApi = OwnerPropertyRepository(Dio());
   }
 
   Future<void> fetchId() async {
@@ -42,86 +49,105 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
 
     setState(() {
       id = idf != null ? int.parse(idf) : null;
-      print("iddddddddddddddddd$id");
       token = mToken ?? " ";
+    });
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await fetchId();
+
+    setState(() {
+      _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const OwnerHomeAppbar(),
+      appBar: AppBar(title: const Text('Owner Home')),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: FutureBuilder<ProfileModel?>(
-          future: id != null ? profileRepository.getProfile(id!) : Future.value(null),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const SizedBox();
-            } else if (snapshot.hasData) {
-              var profile = snapshot.data!;
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        buildCounter(profile.countReview?.toString() ?? '0', 'التعليقات'),
-                        buildCounter(
-                            (profile.propertyCount != null && profile.soldProperty != null)
-                                ? (profile.propertyCount! - profile.soldProperty!).toString()
-                                : '0',
-                            'القوائم النشطة'),
-                        buildCounter(profile.soldProperty?.toString() ?? '0', 'القوائم غير النشطة'),
-                      ],
+        child: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: FutureBuilder<ProfileModel?>(
+            future: id != null ? profileRepository.getProfile(id!) : Future.value(null),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const SizedBox();
+              } else if (snapshot.hasData) {
+                var profile = snapshot.data!;
+                return _buildContent(profile);
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(ProfileModel profile) {
+    return RefreshIndicator(
+      onRefresh: _refreshData,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                buildCounter(profile.countReview?.toString() ?? '0', 'التعليقات'),
+                buildCounter(
+                  (profile.propertyCount != null && profile.soldProperty != null)
+                      ? (profile.propertyCount! - profile.soldProperty!).toString()
+                      : '0',
+                  'القوائم النشطة',
+                ),
+                buildCounter(profile.soldProperty?.toString() ?? '0', 'القوائم غير النشطة'),
+              ],
+            ),
+            const SizedBox(height: 40),
+            FutureBuilder<PropertyModel?>(
+              future: propertyDetailsApi.getPropertyOwnerByUserId(id!, 200, "token ${token!}"),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const SizedBox();
+                } else if (snapshot.hasData) {
+                  var data = snapshot.data!.results!;
+                  return Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.start,
+                    spacing: 20.0,
+                    runSpacing: 10.0,
+                    children: List.generate(
+                      data.length,
+                          (index) => OwnerPropertyWidget(
+                        id: data[index].id!,
+                        imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
+                        title: data[index].name!,
+                        price: data[index].price ?? "null",
+                        address: data[index].address!,
+                        isFavorite: data[index].inFavorite!,
+                        rate: data[index].rate!,
+                        isActivate: data[index].isActive!,
+                        onTap: () {
+                          Get.to(() => PropertyDetailsScreen(id: data[index].id));
+                        }, refresh: OwnerRootScreen(),
+                      ),
                     ),
-                    const SizedBox(height: 40,),
-
-                    FutureBuilder<PropertyModel?>(
-                      future:propertyDetailsApi.getPropertyOwnerByUserId(id!, 200, "token ${token!}"),
-                      builder: (context,snapshot){
-                        if(snapshot.hasError){
-                          return const SizedBox();
-                        }else if(snapshot.hasData){
-                          var data = snapshot.data!.results!;
-                          return Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 20.0,
-                            runSpacing: 10.0,
-                            children: List.generate(
-                              data.length,
-                                  (index) => OwnerPropertyWidget(
-                                    id: data[index].id!,
-                                    imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
-                                    title: data[index].name!,
-                                    price: data[index].price!,
-                                    address: data[index].address!,
-                                    isFavorite: data[index].inFavorite!,
-                                    rate: data[index].rate!,
-                                    isActivate: data[index].isActive!,
-                                    refresh: OwnerRootScreen(),
-                                  )
-
-                            ),
-                          );
-                        }else{
-                          return const Center(child: CircularProgressIndicator());
-                        }
-
-                      },
-
-                    )
-                    ],),
-              );
-
-
-            } else {
-              return SizedBox();
-              //return const Center(child: CircularProgressIndicator());
-            }
-          },
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -145,12 +171,12 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
             children: [
               Text(
                 count,
-                style: fontSmallBold,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
                 label,
-                style: fontSmall,
+                style: const TextStyle(fontSize: 14),
               ),
             ],
           ),
@@ -159,6 +185,3 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
     );
   }
 }
-
-
-

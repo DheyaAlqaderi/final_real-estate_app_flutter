@@ -9,6 +9,7 @@ import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/profile/presentation/pages/profile_update_screen.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/widgets/owner_profile_appBar.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
@@ -253,12 +254,15 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                 id: data[index].id!,
                                 imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
                                 title: data[index].name!,
-                                price: data[index].price!,
+                                price: data[index].price ?? "null",
                                 address: data[index].address!,
                                 isFavorite: data[index].inFavorite!,
                                 rate: data[index].rate!,
                                 isActivate: data[index].isActive!,
-                                    refresh: OwnerRootScreen(),
+                                refresh: OwnerRootScreen(),
+                                onTap: (){
+                                  Get.to(()=> PropertyDetailsScreen(id: data[index].id));
+                                },
                               ),
                             ),
                           );

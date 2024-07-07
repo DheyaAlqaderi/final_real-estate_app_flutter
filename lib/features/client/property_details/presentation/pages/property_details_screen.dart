@@ -95,7 +95,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     description: propertyDetails.description!,
                     address: propertyDetails.address?.line1 ?? "", /// it should be fixed from Api
                     isForSale: propertyDetails.forSale!,
-                    price: propertyDetails.price!,
+                    price: propertyDetails.price ?? " ",
                     date: propertyDetails.timeCreated!,
                   ),
 
