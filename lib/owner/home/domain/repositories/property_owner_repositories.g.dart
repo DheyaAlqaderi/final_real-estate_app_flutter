@@ -13,7 +13,7 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.8:8000/';
+    baseUrl ??= 'http://192.168.1.5:8000/';
   }
 
   final Dio _dio;
@@ -21,7 +21,7 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
   String? baseUrl;
 
   @override
-  Future<PropertyModel> getPropertyOwnerByUserId(
+  Future<PropertyModel?> getPropertyOwnerByUserId(
     int userId,
     int pageSize,
     String token,
@@ -35,7 +35,7 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<PropertyModel>(Options(
+        .fetch<Map<String, dynamic>?>(_setStreamType<PropertyModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -51,7 +51,8 @@ class _OwnerPropertyRepository implements OwnerPropertyRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = PropertyModel.fromJson(_result.data!);
+    final value =
+        _result.data == null ? null : PropertyModel.fromJson(_result.data!);
     return value;
   }
 

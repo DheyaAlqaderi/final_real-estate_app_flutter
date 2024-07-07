@@ -1,13 +1,10 @@
-
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:smart_real_estate/owner/home/data/models/activate_model.dart';
 import 'package:smart_real_estate/owner/home/data/models/activate_property_model.dart';
-
 import '../../../../core/constant/app_constants.dart';
 import '../../../../features/client/home/data/models/property/property_model.dart';
-
 part 'property_owner_repositories.g.dart';
 
 @RestApi(baseUrl: AppConstants.baseUrl2)

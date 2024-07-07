@@ -10,6 +10,7 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/profile/presentation/pages/profile_update_screen.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/widgets/owner_profile_appBar.dart';
+import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
@@ -28,7 +29,7 @@ class OwnerProfileScreen extends StatefulWidget {
 
 class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
   late OwnerProfileRepository ownerProfileRepository;
-  late OwnerPropertyRepository propertyData;
+  late OwnerPropertyRepository ownerPropertyRepository;
 
   int? id;
   String? token;
@@ -39,7 +40,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
     super.initState();
     fetchId();
     ownerProfileRepository = OwnerProfileRepository(Dio());
-    propertyData=OwnerPropertyRepository(Dio());
+    ownerPropertyRepository=OwnerPropertyRepository(Dio());
   }
 
   Future<void> fetchId() async {
@@ -142,7 +143,8 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                 ),
                               ),
                             ),
-                            InkWell(
+
+                              InkWell(
                               onTap: (){},
                               child: Container(
                                 height: 35,
@@ -160,6 +162,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                 ),
                               ),
                             ),
+
                             InkWell(
                               onTap: (){},
                               child: Container(
@@ -234,7 +237,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     FutureBuilder<PropertyModel?>(
-                      future:propertyData.getPropertyOwnerByUserId(id!, 200, "token ${token!}"),
+                      future:ownerPropertyRepository.getPropertyOwnerByUserId(id!, 200, "token ${token!}"),
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
                           return const SizedBox();
@@ -255,6 +258,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                 isFavorite: data[index].inFavorite!,
                                 rate: data[index].rate!,
                                 isActivate: data[index].isActive!,
+                                    refresh: OwnerRootScreen(),
                               ),
                             ),
                           );

@@ -71,6 +71,7 @@ import 'features/client/home/domain/manager/main_category/main_category_cubit.da
 import 'firebase_options.dart';
 import 'owner/add_property/data/models/create_property_request.dart';
 import 'owner/add_property/data/remote_api/add_property_api.dart';
+import 'owner/add_property/presentation/widgets/dropDown_widget.dart';
 
 Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, List<File> imageDataFiles) async {
   final dio = Dio();
@@ -382,7 +383,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home: const OwnerRootScreen(),
+          home:  CustomDropdownButton(),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
 import 'package:smart_real_estate/owner/home/domain/repositories/property_owner_repositories.dart';
 import 'package:smart_real_estate/owner/home/presentation/widgets/owner_property_widget.dart';
+import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
@@ -100,6 +101,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
                                     isFavorite: data[index].inFavorite!,
                                     rate: data[index].rate!,
                                     isActivate: data[index].isActive!,
+                                    refresh: OwnerRootScreen(),
                                   )
 
                             ),

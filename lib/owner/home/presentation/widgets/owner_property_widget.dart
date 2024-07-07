@@ -18,7 +18,7 @@ import '../../domain/repositories/property_owner_repositories.dart';
 
 
 class OwnerPropertyWidget extends StatefulWidget {
-  const OwnerPropertyWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.id, required this.isActivate});
+  const OwnerPropertyWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.id, required this.isActivate, required this.refresh});
   final String imagePath;
   final String title;
   final String price;
@@ -27,6 +27,7 @@ class OwnerPropertyWidget extends StatefulWidget {
   final double rate;
   final bool isActivate;
   final int id;
+  final Widget refresh;
 
 
 
@@ -40,6 +41,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
   String? token;
   late FavoriteRepository favoriteRepository;
   late OwnerPropertyRepository ownerPropertyRepository;
+  bool isLoading = false;
 
   Future<void> _loadUserToken() async {
     final loadUserToken = await SharedPrefManager.getData(AppConstants.token);
@@ -227,7 +229,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                           'Property activated successfully!',
                           snackPosition: SnackPosition.BOTTOM,
                         );
-                        Get.offAll(() => const OwnerRootScreen());
+                        Get.offAll(() => widget.refresh);
                       } else {
                         Get.snackbar(
                           'Error',
@@ -279,14 +281,14 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                               backgroundColor: Colors.red,
                               colorText: Colors.white,
                             );
-                            Get.offAll(() => const OwnerRootScreen());
+                            Get.offAll(() => widget.refresh);
                           } else {
                             Get.snackbar(
                               'Success',
                               'Property unactivated successfully!',
                               snackPosition: SnackPosition.BOTTOM,
                             );
-                            Get.offAll(() => const OwnerRootScreen());
+                            Get.offAll(() => widget.refresh);
 
                           }
                         } catch (error) {
