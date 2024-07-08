@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_real_estate/core/constant/firebase/firebase_collections_names.dart';
@@ -117,11 +118,14 @@ class _ChatPageState extends State<ChatPage> {
                         }
                         // Access data from the snapshot
                         final userData = snapshot.data!.data();
-                        // if(userData != null && userData['fcmToken'] == null) {
-                        //    fcmTokene = FirebaseMessaging.instance.getToken() as String;
-                        //   chatRepository.updateUserToken(AppConstants.userIdFake, fcmTokene);
-                        // }
+                        if(userData != null && userData['fcmToken'] == null) {
+                           fcmTokene = FirebaseMessaging.instance.getToken() as String;
+                          chatRepository.updateUserToken(userId!, fcmTokene);
+                        }
 
+                        setState(() {
+                          fcmTokene = userData!['fcmToken'];
+                        });
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -299,7 +303,7 @@ class _ChatPageState extends State<ChatPage> {
                             child: MessageFieldWidget(
                               chatRoomId: widget.chatRoomId,
                               receiverId: widget.receiverId,
-                              fcmToken: AppConstants.fcmToken,
+                              fcmToken: fcmTokene,
                             ),
                           ),
                         ],

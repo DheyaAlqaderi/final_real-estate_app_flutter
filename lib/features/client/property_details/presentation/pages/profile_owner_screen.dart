@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/helper/toast_message.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/chat/domain/repository/chat_repository.dart';
@@ -31,12 +32,18 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
 
   late String imageUrl = " ";
 
+  String? myUserId;
   @override
   void initState() {
     super.initState();
+    fetchUserId();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchData();
     });
+  }
+
+  void fetchUserId() async{
+    myUserId = await SharedPrefManager.getData(AppConstants.userId);
   }
 
   void _fetchData() async {
@@ -229,7 +236,7 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                       InkWell(
                           onTap: () async {
 
-                            if(AppConstants.userIdFake == widget.userId.toString()){
+                            if(myUserId == widget.userId.toString()){
                               print("sorry you can not chat yourself");
                               ToastAlert.show(context, "Sorry, you cannot chat with yourself");
                               // ScaffoldMessenger.of(context).showSnackBar(

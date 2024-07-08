@@ -436,7 +436,7 @@ class _MessageFieldWidgetState extends State<MessageFieldWidget> {
                       icon: Icon(Icons.mic, color: Theme.of(context).hintColor),
                       onPressed: () {
 
-                          chatRepository.sendNotificationToToken(AppConstants.fcmToken, title: "hello", body: "name");
+                          chatRepository.sendNotificationToToken(widget.fcmToken, title: "hello", body: "name");
 
                       },
                     ),
