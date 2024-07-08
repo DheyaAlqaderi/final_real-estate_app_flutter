@@ -54,7 +54,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
   Future<void> _loadUserToken() async {
     final loadUserToken = await SharedPrefManager.getData(AppConstants.token);
     print("my token isssssssssss${loadUserToken}");
-      token = loadUserToken ?? ' ';
+    token = loadUserToken ?? ' ';
 
   }
 
@@ -225,6 +225,10 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                       ?InkWell(
                     onTap: () async {
                       try {
+                        setState(() {
+                          isLoading = true;
+                        });
+
                         ActivateModel activateModel = ActivateModel();
                         activateModel.isActive = true;
                         final response = await ownerPropertyRepository.activateProperty(
@@ -233,12 +237,17 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                           "token $token",
                         );
 
+                        setState(() {
+                          isLoading = false;
+                        });
                         if (response.isActive ?? false) {
                           Get.snackbar(
                             'Success',
                             'Property activated successfully!',
                             snackPosition: SnackPosition.BOTTOM,
                           );
+
+
                         } else {
                           Get.snackbar(
                             'Error',
@@ -249,10 +258,13 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                           );
                         }
                       } catch (error) {
+                        setState(() {
+                          isLoading = false;
+                        });
                         Get.snackbar(
                           'Error',
-                          'An error occurred: $error',
-                          snackPosition: SnackPosition.BOTTOM,
+                          'You can not activate this property right now, you have to wait until accepted by admin',
+                          snackPosition: SnackPosition.TOP,
                           backgroundColor: Colors.red,
                           colorText: Colors.white,
                         );
@@ -267,13 +279,18 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                                           ),
                                           child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
-                        child: Text("activate", style: fontSmall.copyWith(color: Colors.grey)),
+                        child: isLoading
+                            ?const CircularProgressIndicator()
+                            :Text("activate", style: fontSmall.copyWith(color: Colors.grey)),
                                           ),
                                         ),
                       )
                       : InkWell(
                         onTap: () async {
                           try {
+                            setState(() {
+                              isLoading = true;
+                            });
                             ActivateModel activateModel = ActivateModel();
                             activateModel.isActive = false;
                             final response = await ownerPropertyRepository.activateProperty(
@@ -282,6 +299,9 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                               "token $token",
                             );
 
+                            setState(() {
+                              isLoading = false;
+                            });
                             if (response.isActive ?? false) {
                               Get.snackbar(
                                 'Error',
@@ -290,6 +310,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                                 backgroundColor: Colors.red,
                                 colorText: Colors.white,
                               );
+                              Get.offAll(() => widget.refresh);
                             } else {
                               Get.snackbar(
                                 'Success',
@@ -297,8 +318,13 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                                 snackPosition: SnackPosition.BOTTOM,
                               );
 
+
+
                             }
                           } catch (error) {
+                            setState(() {
+                              isLoading = false;
+                            });
                             Get.snackbar(
                               'Error',
                               'An error occurred: $error',
@@ -317,7 +343,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                                           ),
                                           child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
-                        child: Text("activated", style: fontSmall.copyWith(color: Colors.green)),
+                        child: isLoading?const CircularProgressIndicator():Text("activated", style: fontSmall.copyWith(color: Colors.green)),
                                           ),
                                         ),
                       )

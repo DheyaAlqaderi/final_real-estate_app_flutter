@@ -57,7 +57,8 @@ import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
 import 'package:smart_real_estate/owner/add_property/domain/create_property_repository.dart';
 import 'package:smart_real_estate/owner/add_property/presentation/manager/create_property/create_property_cubit.dart';
-import 'package:smart_real_estate/owner/add_property/presentation/pages/forth_feature_add_property.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/pages/sixth_feature_add_property.dart';
+import 'package:smart_real_estate/owner/edit_property/presentation/pages/edit_property_page.dart';
 import 'package:smart_real_estate/owner/home/presentation/pages/owner_home_screen.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/pages/owner_profile_screen.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
@@ -74,8 +75,8 @@ import 'features/client/home/domain/manager/main_category/main_category_cubit.da
 import 'firebase_options.dart';
 import 'owner/add_property/data/models/create_property_request.dart';
 import 'owner/add_property/data/remote_api/add_property_api.dart';
+import 'owner/add_property/presentation/pages/forth_price_add_property.dart';
 import 'owner/add_property/presentation/pages/third_attribute_add_property.dart';
-import 'owner/notification/presentation/pages/notification_screen.dart';
 
 Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, List<File> imageDataFiles) async {
   final dio = Dio();
@@ -391,7 +392,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home: const NotificationScreen(),
+          home:  EditPropertyPage(propertyId: 91,),
         ),
       ),
     );

@@ -46,7 +46,7 @@ class _SecondAddressAddPropertyState extends State<SecondAddressAddProperty> {
   int? stateId;
   late GoogleMapController _controller;
   Marker? _markers;
-  LatLng _currentLatLng = LatLng(14.5678337, 43.2232772);
+  LatLng _currentLatLng = const LatLng(14.5678337, 43.2232772);
   MyModel? _model;
 
 

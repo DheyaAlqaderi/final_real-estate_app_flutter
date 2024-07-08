@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 
-import '../../../data/models/create_property_request.dart';
 import '../../../domain/create_property_repository.dart';
 import 'create_property_cubit_state.dart';
 

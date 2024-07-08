@@ -43,5 +43,7 @@ class AppConstants {
   static const String featureData = 'feature_data';
   static const String attributeValues = 'attribute_values';
   static const String addressData = 'address';
+  static const String propertyIsDeleted = 'is_deleted';
+
 
 }
