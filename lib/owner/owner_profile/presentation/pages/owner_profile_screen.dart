@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +12,10 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/profile/presentation/pages/profile_update_screen.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/pages/first_add_property.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/widgets/owner_profile_appBar.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../features/client/home/data/models/property/property_model.dart';
@@ -34,6 +37,11 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
 
   int? id;
   String? token;
+  bool _isLoading=false;
+  List<Map<String, dynamic>>? propertiesId;
+
+
+
 
   @override
   void initState() {
@@ -42,6 +50,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
     fetchId();
     ownerProfileRepository = OwnerProfileRepository(Dio());
     ownerPropertyRepository=OwnerPropertyRepository(Dio());
+
   }
 
   Future<void> fetchId() async {
@@ -54,6 +63,19 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
       token = mToken ?? " ";
     });
   }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await fetchId();
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
 
 
 
@@ -71,213 +93,245 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: FutureBuilder<ProfileModel?>(
-          //future: id != null ? ownerProfileRepository.getProfile(id!) : Future.value(null),
-          future: ownerProfileRepository.getProfile(id!),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const SizedBox();
-            } else if (snapshot.hasData) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    // Image
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(snapshot.data!.image ?? AppConstants.noImageUrl),
-                          fit: BoxFit.cover,
+        child: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: FutureBuilder<ProfileModel?>(
+            //future: id != null ? ownerProfileRepository.getProfile(id!) : Future.value(null),
+            future: ownerProfileRepository.getProfile(id!),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const SizedBox();
+              } else if (snapshot.hasData) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      // Image
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(snapshot.data!.image ?? AppConstants.noImageUrl),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 5),
-                    // Name
-                    Text(
-                      snapshot.data!.username!,
-                      style: fontMediumBold,
-                    ),
-                    const SizedBox(height: 5),
-                    // Email
-                    Text(snapshot.data!.email!),
-                    const SizedBox(height: 10),
-                    // Row data
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildCounter(snapshot.data!.countReview!.toString(), 'التعليقات'),
-                        buildCounter(snapshot.data!.soldProperty!.toString(), 'مباع'),
-                        buildCounter(snapshot.data!.propertyCount!.toString(), 'القوائم'),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    // Active all list
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: const Color(0xFFF5F4F8),
+                      const SizedBox(height: 5),
+                      // Name
+                      Text(
+                        snapshot.data!.username!,
+                        style: fontMediumBold,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: (){},
-                              child: Container(
-                                height: 35,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: const Color(0xFFFFFFFF),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                  child: Text(
-                                    Locales.string(context, 'price_improvement'),
-                                    style: fontSmall,
+                      const SizedBox(height: 5),
+                      // Email
+                      Text(snapshot.data!.email!),
+                      const SizedBox(height: 10),
+                      // Row data
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildCounter(snapshot.data!.countReview!.toString(), 'التعليقات'),
+                          buildCounter(snapshot.data!.soldProperty!.toString(), 'مباع'),
+                          buildCounter(snapshot.data!.propertyCount!.toString(), 'القوائم'),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      // Active all list
+                      Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: const Color(0xFFF5F4F8),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: (){},
+                                child: Container(
+                                  height: 35,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: const Color(0xFFFFFFFF),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Text(
+                                      Locales.string(context, 'price_improvement'),
+                                      style: fontSmall,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+
+                                InkWell(
+                                onTap: () async {
+
+                                  var headers = {
+                                    'Authorization': 'token $token',
+                                    'Content-Type': 'application/json'
+                                  };
+
+                                  var request = http.Request('POST',
+                                      Uri.parse('${AppConstants.baseUrl}api/property/update-list/'));
+
+
+                                  request.body = json.encode({"property_list": propertiesId});
+
+                                  request.headers.addAll(headers);
+
+                                  http.StreamedResponse response = await request.send();
+
+                                  if (response.statusCode == 200) {
+                                    print(await response.stream.bytesToString());
+                                  }
+                                  else {
+                                  print(response.reasonPhrase);
+                                  }
+                                },
+                                child: Container(
+                                  height: 35,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: const Color(0xFFFFFFFF),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Text(
+                                      Locales.string(context, 'active_all'),
+                                      style: fontSmall,
+                                    ),
+                                  ),
+                                ),
+                              ),
 
                               InkWell(
-                              onTap: (){},
-                              child: Container(
-                                height: 35,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: const Color(0xFFFFFFFF),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                  child: Text(
-                                    Locales.string(context, 'active_all'),
-                                    style: fontSmall,
+                                onTap: (){},
+                                child: Container(
+                                  height: 35,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: const Color(0xFFFFFFFF),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Text(
+                                      Locales.string(context, 'transaction'),
+                                      style: fontSmall,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-
-                            InkWell(
-                              onTap: (){},
-                              child: Container(
-                                height: 35,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: const Color(0xFFFFFFFF),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                  child: Text(
-                                    Locales.string(context, 'transaction'),
-                                    style: fontSmall,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              snapshot.data!.propertyCount!.toString(),
-                              style: fontLarge,
-                            ),
-                            Text(
-                              Locales.string(context, "favorite_list"),
-                              style: fontLarge,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: (){},
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                                child: SvgPicture.asset(
-                                  Images.addNavIcon,
-                                  alignment: Alignment.centerRight,
-                                ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                snapshot.data!.propertyCount!.toString(),
+                                style: fontLarge,
                               ),
-                            ),
-                            InkWell(
-                              onTap: (){},
-                              child: Container(
-                                width: 52,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: Theme.of(context).cardColor,
-                                ),
+                              Text(
+                                Locales.string(context, "favorite_list"),
+                                style: fontLarge,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: (){
+                                  Get.to(()=> const FirstAddProperty());
+                                },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
                                   child: SvgPicture.asset(
-                                    Images.grideIcon,
+                                    Images.addNavIcon,
+                                    alignment: Alignment.centerRight,
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    FutureBuilder<PropertyModel?>(
-                      future:ownerPropertyRepository.getPropertyOwnerByUserId(id!, 200, "token ${token!}"),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return const SizedBox();
-                        } else if (snapshot.hasData) {
-                          var data = snapshot.data!.results!;
-                          return Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 20.0,
-                            runSpacing: 10.0,
-                            children: List.generate(
-                              data.length,
-                                  (index) => OwnerPropertyWidget(
-                                id: data[index].id!,
-                                imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
-                                title: data[index].name!,
-                                price: data[index].price ?? "null",
-                                address: data[index].address!,
-                                isFavorite: data[index].inFavorite!,
-                                rate: data[index].rate!,
-                                isActivate: data[index].isActive!,
-                                refresh: OwnerRootScreen(),
-                                onTap: (){
-                                  Get.to(()=> PropertyDetailsScreen(id: data[index].id));
-                                },
+                              InkWell(
+                                onTap: (){},
+                                child: Container(
+                                  width: 52,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Theme.of(context).cardColor,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SvgPicture.asset(
+                                      Images.grideIcon,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          );
-                        } else {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      FutureBuilder<PropertyModel?>(
+                        future:ownerPropertyRepository.getPropertyOwnerByUserId(id!, 200, "token ${token!}"),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return const SizedBox();
+                          } else if (snapshot.hasData) {
+                            var data = snapshot.data!.results!;
+                              propertiesId = data.map((id) => {
+                                "id": id.id!,
+                                "is_active": true
+                              }).toList();
+                            return Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              spacing: 20.0,
+                              runSpacing: 10.0,
+                              children: List.generate(
+                                data.length,
+                                    (index) => OwnerPropertyWidget(
+                                  id: data[index].id!,
+                                  imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
+                                  title: data[index].name!,
+                                  price: data[index].price ?? "null",
+                                  address: data[index].address!,
+                                  isFavorite: data[index].inFavorite!,
+                                  rate: data[index].rate!,
+                                  isActivate: data[index].isActive!,
+                                  refresh: OwnerRootScreen(),
+                                  onTap: (){
+                                    Get.to(()=> PropertyDetailsScreen(id: data[index].id));
+                                  },
+                                ),
+                              ),
+                            );
+                          } else {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
         ),
       ),
     );

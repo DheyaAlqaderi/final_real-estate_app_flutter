@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:get/get.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 
 import '../../../../features/client/feedback/presentation/widgets/appBar.dart';
@@ -22,10 +23,7 @@ class _SettingScreenState extends State<SettingScreen> {
       appBar:AppBarWidget(
         title: 'setting_title',
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context)=>const HomeScreen(),));
+          navigator?.pop(context);
         },
       ),
       body: SingleChildScrollView(

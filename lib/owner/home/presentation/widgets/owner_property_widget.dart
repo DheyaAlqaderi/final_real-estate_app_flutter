@@ -239,7 +239,6 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                             'Property activated successfully!',
                             snackPosition: SnackPosition.BOTTOM,
                           );
-                          Get.offAll(() => widget.refresh);
                         } else {
                           Get.snackbar(
                             'Error',
@@ -291,14 +290,12 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                                 backgroundColor: Colors.red,
                                 colorText: Colors.white,
                               );
-                              Get.offAll(() => widget.refresh);
                             } else {
                               Get.snackbar(
                                 'Success',
                                 'Property unactivated successfully!',
                                 snackPosition: SnackPosition.BOTTOM,
                               );
-                              Get.offAll(() => widget.refresh);
 
                             }
                           } catch (error) {

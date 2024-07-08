@@ -75,6 +75,7 @@ import 'firebase_options.dart';
 import 'owner/add_property/data/models/create_property_request.dart';
 import 'owner/add_property/data/remote_api/add_property_api.dart';
 import 'owner/add_property/presentation/pages/third_attribute_add_property.dart';
+import 'owner/notification/presentation/pages/notification_screen.dart';
 
 Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, List<File> imageDataFiles) async {
   final dio = Dio();
@@ -390,7 +391,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home: const OwnerRootScreen(),
+          home: const NotificationScreen(),
         ),
       ),
     );

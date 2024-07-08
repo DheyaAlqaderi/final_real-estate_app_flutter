@@ -117,9 +117,10 @@
   "price_improvement": "price improvement",
   "active_all": "activate all",
   "transaction":"transaction",
+  "add_property":"Add Property",
+  "alarm_notification": "notification alarm",
+  "alarm":"alarm"
 
-
-  "add_property":"Add Property"
 
 
 
