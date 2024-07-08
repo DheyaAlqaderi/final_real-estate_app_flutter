@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 class FirebaseMessagingRepository {
   static final  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-  static Future<void> init() async{
+  static Future<String?> init() async{
    await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: true,
@@ -15,8 +15,7 @@ class FirebaseMessagingRepository {
       sound: true
     );
     final token = await _firebaseMessaging.getToken();
-    print("received token: $token");
-
+    return token;
   }
 
   static Future<String?> getToken() async {

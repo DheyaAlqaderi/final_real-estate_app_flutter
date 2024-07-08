@@ -5,14 +5,17 @@ class RequestSignUpModel {
   final String password;
   final String name;
   final String userType;
+  final String deviceToken;
 
-  RequestSignUpModel({
+
+  RequestSignUpModel( {
     required this.email,
     required this.phoneNumber,
     required this.username,
     required this.password,
     required this.name,
     required this.userType,
+    required this.deviceToken
   });
 
   factory RequestSignUpModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +26,7 @@ class RequestSignUpModel {
       password: json['password'] ?? '',
       name: json['name'] ?? '',
       userType: json['user_type'] ?? '',
+      deviceToken: json['user_type'] ?? '',
     );
   }
 
@@ -34,6 +38,7 @@ class RequestSignUpModel {
       'password': password,
       'name': name,
       'user_type': userType,
+      'device_token': deviceToken
     };
   }
 }

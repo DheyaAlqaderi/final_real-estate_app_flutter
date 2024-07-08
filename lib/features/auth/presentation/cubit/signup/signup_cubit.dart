@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_real_estate/features/auth/domain/repo/auth_repository.dart';
 import 'package:smart_real_estate/features/auth/presentation/cubit/signup/signup_state.dart';
 
+import '../../../../client/chat/domain/repository/firebase_messaging_repository.dart';
+
 class SignUpCubit extends Cubit<SignUpState> {
   final AuthRepository _authRepository;
 
@@ -19,13 +21,15 @@ class SignUpCubit extends Cubit<SignUpState> {
     try {
       emit(SignUpLoading());
 
+      final token =await FirebaseMessagingRepository.init();
       final response = await _authRepository.signUp(
           userType: userType,
           name: name,
           email: email,
           password: password,
           phoneNumber: phoneNumber,
-          username: username);
+          username: username,
+      deviceToken: token!);
 
       emit(SignUpSuccess(response));
     } catch (e) {

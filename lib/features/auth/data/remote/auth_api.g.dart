@@ -28,6 +28,7 @@ class _AuthApi implements AuthApi {
     String password,
     String name,
     String userType,
+    String deviceToken,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -39,6 +40,7 @@ class _AuthApi implements AuthApi {
       'password': password,
       'name': name,
       'user_type': userType,
+      'device_token': deviceToken,
     };
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ResponseSignUpModel>(Options(

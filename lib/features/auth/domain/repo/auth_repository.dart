@@ -23,7 +23,8 @@ class AuthRepository {
       required String username,
       required String password,
       required String name,
-      required String userType}) async {
+      required String userType,
+      required String deviceToken }) async {
     try {
       return await authApi.signUp(
         email,
@@ -32,6 +33,7 @@ class AuthRepository {
         password,
         name,
         userType,
+        deviceToken
       );
     } catch (e) {
       throw Exception('Failed to sign up: $e');

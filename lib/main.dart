@@ -392,7 +392,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home:  RootScreen(),
+          home:  BothAuthScreen(isOwner: false,),
         ),
       ),
     );

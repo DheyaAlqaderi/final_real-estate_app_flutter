@@ -20,6 +20,8 @@ abstract class AuthApi{
       @Field('password') String password,
       @Field('name') String name,
       @Field('user_type') String userType,
+      @Field('device_token') String deviceToken,
+
       );
 
   @POST("api/auth/login/")

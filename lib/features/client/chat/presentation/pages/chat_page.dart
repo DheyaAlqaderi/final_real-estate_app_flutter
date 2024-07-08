@@ -123,9 +123,9 @@ class _ChatPageState extends State<ChatPage> {
                           chatRepository.updateUserToken(userId!, fcmTokene);
                         }
 
-                        setState(() {
-                          fcmTokene = userData!['fcmToken'];
-                        });
+
+                        fcmTokene = userData!['fcmToken'];
+
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
