@@ -2,9 +2,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
+import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 import 'package:smart_real_estate/owner/home/domain/repositories/property_owner_repositories.dart';
 import 'package:smart_real_estate/owner/home/presentation/widgets/owner_property_widget.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
@@ -68,7 +71,22 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Owner Home')),
+      appBar: AppBar(title: const Text('Owner Home') , leading: null, actions: [
+        InkWell(
+          onTap: (){
+            Get.to(()=> SettingScreen());
+          },
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(50.0),
+            ),
+            child: SvgPicture.asset(Images.settingIcon),
+          ),
+        )
+      ],),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: RefreshIndicator(

@@ -6,10 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/widget/custom_attribute_int.dart';
 import 'package:smart_real_estate/owner/add_property/presentation/manager/create_property/create_property_cubit.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/pages/forth_price_add_property.dart';
 import 'package:smart_real_estate/owner/add_property/presentation/widgets/dropDown_widget.dart';
 
 import '../../../../core/constant/app_constants.dart';
@@ -19,7 +21,7 @@ import '../../../../core/utils/styles.dart';
 import '../../../../features/client/alarm/data/models/attribute_alarm_model.dart';
 import '../../../../features/client/alarm/presentation/manager/attribute/attribute_alarm_cubit.dart';
 import '../../../../features/client/alarm/presentation/manager/attribute/attribute_alarm_cubit_state.dart';
-import 'forth_feature_add_property.dart';
+import 'sixth_feature_add_property.dart';
 
 class ThirdAttributeAddProperty extends StatefulWidget {
   const ThirdAttributeAddProperty({super.key});
@@ -36,6 +38,7 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
   MyModel? _model;
   String? userToken;
   bool _loading = false;
+  String? isDeleted;
 
   @override
   void initState() {
@@ -43,54 +46,56 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
     super.initState();
     _getToken();
     _fetchData();
-
   }
 
-  void _getToken()async{
+  void _getToken() async {
     final myToken = await SharedPrefManager.getData(AppConstants.token);
-    if(myToken == null){
+    final myIsDeleted = await SharedPrefManager.getData(
+        AppConstants.propertyIsDeleted);
+
+    if (myIsDeleted != null) {
+      setState(() {
+        isDeleted = myIsDeleted;
+        print("issssssssssssssssssssDeeeeeeeeeeeeeeleted $isDeleted");
+      });
+    }
+    if (myToken == null) {
       Get.snackbar("you are not log in", "log in first please");
-    } else{
+    } else {
       setState(() {
         userToken = myToken;
       });
     }
   }
 
-  void _fetchData() async{
-    final propertyCategoryId = await SharedPrefManager.getData(AppConstants.propertyCategoryId);
+  void _fetchData() async {
+    final propertyCategoryId = await SharedPrefManager.getData(
+        AppConstants.propertyCategoryId);
     final attributes = context.read<AttributeAlarmCubit>();
 
     await Future.wait([
-      attributes.fetchAttributesByCategory(categoryId: int.parse(propertyCategoryId!)),
+      attributes.fetchAttributesByCategory(
+          categoryId: int.parse(propertyCategoryId!)),
     ]);
   }
 
   Future<void> _getData() async {
-    final propertySize = await SharedPrefManager.getData(AppConstants.propertyCategoryId);
-    // final propertyAttribute = await SharedPrefManager.getData(AppConstants.propertyCategoryId);
+    final propertyAttribute = await SharedPrefManager.getData(
+        AppConstants.attributeValues);
 
-    if(propertySize == null){
-      setState(() {
-        initSizeValue = 0;
-      });
-    } else{
-      setState(() {
-        initSizeValue = int.parse(propertySize);
-      });
+    if (propertyAttribute != null) {
+      Get.to(() => const ForthPriceAddProperty());
     }
   }
 
 
-
-
-  Future<void> _createPropertyAndNavigateToForthStep() async{
+  Future<void> _NavigateToForthStep() async {
     setState(() {
       _loading = true;
     });
     _saveModel(attributes: lastAttributes);
 
-    if(sizeValue == null){
+    if (sizeValue == null) {
       setState(() {
         _loading = false;
       });
@@ -103,10 +108,16 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
       );
       return;
     }
+    await SharedPrefManager.saveData(
+        AppConstants.propertySize, sizeValue.toString());
+
     /// get data from database
-    final propertyName = await SharedPrefManager.getData(AppConstants.propertyName);
-    final propertyDescription = await SharedPrefManager.getData(AppConstants.propertyDescription);
-    final propertyCategoryId = await SharedPrefManager.getData(AppConstants.propertyCategoryId);
+    final propertyName = await SharedPrefManager.getData(
+        AppConstants.propertyName);
+    final propertyDescription = await SharedPrefManager.getData(
+        AppConstants.propertyDescription);
+    final propertyCategoryId = await SharedPrefManager.getData(
+        AppConstants.propertyCategoryId);
     final isForSale = await SharedPrefManager.getData(AppConstants.forSale);
     final isForRent = await SharedPrefManager.getData(AppConstants.forRent);
     Map<String, dynamic>? address = await getModel(AppConstants.addressData);
@@ -120,8 +131,10 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
     print("Is For Rent: $isForRent");
     print("Address: ${address.toString()}");
     print("Address: ${lastAttributes.toString()}");
+
     // Check for null values and show a message if any are null
-    if (propertyName == null || propertyDescription == null || propertyCategoryId == null ||
+    if (propertyName == null || propertyDescription == null ||
+        propertyCategoryId == null ||
         isForSale == null || isForRent == null || address == null) {
       Get.snackbar(
         "Validation Error",
@@ -133,33 +146,11 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
       return;
     }
 
-    await context.read<CreatePropertyCubit>().addProperty("token $userToken", {
-      "attribute_values": lastAttributes,
-      "address": address,
-      "feature_data": [],
-      "image_data": [],
-      "name": propertyName,
-      "description": propertyDescription,
-      "price": " ",
-      "size": sizeValue,
-      "is_active": false,
-      "is_deleted": false,
-      "for_sale": bool.parse(isForSale),
-      "is_featured": false,
-      "for_rent": bool.parse(isForRent),
-      "category": int.parse(propertyCategoryId)
-    });
-
-
-    // longitude
-
-
     /// got to add features
-    Get.to(()=> const ForthFeatureAddProperty());
+    Get.to(() => const ForthPriceAddProperty());
     setState(() {
       _loading = false;
     });
-
   }
 
   Future<void> _saveModel({required Map<String, dynamic> attributes}) async {
@@ -169,6 +160,7 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
       _model = model;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -185,7 +177,8 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
 
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 100,left: 8.0, right: 8.0, top: 8.0),
+                padding: const EdgeInsets.only(
+                    bottom: 100, left: 8.0, right: 8.0, top: 8.0),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +188,8 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
                         width: double.infinity,
                       ),
 
-                      const Text("أوشكت على الانتهاء، اكتملت القائمة", style: fontLargeBold,),
+                      const Text("أوشكت على الانتهاء، اكتملت القائمة",
+                        style: fontLargeBold,),
 
                       const SizedBox(
                         height: 20,
@@ -204,8 +198,8 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
 
                       /// add the size
                       CustomAttributeInt(
-                          initialValue: initSizeValue??0,
-                          onChanged: (value){
+                          initialValue: initSizeValue ?? 0,
+                          onChanged: (value) {
                             setState(() {
                               sizeValue = value;
                             });
@@ -219,11 +213,15 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
                       BlocBuilder<AttributeAlarmCubit, AttributeAlarmState>(
                         builder: (context, state) {
                           if (state is AttributeAlarmLoading) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           } else if (state is AttributeAlarmLoaded) {
                             // Function to filter data based on data_type
-                            List<AttributesAlarmModel> filterDataByType(List<AttributesAlarmModel> data, String dataType) {
-                              return data.where((item) => item.dataType == dataType).toList();
+                            List<AttributesAlarmModel> filterDataByType(
+                                List<AttributesAlarmModel> data,
+                                String dataType) {
+                              return data.where((item) =>
+                              item.dataType == dataType).toList();
                             }
 
                             // Convert state.attributes (list of AttributesAlarmModel) to List<Map<String, dynamic>>
@@ -236,38 +234,55 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const SizedBox(height: 9),
-                                    const Text("خصائص العقار", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    const Text("خصائص العقار", style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 6),
                                     // Example: Build CustomAttributeInt widgets for int data
-                                    ...filterDataByType(data, 'int').map((attribute) {
+                                    ...filterDataByType(data, 'int').map((
+                                        attribute) {
                                       return CustomAttributeInt(
                                         initialValue: 0,
                                         label: attribute.name ?? '',
                                         onChanged: (value) {
                                           print(value);
                                           // Find if the attribute already exists in realAttributes
-                                          var existingAttribute = realAttributes.firstWhere(
-                                                (element) => element['attribute_id'] == attribute.id.toString(),
-                                            orElse: () => {'attribute_id': null, 'value': null}, // Return a placeholder map
+                                          var existingAttribute = realAttributes
+                                              .firstWhere(
+                                                (element) =>
+                                            element['attribute_id'] ==
+                                                attribute.id.toString(),
+                                            orElse: () =>
+                                            {
+                                              'attribute_id': null,
+                                              'value': null
+                                            }, // Return a placeholder map
                                           );
 
-                                          if (existingAttribute['attribute_id'] != null) {
+                                          if (existingAttribute['attribute_id'] !=
+                                              null) {
                                             // If the attribute exists, update its value or remove it if the value is zero
                                             if (value == 0) {
-                                              realAttributes.removeWhere((element) => element['attribute_id'] == attribute.id.toString());
+                                              realAttributes.removeWhere((
+                                                  element) =>
+                                              element['attribute_id'] ==
+                                                  attribute.id.toString());
                                             } else {
-                                              existingAttribute['value'] = value.toString();
+                                              existingAttribute['value'] =
+                                                  value.toString();
                                             }
                                           } else if (value != 0) {
                                             // If the attribute does not exist and the value is not zero, add a new one
                                             realAttributes.add({
-                                              'attribute_id': attribute.id.toString(),
+                                              'attribute_id': attribute.id
+                                                  .toString(),
                                               'value': value.toString(),
                                             });
                                           }
 
                                           // Print the updated realAttributes list
-                                          print('Updated realAttributes: $realAttributes');
+                                          print(
+                                              'Updated realAttributes: $realAttributes');
                                         },
                                       );
                                     }),
@@ -289,18 +304,23 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
                       BlocBuilder<AttributeAlarmCubit, AttributeAlarmState>(
                         builder: (context, state) {
                           if (state is AttributeAlarmLoading) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           } else if (state is AttributeAlarmLoaded) {
                             // Function to filter data based on data_type
-                            List<AttributesAlarmModel> filterDataByType(List<AttributesAlarmModel> data, String dataType) {
-                              return data.where((item) => item.dataType == dataType).toList();
+                            List<AttributesAlarmModel> filterDataByType(
+                                List<AttributesAlarmModel> data,
+                                String dataType) {
+                              return data.where((item) =>
+                              item.dataType == dataType).toList();
                             }
 
                             // Convert state.attributes (list of AttributesAlarmModel) to List<Map<String, dynamic>>
                             List<AttributesAlarmModel> data = state.attributes;
 
 
-                            List<Map<String, dynamic>> transformToMap(List<ValueAttributeModel>? attributes) {
+                            List<Map<String, dynamic>> transformToMap(
+                                List<ValueAttributeModel>? attributes) {
                               if (attributes == null) {
                                 return [];
                               }
@@ -322,37 +342,50 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
                                   children: [
                                     const SizedBox(height: 6),
                                     // Example: Build CustomAttributeInt widgets for int data
-                                    ...filterDataByType(data, 'string').map((attribute) {
+                                    ...filterDataByType(data, 'string').map((
+                                        attribute) {
                                       return CustomDropdownButton(
-                                        options: transformToMap(attribute.valueAttribute),
+                                        options: transformToMap(
+                                            attribute.valueAttribute),
                                         lable: attribute.name ?? " ",
                                         onChanged: (String id, String value) {
-                                          print('Selected ID: $id, Selected Value: $value');
-                                          int intValue = int.tryParse(value) ?? 0;
+                                          print(
+                                              'Selected ID: $id, Selected Value: $value');
+                                          int intValue = int.tryParse(value) ??
+                                              0;
 
                                           // Find if the attribute already exists in realAttributes
-                                          var existingAttribute = realAttributes.firstWhere(
-                                                (element) => element['attribute_id'] == id,
-                                            orElse: () => {'attribute_id': null, 'value': null}, // Return a placeholder map
+                                          var existingAttribute = realAttributes
+                                              .firstWhere(
+                                                (element) =>
+                                            element['attribute_id'] == id,
+                                            orElse: () =>
+                                            {
+                                              'attribute_id': null,
+                                              'value': null
+                                            }, // Return a placeholder map
                                           );
 
 
-
-                                            realAttributes.add({
-                                              'attribute_id': attribute.id,
-                                              'value': value,
-                                            });
+                                          realAttributes.add({
+                                            'attribute_id': attribute.id,
+                                            'value': value,
+                                          });
 
 
                                           // Update lastAttributes map
                                           lastAttributes.clear();
                                           for (var attr in realAttributes) {
-                                            lastAttributes[attr['attribute_id'].toString()] = attr['value'].toString();
+                                            lastAttributes[attr['attribute_id']
+                                                .toString()] =
+                                                attr['value'].toString();
                                           }
 
                                           // Print the updated realAttributes list
-                                          print('Updated realAttributes: $realAttributes');
-                                          print('Updated lastAttributes: $lastAttributes');
+                                          print(
+                                              'Updated realAttributes: $realAttributes');
+                                          print(
+                                              'Updated lastAttributes: $lastAttributes');
                                         },
                                       );
                                     }).toList(),
@@ -376,32 +409,37 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
 
             /// create property
             Positioned(
-              bottom: 20,
-              right: 20,
-              left: 20,
-              child: InkWell(
-                onTap: _createPropertyAndNavigateToForthStep,
-                child: Container(
-                  height: 70,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  child: Center(
-                    child: _loading?const CircularProgressIndicator():Text(
-                      Locales.string(context, 'next'),
-                      style: fontMediumBold.copyWith(color: Colors.white),
+                bottom: 20,
+                right: 20,
+                left: 20,
+                child: InkWell(
+                  onTap: _NavigateToForthStep,
+                  child: Container(
+                    height: 70,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Theme
+                          .of(context)
+                          .primaryColor,
+                    ),
+                    child: Center(
+                      child: _loading
+                          ? const CircularProgressIndicator()
+                          : Text(
+                        Locales.string(context, 'next'),
+                        style: fontMediumBold.copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-              )
+                )
             )
           ],
         ),
       ),
     );
   }
+
 }
 Future<void> saveAttributeModel(MyModel attribute) async {
   final prefs = await SharedPreferences.getInstance();
