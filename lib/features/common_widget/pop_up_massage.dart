@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../auth/presentation/pages/both_auth_screen.dart';
 
-void showLoginPopup() {
+void showLoginPopup(BuildContext context) {
   Get.defaultDialog(
     title: 'Not Logged In',
     titleStyle: const TextStyle(
@@ -36,7 +36,10 @@ void showLoginPopup() {
     confirmTextColor: Colors.white,
     onConfirm: () {
       // Implement your login logic here
-      Get.to(() => const BothAuthScreen(isOwner: false));
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context)=> const BothAuthScreen(isOwner: false))
+      );
     },
     textCancel: 'Cancel',
     cancelTextColor: Colors.redAccent,

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
+import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
+import 'package:smart_real_estate/features/auth/presentation/pages/switch/modification.dart';
 import 'package:smart_real_estate/features/client/favorite/presentation/pages/favorite_screen.dart';
 import 'package:smart_real_estate/features/client/home/pages/home_screen.dart';
 import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
+import 'package:smart_real_estate/owner/add_property/presentation/pages/first_add_property.dart';
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../core/utils/styles.dart';
@@ -25,6 +28,21 @@ class _RootScreenState extends State<RootScreen>{
   int _bottomNavIndex = 0;
   int? userId;
   bool isLoggedIn = false;
+  bool isOwner = false;
+
+  Future<void> _checkIfOwner() async {
+    final userType = await SharedPrefManager.getData(AppConstants.userType);
+
+    if(userType == AppConstants.customer){
+      setState(() {
+        isOwner = false;
+      });
+    } else{
+      setState(() {
+        isOwner = true;
+      });
+    }
+  }
 
   Future<void> _loadUserId() async {
     final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
@@ -68,6 +86,7 @@ class _RootScreenState extends State<RootScreen>{
   void initState() {
     super.initState();
     _loadUserId();
+    _checkIfOwner();
 
   }
   final List<IconData> lineIconsList = [
@@ -195,6 +214,8 @@ class _RootScreenState extends State<RootScreen>{
                     ),
                     onTap: () {
                       Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> isOwner?const FirstAddProperty():const ModificationScreen()));
+
                     },
                   ),
                 ),

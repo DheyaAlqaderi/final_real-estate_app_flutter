@@ -6,7 +6,6 @@ import 'package:smart_real_estate/features/client/home/data/models/property/prop
 import 'package:smart_real_estate/owner/edit_property/presentation/pages/edit_property_page.dart';
 import 'package:smart_real_estate/owner/home/domain/repositories/property_owner_repositories.dart';
 import 'package:smart_real_estate/owner/home/presentation/widgets/owner_property_widget.dart';
-import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
@@ -140,7 +139,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
                         onTap: () {
                           Get.to(()=> EditPropertyPage(propertyId: data[index].id!,token: token,));
                           // Get.to(() => EditPropertyPage(propertyId: data[index].id!));
-                        }, refresh: OwnerRootScreen(),
+                        }, refresh: _refreshData,
                       ),
                     ),
                   );

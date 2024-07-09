@@ -14,6 +14,7 @@ import '../../../../client/root/pages/root_screen.dart';
 import '../../cubit/signup/signup_cubit.dart';
 import '../../cubit/signup/signup_state.dart';
 import '../../widget/custom_field_widget.dart';
+import 'package:get/get.dart';
 
 
 final _formKey = GlobalKey<FormState>();
@@ -194,6 +195,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       } else if (state is SignUpSuccess) {
                         final response = state.response;
                         // Show success snackBar
+
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -207,8 +209,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           if(widget.isOwner){
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OwnerRootScreen()));
                           } else{
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
 
+                            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                            Get.offAll(()=> RootScreen());
                           }
                         });
                         return _buildButton(context);

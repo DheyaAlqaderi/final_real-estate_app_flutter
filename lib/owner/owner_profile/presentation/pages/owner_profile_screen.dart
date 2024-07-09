@@ -15,6 +15,7 @@ import 'package:smart_real_estate/owner/add_property/presentation/pages/first_ad
 import 'package:smart_real_estate/owner/notification/presentation/pages/notification_screen.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/widgets/owner_profile_appBar.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_real_estate/owner/setting/presentation/pages/setting_page.dart';
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../features/client/home/data/models/property/property_model.dart';
@@ -82,8 +83,8 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OwnerProfileAppBar(
-        alarm: () {
-          Get.to(NotificationScreen(token: token!,));
+        setting: () {
+          Get.to(SettingOwnerScreen());
         },
         edit: () {
           Get.to(const ProfileUpdateScreen());
@@ -311,7 +312,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                   isFavorite: data[index].inFavorite!,
                                   rate: data[index].rate!,
                                   isActivate: data[index].isActive!,
-                                  refresh: OwnerProfileScreen(),
+                                  refresh: _refreshData,
                                   onTap: (){
                                     Get.to(()=> PropertyDetailsScreen(id: data[index].id, token: token,));
                                   },

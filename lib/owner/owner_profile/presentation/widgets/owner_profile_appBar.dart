@@ -7,9 +7,9 @@ import '../../../../core/utils/styles.dart';
 
 
 class OwnerProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const OwnerProfileAppBar({super.key, required this.edit, required this.alarm, required this.title, });
+  const OwnerProfileAppBar({super.key, required this.edit, required this.setting, required this.title, });
   final VoidCallback edit;
-  final VoidCallback alarm;
+  final VoidCallback setting;
   final String title;
 
 
@@ -25,8 +25,8 @@ class OwnerProfileAppBar extends StatelessWidget implements PreferredSizeWidget 
         leading: IconButton(
 
 
-            icon: SvgPicture.asset(Images.alarmIcon),
-            onPressed: alarm
+            icon: SvgPicture.asset(Images.settingIcon),
+            onPressed: setting
         ),
         actions: [
           IconButton(

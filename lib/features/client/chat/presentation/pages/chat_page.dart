@@ -50,7 +50,7 @@ class _ChatPageState extends State<ChatPage> {
         await chatRepository.updateUserToken(userId!, fcmTokene);
       }
     }
-    deviceToken = userData!['deviceToken'];
+
   }
   Future<void> _loadUserId() async {
     final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
@@ -135,7 +135,8 @@ class _ChatPageState extends State<ChatPage> {
                         // Update the token if needed
                         updateTokenIfNeeded(userData);
 
-
+                        deviceToken = userData!['deviceToken'];
+                        print(deviceToken);
 
 
                         return Row(

@@ -9,7 +9,6 @@ import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/pages/edit_property_page.dart';
 import 'package:smart_real_estate/owner/home/data/models/activate_model.dart';
-import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../features/auth/presentation/pages/both_auth_screen.dart';
@@ -19,7 +18,7 @@ import '../../domain/repositories/property_owner_repositories.dart';
 
 
 class OwnerPropertyWidget extends StatefulWidget {
-  const OwnerPropertyWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.id, required this.isActivate, required this.refresh, required this.onTap});
+  const OwnerPropertyWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.id, required this.isActivate, required this.onTap, required this.refresh});
   final String imagePath;
   final String title;
   final String price;
@@ -28,7 +27,7 @@ class OwnerPropertyWidget extends StatefulWidget {
   final double rate;
   final bool isActivate;
   final int id;
-  final Widget refresh;
+  final VoidCallback refresh;
   final VoidCallback onTap;
 
 

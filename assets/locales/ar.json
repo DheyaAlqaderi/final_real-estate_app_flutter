@@ -119,7 +119,8 @@
   "transaction":"عملية تجارية",
   "add_property":"أضافة عقار",
   "alarm_notification": "منبة عقاري",
-  "alarm":"منبة"
+  "alarm":"منبة",
+  "type_of_user": "حدد نوع المستخدم"
 
 
 

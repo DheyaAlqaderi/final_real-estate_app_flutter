@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
+import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
 import '../../../../core/utils/styles.dart';
 
@@ -22,9 +25,7 @@ class _AppBarOnBoardingWidgetState extends State<AppBarOnBoardingWidget> {
         children: [
           OutlinedButton(
               onPressed: (){
-                setState(() {
-                  Locales.change(context, 'ar');
-                });
+                Get.to(()=> RootScreen());
               },
               child: SizedBox(
                 height: 38.0,

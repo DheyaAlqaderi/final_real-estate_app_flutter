@@ -17,7 +17,7 @@ class _SettingTempleteState extends State<SettingTemplete> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      highlightColor: Colors.cyanAccent,
+      // highlightColor: Colors.cyanAccent,
 
       onTap: widget.onTap,
       child: SizedBox(

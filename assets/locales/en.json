@@ -119,7 +119,9 @@
   "transaction":"transaction",
   "add_property":"Add Property",
   "alarm_notification": "notification alarm",
-  "alarm":"alarm"
+  "alarm":"alarm",
+  "type_of_user": "choose user type"
+
 
 
 

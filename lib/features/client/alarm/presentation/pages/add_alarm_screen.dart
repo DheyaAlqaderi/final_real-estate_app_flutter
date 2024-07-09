@@ -246,7 +246,7 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                           ),
                         ),
                         const SizedBox(width: 100.0),
-                        Text(Locales.string(context, "add_alarm"),
+                        Text(Locales.string(context, "add_alarm_notification"),
                             style: fontMediumBold),
                       ],
                     ),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/auth/domain/repo/auth_repository.dart';
 import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
+import 'package:smart_real_estate/features/auth/presentation/pages/switch/modification.dart';
 import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_screen.dart';
 import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
@@ -71,26 +72,26 @@ class _SettingScreenState extends State<SettingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              const SizedBox(height: 20,),
+              // const SizedBox(height: 20,),
 
-              SettingTemplete(
-                hamzah:'profile_title',
-                path: Images.profileIcon,
-                flag: true,
-                onTap: (){
-                  if(checkIfLogIn()) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder:
-                            (context) => const ProfileScreen())
-                    );
-                  } else{
-                    showLoginPopup();
-                  }
-                },
-              ),
+              // SettingTemplete(
+              //   hamzah:'profile_title',
+              //   path: Images.profileIcon,
+              //   flag: true,
+              //   onTap: (){
+              //     if(checkIfLogIn()) {
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(builder:
+              //               (context) => const ProfileScreen())
+              //       );
+              //     } else{
+              //       showLoginPopup(context);
+              //     }
+              //   },
+              // ),
 
-              const SizedBox(height: 15,),
+              const SizedBox(height: 50,),
 
               SettingTemplete(
                 hamzah:'add_alarm_notification',
@@ -111,7 +112,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 path: Images.userPage,
                 flag: false,
                 onTap: (){
-                  if(userType == AppConstants.promoter || userType == AppConstants.agent || userType == AppConstants.admin){
+                  if(userType == AppConstants.promoter || userType == AppConstants.agent || userType == AppConstants.admin|| userType == AppConstants.owner){
                     Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context)=> const OwnerRootScreen())
@@ -144,10 +145,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 path: Images.notification,
                 flag: true,
                 onTap: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
-                  );
+
                 },
               ),
 
@@ -176,10 +174,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 path: Images.version,
                 flag: true,
                 onTap: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
-                  );
+
                 },
               ),
 
@@ -190,10 +185,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 path: Images.termsOfService,
                 flag: true,
                 onTap: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
-                  );
+
                 },
               ),
 
@@ -204,10 +196,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 path: Images.privacyPolicy,
                 flag: true,
                 onTap: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
-                  );
+
                 },
               ),
 
@@ -249,11 +238,11 @@ class _SettingScreenState extends State<SettingScreen> {
 
 
           )
-              :Column(
+           :Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              const SizedBox(height: 20,),
+              const SizedBox(height: 50,),
 
 
               SettingTemplete(
@@ -262,7 +251,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 flag: false,
                 onTap: (){
 
-                    showLoginPopup();
+                    showLoginPopup(context);
 
                 },
               ),
@@ -276,7 +265,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 onTap: (){
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
+                      MaterialPageRoute(builder: (context)=> (userId!=null)?const BothAuthScreen(isOwner: true):const ModificationScreen())
                   );
                 },
               ),
@@ -299,10 +288,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 path: Images.notification,
                 flag: true,
                 onTap: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
-                  );
+
                 },
               ),
 

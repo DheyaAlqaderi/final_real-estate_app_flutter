@@ -25,6 +25,7 @@ class AppConstants {
   static const String agent = 'agent';
   static const String promoter = 'promoter';
   static const String customer = 'customer';
+  static const String owner = 'owner';
   static const String admin = 'admin';
 
 
