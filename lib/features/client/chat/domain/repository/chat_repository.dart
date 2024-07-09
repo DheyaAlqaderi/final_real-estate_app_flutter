@@ -289,7 +289,7 @@ class ChatRepository {
       await FirebaseFirestore.instance
           .collection('Users')
           .doc(userId)
-          .update({'fcmToken': fcmToken});
+          .update({'deviceToken': fcmToken});
       if (kDebugMode) {
         print('User fcmToken updated successfully');
       }

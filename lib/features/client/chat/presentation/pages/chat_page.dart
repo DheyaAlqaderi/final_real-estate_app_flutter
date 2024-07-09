@@ -12,6 +12,7 @@ import '../../../../../core/constant/app_constants.dart';
 import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../data/models/message_model.dart';
 import '../../domain/repository/chat_repository.dart';
+import '../../domain/repository/firebase_messaging_repository.dart';
 import '../widgets/message_field_widget.dart';
 import '../widgets/received_message.dart';
 import '../widgets/sent_message.dart';
@@ -39,7 +40,14 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     _loadUserId();
   }
-
+  Future<void> updateTokenIfNeeded(Map<String, dynamic>? userData) async {
+    if (userData != null && userData['deviceToken'] == null) {
+      fcmTokene = (await FirebaseMessagingRepository.init())!;
+      if (userId != null && fcmTokene != null) {
+        await chatRepository.updateUserToken(userId!, fcmTokene);
+      }
+    }
+  }
   Future<void> _loadUserId() async {
     final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
     print(loadedUserId.toString());
@@ -117,11 +125,12 @@ class _ChatPageState extends State<ChatPage> {
                           );
                         }
                         // Access data from the snapshot
+                        // Access data from the snapshot
                         final userData = snapshot.data!.data();
-                        if(userData != null && userData['fcmToken'] == null) {
-                           fcmTokene = FirebaseMessaging.instance.getToken() as String;
-                          chatRepository.updateUserToken(userId!, fcmTokene);
-                        }
+
+                        // Update the token if needed
+                        updateTokenIfNeeded(userData);
+
 
 
                         fcmTokene = userData!['fcmToken'];
