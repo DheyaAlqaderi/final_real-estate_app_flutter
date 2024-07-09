@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 
+import '../../../../core/constant/app_constants.dart';
+import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/styles.dart';
 
@@ -27,6 +29,17 @@ class NotificationWidget extends StatefulWidget {
 
 class _NotificationWidgetState extends State<NotificationWidget> {
   int? id;
+  String? token;
+
+  Future<void> getToken() async {
+    final myToken = await SharedPrefManager.getData(AppConstants.token);
+
+    setState(() {
+      token = myToken ?? " ";
+    });
+
+    print("my toooooooookennnnn $token");
+  }
   @override
   void initState() {
     super.initState();
@@ -37,7 +50,7 @@ class _NotificationWidgetState extends State<NotificationWidget> {
     return InkWell(
       onTap: (){
         widget.notificationList["notifications"][widget.index]["content_type"] == 43
-            ?Get.to( PropertyDetailsScreen(id: id))
+            ?Get.to( PropertyDetailsScreen(id: id, token: token,))
             :Locales.string(context, "notification");
       },
       child: Container(

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
+import 'package:smart_real_estate/owner/edit_property/presentation/pages/edit_property_page.dart';
 import 'package:smart_real_estate/owner/home/domain/repositories/property_owner_repositories.dart';
 import 'package:smart_real_estate/owner/home/presentation/widgets/owner_property_widget.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
@@ -31,7 +32,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   late ProfileRepository profileRepository;
   late OwnerPropertyRepository propertyDetailsApi;
   int? id;
-  String? token;
+  String token = "";
   bool _isLoading = false;
 
   @override
@@ -68,7 +69,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: OwnerHomeAppbar(token: token!,),
+        appBar: OwnerHomeAppbar(token: token,),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 13.0),
         child: RefreshIndicator(
@@ -137,7 +138,8 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
                         rate: data[index].rate!,
                         isActivate: data[index].isActive!,
                         onTap: () {
-                          Get.to(() => PropertyDetailsScreen(id: data[index].id));
+                          Get.to(()=> PropertyDetailsScreen(id: data[index].id!, token: token,));
+                          // Get.to(() => EditPropertyPage(propertyId: data[index].id!));
                         }, refresh: OwnerRootScreen(),
                       ),
                     ),

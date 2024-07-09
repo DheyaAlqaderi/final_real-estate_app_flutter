@@ -27,9 +27,10 @@ import '../widgets/property_details_widgets/property_review_rating_widget.dart';
 
 
 class PropertyDetailsScreen extends StatefulWidget {
-  const PropertyDetailsScreen({super.key, required this.id});
+  const PropertyDetailsScreen({super.key, required this.id,required this.token});
 
   final int? id;
+  final String? token;
 
   @override
   State<PropertyDetailsScreen> createState() => _PropertyDetailsScreenState();
@@ -37,16 +38,28 @@ class PropertyDetailsScreen extends StatefulWidget {
 
 class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
 
+  String? token;
+
+  Future<void> getToken() async {
+    final myToken = await SharedPrefManager.getData(AppConstants.token);
+
+    setState(() {
+      token = myToken ?? " ";
+    });
+
+    print("my toooooooookennnnn $token");
+  }
 
   @override
   void initState() {
     super.initState();
 
+    getToken();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final propertyDetails = context.read<PropertyDetailsCubit>();
       final getReviews = context.read<ReviewsPropertyCubit>();
       await Future.wait([
-        propertyDetails.getPropertyDetails(widget.id!, "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
+        propertyDetails.getPropertyDetails(widget.id!, ""),
         getReviews.getReviewsProperty(widget.id!)
       ]);
     });

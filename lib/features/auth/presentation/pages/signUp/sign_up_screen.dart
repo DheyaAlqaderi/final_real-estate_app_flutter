@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -6,8 +7,10 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/SRValidator.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import '../../../../../core/helper/local_data/shared_pref.dart';
+import '../../../../client/root/pages/root_screen.dart';
 import '../../cubit/signup/signup_cubit.dart';
 import '../../cubit/signup/signup_state.dart';
 import '../../widget/custom_field_widget.dart';
@@ -32,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  String? selectedButton;
   bool isConditionAccepted = false;
 
 
@@ -89,6 +92,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     hintText: Locales.string(context, "password"),
                     validator: (password) => (password!.isEmpty)? 'please fill the password': null,
                   ),
+                  const SizedBox(height: 10,),
+                  if( widget.isOwner)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("نوع المستخدم" , style: fontMediumBold,),
+                          const SizedBox(height: 10,),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedButton = AppConstants.promoter;
+                                  });
+                                  print(selectedButton);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: selectedButton == AppConstants.promoter
+                                      ? Colors.blue
+                                      : Colors.grey,
+                                ),
+                                child: const Text(AppConstants.promoter),
+                              ),
+                              const SizedBox(width: 10),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedButton = AppConstants.agent;
+                                  });
+                                  print(selectedButton);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: selectedButton == AppConstants.agent
+                                      ? Colors.blue
+                                      : Colors.grey,
+                                ),
+                                child: const Text(AppConstants.agent),
+                              ),
+                              const SizedBox(width: 10),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedButton = 'Owner';
+                                  });
+                                  print(selectedButton);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: selectedButton == 'Owner'
+                                      ? Colors.blue
+                                      : Colors.grey,
+                                ),
+                                child: const Text("Owner"),
+                              ),
+                            ],
+                                                ),
+                          ),
+                        ],
+                      ),
+
                   const SizedBox(height: 10.0),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -139,7 +204,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           SharedPrefManager.saveData(AppConstants.token, response.userAuth.token.toString());
                           SharedPrefManager.saveData(AppConstants.userId, response.id.toString());
                           SharedPrefManager.saveData(AppConstants.userType, response.userType.toString());
-                          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                          if(widget.isOwner){
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OwnerRootScreen()));
+                          } else{
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+
+                          }
                         });
                         return _buildButton(context);
                       } else if (state is SignUpFailure) {
@@ -291,7 +361,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               phoneNumber: phoneController.text.trim(),
               password: passwordController.text.trim(),
               name: nameController.text.trim(),
-              userType: "customer",
+              userType: getUser(),
             );
           }
         },
@@ -312,5 +382,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  String getUser(){
+    if(selectedButton == AppConstants.promoter){
+      return AppConstants.promoter;
+    }
+
+    if(selectedButton == AppConstants.agent){
+      return AppConstants.agent;
+    }
+
+    if(selectedButton == "Owner"){
+      return "Owner";
+    }
+
+    return AppConstants.customer;
   }
 }

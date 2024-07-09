@@ -7,6 +7,7 @@ import 'package:smart_real_estate/core/helper/SRValidator.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/auth/presentation/widget/custom_field_widget.dart';
+import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../client/root/pages/root_screen.dart';
@@ -91,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if(!widget.isOwner){
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
                         } else{
-
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OwnerRootScreen()));
                         }
 
                       } else if (state is LoginFailure) {

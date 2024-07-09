@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 
 import '../../../../features/client/feedback/presentation/widgets/appBar.dart';
-import '../../../../features/client/home/pages/home_screen.dart';
 import '../../../../features/client/profile/presentation/pages/profile_screen.dart';
 import '../widgets/profile.dart';
 
@@ -165,14 +164,6 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
         ),
       ),
-
-
-
-
-
-
-
-
 
     );
   }

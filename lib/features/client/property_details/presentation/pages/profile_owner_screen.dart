@@ -29,13 +29,24 @@ class ProfileOwnerScreen extends StatefulWidget {
 }
 
 class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
+  String? token;
 
+  Future<void> getToken() async {
+    final myToken = await SharedPrefManager.getData(AppConstants.token);
+
+    setState(() {
+      token = myToken ?? " ";
+    });
+
+    print("my toooooooookennnnn $token");
+  }
   late String imageUrl = " ";
 
   String? myUserId;
   @override
   void initState() {
     super.initState();
+    getToken();
     fetchUserId();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchData();
@@ -299,7 +310,8 @@ class _ProfileOwnerScreenState extends State<ProfileOwnerScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PropertyDetailsScreen(
-                                              id: state.properties.results![index].id
+                                              id: state.properties.results![index].id,
+                                            token: token??"",
                                           )
                                       )
                                   );

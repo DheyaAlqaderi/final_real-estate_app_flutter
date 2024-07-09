@@ -9,6 +9,7 @@ import 'package:smart_real_estate/features/client/chat/presentation/pages/rooms_
 import 'package:smart_real_estate/features/client/feedback/presentation/pages/feedback_screen.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/common_widget/pop_up_massage.dart';
+import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 import '../../../../../core/constant/app_constants.dart';
 import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../feedback/presentation/widgets/appBar.dart';
@@ -27,6 +28,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
 
   String? userId;
+  String? userType;
 
   @override
   void initState() {
@@ -36,9 +38,12 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<void> _loadUserId() async {
     final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
+    final loadedUserType = await SharedPrefManager.getData(AppConstants.userType);
+
     print(loadedUserId.toString());
     setState(() {
       userId = loadedUserId ?? '';
+      userType = loadedUserType ?? "";
     });
   }
 
@@ -106,10 +111,18 @@ class _SettingScreenState extends State<SettingScreen> {
                 path: Images.userPage,
                 flag: false,
                 onTap: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=> const ProfileScreen())
-                  );
+                  if(userType == AppConstants.promoter || userType == AppConstants.agent || userType == AppConstants.admin){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context)=> const OwnerRootScreen())
+                    );
+                  } else{
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context)=> const BothAuthScreen(isOwner: true))
+                    );
+                  }
+
                 },
               ),
 

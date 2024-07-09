@@ -7,6 +7,8 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/featured_property_widget.dart';
 
+import '../../../../core/constant/app_constants.dart';
+import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../property_details/presentation/pages/property_details_screen.dart';
 import '../domain/manager/property_state_cubit/property_state_cubit.dart';
 
@@ -19,11 +21,22 @@ class HighStateScreen extends StatefulWidget {
 }
 
 class _HighStateScreenState extends State<HighStateScreen> {
+  String? token;
 
+  Future<void> getToken() async {
+    final myToken = await SharedPrefManager.getData(AppConstants.token);
+
+    setState(() {
+      token = myToken ?? " ";
+    });
+
+    print("my toooooooookennnnn $token");
+  }
   @override
   void initState() {
     super.initState();
 
+    getToken();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final propertyState = context.read<PropertyStateCubit>();
 
@@ -142,7 +155,7 @@ class _HighStateScreenState extends State<HighStateScreen> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                PropertyDetailsScreen(id: state.propertyModel.results![index].id)));
+                                                PropertyDetailsScreen(id: state.propertyModel.results![index].id, token: token,)));
                                   },
                                 ),
                               ),

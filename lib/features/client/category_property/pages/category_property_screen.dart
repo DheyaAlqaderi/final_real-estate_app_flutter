@@ -7,6 +7,8 @@ import 'package:smart_real_estate/features/client/category_property/domain/manag
 import 'package:smart_real_estate/features/client/category_property/domain/manager/property_cubit/property_cubit.dart';
 import 'package:smart_real_estate/features/client/category_property/widget/subCategory_widget.dart';
 
+import '../../../../core/constant/app_constants.dart';
+import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../core/utils/images.dart';
 import '../../home/widgets/stand_property_widget.dart';
 import '../../property_details/presentation/pages/property_details_screen.dart';
@@ -22,11 +24,22 @@ class CategoryPropertyScreen extends StatefulWidget {
 }
 
 class _CategoryPropertyScreenState extends State<CategoryPropertyScreen> {
+  String? token;
 
+  Future<void> getToken() async {
+    final myToken = await SharedPrefManager.getData(AppConstants.token);
+
+    setState(() {
+      token = myToken ?? " ";
+    });
+
+    print("my toooooooookennnnn $token");
+  }
   @override
   void initState() {
     super.initState();
 
+    getToken();
     if(widget.haveChildren){
       WidgetsBinding.instance.addPostFrameCallback((_) async{
         final subCategory = context.read<PropertySubCategoryCubit>();
@@ -171,7 +184,7 @@ class _CategoryPropertyScreenState extends State<CategoryPropertyScreen> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => PropertyDetailsScreen(id: state.propertyModel.results![index].id)
+                                                builder: (context) => PropertyDetailsScreen(id: state.propertyModel.results![index].id, token: token,)
                                             )
                                         );
                                       },

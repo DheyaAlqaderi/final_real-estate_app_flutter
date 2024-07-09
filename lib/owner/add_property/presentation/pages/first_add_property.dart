@@ -183,8 +183,8 @@ class _FirstAddPropertyState extends State<FirstAddProperty> {
       await SharedPrefManager.saveData(AppConstants.propertyName, _propertyNameController.text.toString());
       await SharedPrefManager.saveData(AppConstants.propertyDescription, _propertyDescriptionController.text.toString());
       await SharedPrefManager.saveData(AppConstants.propertyCategoryId, subCategoryId.toString());
-      await SharedPrefManager.saveData(AppConstants.forSale, chipSelected3!.last.toString());
-      await SharedPrefManager.saveData(AppConstants.forRent, chipSelected3!.first.toString());
+      await SharedPrefManager.saveData(AppConstants.forSale, chipSelected3!.first.toString());
+      await SharedPrefManager.saveData(AppConstants.forRent, chipSelected3!.last.toString());
 
       getDataAndNavigateToSecondPage(context);
     } catch (e) {

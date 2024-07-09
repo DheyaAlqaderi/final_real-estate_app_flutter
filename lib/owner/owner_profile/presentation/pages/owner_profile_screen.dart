@@ -313,7 +313,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                   isActivate: data[index].isActive!,
                                   refresh: OwnerProfileScreen(),
                                   onTap: (){
-                                    Get.to(()=> PropertyDetailsScreen(id: data[index].id));
+                                    Get.to(()=> PropertyDetailsScreen(id: data[index].id, token: token,));
                                   },
                                 ),
                               ),

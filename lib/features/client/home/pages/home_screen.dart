@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final loadedToken = await SharedPrefManager.getData(AppConstants.token);
     print(loadedToken.toString());
     setState(() {
-      userId = loadedToken ?? ' ';
+      token = loadedToken ?? ' ';
     });
   }
   @override
@@ -579,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        PropertyDetailsScreen(id: state.propertyModel.results![index].id)));
+                                        PropertyDetailsScreen(id: state.propertyModel.results![index].id, token: token,)));
                           },
                         ),
                       ),
@@ -717,7 +717,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => PropertyDetailsScreen(id: state.propertyModel.results![index].id))
+                                      builder: (context) => PropertyDetailsScreen(id: state.propertyModel.results![index].id, token: token,))
                               );
                             },
                       ),

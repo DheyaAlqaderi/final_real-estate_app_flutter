@@ -219,14 +219,14 @@ void main() async {
   await SharedPrefManager.init();
   // await SharedPrefManager.deleteData(AppConstants.userId);
   // await SharedPrefManager.deleteData(AppConstants.token);
-  await SharedPrefManager.saveData(
-      AppConstants.token, '8c16156cf3bd29992e15374c457153855405a9ff');
-  await SharedPrefManager.saveData(AppConstants.userId, '27');
-  String? token = await SharedPrefManager.getData(AppConstants.token);
-  String? id = await SharedPrefManager.getData(AppConstants.userId);
-
-  print('token is $token');
-  print('token is $id');
+  // await SharedPrefManager.saveData(
+  //     AppConstants.token, '8c16156cf3bd29992e15374c457153855405a9ff');
+  // await SharedPrefManager.saveData(AppConstants.userId, '27');
+  // String? token = await SharedPrefManager.getData(AppConstants.token);
+  // String? id = await SharedPrefManager.getData(AppConstants.userId);
+  //
+  // print('token is $token');
+  // print('token is $id');
 
   runApp(const MyApp());
 }
@@ -391,8 +391,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          // home: const BothAuthScreen(isOwner: false,),
-          home:  OwnerRootScreen(),
+          home: const OwnerRootScreen(),
+          // home:  OwnerRootScreen(),
         ),
       ),
     );

@@ -204,9 +204,9 @@ class _ForthPriceAddPropertyState extends State<ForthPriceAddProperty> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'سعر الإيجار',
-                    style: TextStyle(
+                  Text(
+                    isForSale == "false" && isForRent == "true"?'سعر الإيجار':'سعر العقار',
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -233,7 +233,7 @@ class _ForthPriceAddPropertyState extends State<ForthPriceAddProperty> {
                             controller: _priceController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: '315 / $_selectedPeriod',
+                              hintText: '315 / ${isForSale=="false"?_selectedPeriod: " "}',
                               border: InputBorder.none,
                             ),
                             textAlign: TextAlign.right,
@@ -273,7 +273,7 @@ class _ForthPriceAddPropertyState extends State<ForthPriceAddProperty> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Expanded(
+                      if(isForSale == "false")Expanded(
                         child: ElevatedButton(
                           onPressed: () => _selectPeriod('شهريا'),
                           style: ElevatedButton.styleFrom(
@@ -294,7 +294,7 @@ class _ForthPriceAddPropertyState extends State<ForthPriceAddProperty> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Expanded(
+                      if(isForSale == "false")Expanded(
                         child: ElevatedButton(
                           onPressed: () => _selectPeriod('سنوي'),
                           style: ElevatedButton.styleFrom(

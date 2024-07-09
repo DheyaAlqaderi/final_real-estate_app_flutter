@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
+import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
 class FifthImageAddProperty extends StatefulWidget {
@@ -22,6 +22,7 @@ class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
 
   String? propertyId;
   String? featureId;
+  int numberImages = 0;
 
   final List<File> _images = [];
   double _uploadProgress = 0.0;
@@ -72,7 +73,7 @@ class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
       return;
     }
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const OwnerRootScreen()));
+
 
     setState(() {
       propertyId = myPropertyId;
@@ -80,7 +81,10 @@ class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
 
     for (File image in _images) {
       await _uploadSingleImage(image);
+      numberImages+=1;
     }
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const OwnerRootScreen()));
 
   }
 
@@ -112,9 +116,10 @@ class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
 
       if (response.statusCode == 201) {
         print(await response.stream.bytesToString());
-        Get.snackbar("uploaded successfully", "done");
+
       } else {
         print(response.reasonPhrase);
+        Get.snackbar("not uploaded", "try edit the property");
       }
     } finally {
       client.close();
@@ -179,6 +184,7 @@ class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
                 _buildUploadProgress(),
                 const SizedBox(height: 20,),
                 isLoading?const CircularProgressIndicator():const SizedBox(),
+                Text("uploaded images number: $numberImages", style: fontLargeBold,),
               ],
             ),
           ),

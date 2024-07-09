@@ -57,7 +57,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
 
     await Future.wait([
       getPropertyDetails.getPropertyDetails(
-          widget.propertyId, "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
+          widget.propertyId, "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
     ]);
 
     if (rateNo == 0) {

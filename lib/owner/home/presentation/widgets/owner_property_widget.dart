@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/owner/edit_property/presentation/pages/edit_property_page.dart';
 import 'package:smart_real_estate/owner/home/data/models/activate_model.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 
@@ -28,15 +29,7 @@ class OwnerPropertyWidget extends StatefulWidget {
   final bool isActivate;
   final int id;
   final Widget refresh;
-
-
-
-
-
-
-
   final VoidCallback onTap;
-
 
 
 
@@ -172,17 +165,23 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
 
                   //edit
                   Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Container(
-                      height: 25,
-                      width: 25,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(50)
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(Images.editIcon),
+                    top: 15,
+                    left: 15,
+                    child: InkWell(
+                      onTap: (){
+                        print(widget.id);
+                        Get.to(()=> EditPropertyPage(propertyId: widget.id));
+                      },
+                      child: Container(
+                        height: 25,
+                        width: 25,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(50)
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(Images.editIcon),
+                        ),
                       ),
                     ),
                   ),
@@ -342,14 +341,13 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                           color: Colors.transparent
                                           ),
                                           child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 3),
-                        child: isLoading?const CircularProgressIndicator():Text("activated", style: fontSmall.copyWith(color: Colors.green)),
+                                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                                            child: isLoading?const CircularProgressIndicator():Text("activated", style: fontSmall.copyWith(color: Colors.green)),
                                           ),
                                         ),
                       )
                 ],
               )
-
             ],
           ),
         ),

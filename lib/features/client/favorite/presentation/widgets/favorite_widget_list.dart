@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 
 import '../../../../../core/constant/app_constants.dart';
+import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../../core/utils/images.dart';
 import '../../../../../core/utils/styles.dart';
 
@@ -27,11 +28,29 @@ class FavoriteListWidget extends StatefulWidget {
 }
 
 class _FavoriteListWidgetState extends State<FavoriteListWidget> {
+
+  String? token;
+
+  Future<void> getToken() async {
+    final myToken = await SharedPrefManager.getData(AppConstants.token);
+
+    setState(() {
+      token = myToken ?? " ";
+    });
+
+    print("my toooooooookennnnn $token");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> PropertyDetailsScreen(id:widget.id )));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> PropertyDetailsScreen(id:widget.id , token: token,)));
       },
       child: Padding(
           padding: const EdgeInsets.all(8.0),
