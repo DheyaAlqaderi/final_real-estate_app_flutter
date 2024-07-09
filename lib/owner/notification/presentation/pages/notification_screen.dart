@@ -2,21 +2,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:intl/intl.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/utils/images.dart';
-import '../../../../core/utils/styles.dart';
 import 'package:smart_real_estate/owner/notification/presentation/widgets/notification_widget.dart';
 
-import '../../../../features/client/alarm/presentation/pages/add_alarm_screen.dart';
 
 class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
+  const NotificationScreen({super.key, required this.token});
+  final String token;
 
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();
@@ -26,18 +22,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
   late WebSocketChannel channel;
   late Stream<dynamic> notificationStream;
   bool isRefreshing = false;
+  String? token;
 
   @override
   void initState() {
     super.initState();
+
+    token = widget.token;
     initializeWebSocket();
+
   }
 
-  void initializeWebSocket() {
+
+
+  void initializeWebSocket()  {
     channel = IOWebSocketChannel.connect(
       '${AppConstants.baseUrl4}/ws/notifications/',
       headers: {
-        'Authorization': "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4",
+        'Authorization': "token $token",
       },
     );
 

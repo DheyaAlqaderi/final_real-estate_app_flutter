@@ -30,6 +30,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final ChatRepository  chatRepository = ChatRepository();
   String fcmTokene = "";
+  String deviceToken="";
   // var userData;
   // bool isIconAppeared = false;
 
@@ -43,10 +44,13 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> updateTokenIfNeeded(Map<String, dynamic>? userData) async {
     if (userData != null && userData['deviceToken'] == null) {
       fcmTokene = (await FirebaseMessagingRepository.init())!;
+
+
       if (userId != null && fcmTokene != null) {
         await chatRepository.updateUserToken(userId!, fcmTokene);
       }
     }
+    deviceToken = userData!['deviceToken'];
   }
   Future<void> _loadUserId() async {
     final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
@@ -133,7 +137,6 @@ class _ChatPageState extends State<ChatPage> {
 
 
 
-                        fcmTokene = userData!['fcmToken'];
 
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -312,7 +315,7 @@ class _ChatPageState extends State<ChatPage> {
                             child: MessageFieldWidget(
                               chatRoomId: widget.chatRoomId,
                               receiverId: widget.receiverId,
-                              fcmToken: fcmTokene,
+                              fcmToken: deviceToken,
                             ),
                           ),
                         ],

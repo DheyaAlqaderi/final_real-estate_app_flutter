@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/styles.dart';
-import '../../../../features/client/home/pages/home_screen.dart';
 import '../../../../features/common_widget/circle_button_widget_icon.dart';
+import '../../../notification/presentation/pages/notification_screen.dart';
 
 class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
-  const OwnerHomeAppbar({super.key, });
+  const OwnerHomeAppbar({super.key, required this.token,});
 
+  final String token;
 
 
 
@@ -25,12 +26,8 @@ class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
         child: CircleButtonWidgetIcon(
             icon: Icons.notifications_none,
             onTap: () {
-               Get.to(const HomeScreen());
+               Get.to(NotificationScreen(token: token,));
               },)),
-
-        //icon: SvgPicture.asset(Images.notificIcon),
-
-
 
       actions: [
         Container(
@@ -40,10 +37,6 @@ class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
           )
           ),
 
-
-        // IconButton(
-        //   style: ButtonStyle(),
-        //   onPressed: (){},
 
       ],
     );

@@ -15,6 +15,7 @@ class FirebaseMessagingRepository {
       sound: true
     );
     final token = await _firebaseMessaging.getToken();
+    print(token);
     return token;
   }
 

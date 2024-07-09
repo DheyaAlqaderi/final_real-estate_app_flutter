@@ -1,13 +1,8 @@
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:smart_real_estate/core/utils/images.dart';
-import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/home/data/models/property/property_model.dart';
-import 'package:smart_real_estate/features/client/setting/presentation/pages/setting_page.dart';
 import 'package:smart_real_estate/owner/home/domain/repositories/property_owner_repositories.dart';
 import 'package:smart_real_estate/owner/home/presentation/widgets/owner_property_widget.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
@@ -17,9 +12,11 @@ import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../features/client/profile/data/models/profile_model.dart';
 import '../../../../features/client/profile/domain/repositories/profile_repository.dart';
 import '../../../../features/client/property_details/presentation/pages/property_details_screen.dart';
-import '../widgets/home_appbar.dart';
+
 
 import 'dart:async';
+
+import '../widgets/home_appbar.dart';
 
 
 
@@ -71,24 +68,9 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Owner Home') , leading: null, actions: [
-        InkWell(
-          onTap: (){
-            Get.to(()=> SettingScreen());
-          },
-          child: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(50.0),
-            ),
-            child: SvgPicture.asset(Images.settingIcon),
-          ),
-        )
-      ],),
+        appBar: OwnerHomeAppbar(token: token!,),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 13.0),
         child: RefreshIndicator(
           onRefresh: _refreshData,
           child: FutureBuilder<ProfileModel?>(
@@ -115,7 +97,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 40),
             Row(

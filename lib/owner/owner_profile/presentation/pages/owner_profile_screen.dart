@@ -9,12 +9,11 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
-import 'package:smart_real_estate/features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import 'package:smart_real_estate/features/client/profile/presentation/pages/profile_update_screen.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/owner/add_property/presentation/pages/first_add_property.dart';
+import 'package:smart_real_estate/owner/notification/presentation/pages/notification_screen.dart';
 import 'package:smart_real_estate/owner/owner_profile/presentation/widgets/owner_profile_appBar.dart';
-import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
@@ -84,7 +83,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
     return Scaffold(
       appBar: OwnerProfileAppBar(
         alarm: () {
-          Get.to(const AddAlarmScreen());
+          Get.to(NotificationScreen(token: token!,));
         },
         edit: () {
           Get.to(const ProfileUpdateScreen());
@@ -96,8 +95,8 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
         child: RefreshIndicator(
           onRefresh: _refreshData,
           child: FutureBuilder<ProfileModel?>(
-            //future: id != null ? ownerProfileRepository.getProfile(id!) : Future.value(null),
-            future: ownerProfileRepository.getProfile(id!),
+            future: id != null ? ownerProfileRepository.getProfile(id!) : Future.value(null),
+            //future: ownerProfileRepository.getProfile(id!),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return const SizedBox();
@@ -312,7 +311,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                   isFavorite: data[index].inFavorite!,
                                   rate: data[index].rate!,
                                   isActivate: data[index].isActive!,
-                                  refresh: OwnerRootScreen(),
+                                  refresh: OwnerProfileScreen(),
                                   onTap: (){
                                     Get.to(()=> PropertyDetailsScreen(id: data[index].id));
                                   },

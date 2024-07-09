@@ -220,8 +220,8 @@ void main() async {
   // await SharedPrefManager.deleteData(AppConstants.userId);
   // await SharedPrefManager.deleteData(AppConstants.token);
   await SharedPrefManager.saveData(
-      AppConstants.token, '0a53a95704d2b4e2bf439563e02bd290c0fa0eb4');
-  await SharedPrefManager.saveData(AppConstants.userId, '1');
+      AppConstants.token, '8c16156cf3bd29992e15374c457153855405a9ff');
+  await SharedPrefManager.saveData(AppConstants.userId, '27');
   String? token = await SharedPrefManager.getData(AppConstants.token);
   String? id = await SharedPrefManager.getData(AppConstants.userId);
 
@@ -392,7 +392,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const BothAuthScreen(isOwner: false,),
-          home:  BothAuthScreen(isOwner: false,),
+          home:  OwnerRootScreen(),
         ),
       ),
     );
