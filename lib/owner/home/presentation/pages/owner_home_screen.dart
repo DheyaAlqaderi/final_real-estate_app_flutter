@@ -138,7 +138,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
                         rate: data[index].rate!,
                         isActivate: data[index].isActive!,
                         onTap: () {
-                          Get.to(()=> PropertyDetailsScreen(id: data[index].id!, token: token,));
+                          Get.to(()=> EditPropertyPage(propertyId: data[index].id!,token: token,));
                           // Get.to(() => EditPropertyPage(propertyId: data[index].id!));
                         }, refresh: OwnerRootScreen(),
                       ),

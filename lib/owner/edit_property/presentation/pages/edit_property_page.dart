@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+
 import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
-import 'package:smart_real_estate/core/utils/images.dart';
 
 import '../../../../core/constant/app_constants.dart';
-import '../../../../core/utils/styles.dart';
 import '../../../../features/client/property_details/data/model/image_model.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_state.dart';
 
 class EditPropertyPage extends StatefulWidget {
-   const EditPropertyPage({super.key, required this.propertyId});
+   const EditPropertyPage({super.key, required this.propertyId, required this.token});
    final int propertyId;
+   final String token;
 
   @override
   State<EditPropertyPage> createState() => _EditPropertyPageState();
@@ -61,7 +60,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   void _fetchData() async{
     final propertyDetails = context.read<PropertyDetailsCubit>();
     await Future.wait([
-      propertyDetails.getPropertyDetails(widget.propertyId, "token $token"),
+      propertyDetails.getPropertyDetails(widget.propertyId, widget.token),
     ]);
   }
 

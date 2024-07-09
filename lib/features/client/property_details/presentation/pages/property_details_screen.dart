@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +14,6 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/profile_owner_screen.dart';
 
 import '../../../../../core/helper/local_data/shared_pref.dart';
-import '../../../favorite/data/repositories/network.dart';
 import '../../../home/widgets/high_places_widget.dart';
 import '../manager/property_details/property_details_state.dart';
 import '../manager/reviews/reviews_state.dart';
@@ -59,7 +57,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
       final propertyDetails = context.read<PropertyDetailsCubit>();
       final getReviews = context.read<ReviewsPropertyCubit>();
       await Future.wait([
-        propertyDetails.getPropertyDetails(widget.id!, ""),
+        propertyDetails.getPropertyDetails(widget.id!, widget.token!),
         getReviews.getReviewsProperty(widget.id!)
       ]);
     });

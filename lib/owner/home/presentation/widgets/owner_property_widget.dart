@@ -170,7 +170,7 @@ class _OwnerPropertyWidgetState extends State<OwnerPropertyWidget> {
                     child: InkWell(
                       onTap: (){
                         print(widget.id);
-                        Get.to(()=> EditPropertyPage(propertyId: widget.id));
+                        Get.to(()=> EditPropertyPage(propertyId: widget.id, token: token!,));
                       },
                       child: Container(
                         height: 25,
