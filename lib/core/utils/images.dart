@@ -55,6 +55,8 @@ class Images {
   static const String settingIcon="assets/svg/setting_icon.svg";
   static const String alarmIcon="assets/svg/alarm.svg";
   static const String gradeIcon="assets/svg/grade_properity_icon.svg";
+  static const String googleMapImage="assets/images/google_placeholder.png";
+
 
 
 

@@ -14,7 +14,7 @@ class FifthImageAddProperty extends StatefulWidget {
   const FifthImageAddProperty({super.key});
 
   @override
-  _FifthImageAddPropertyState createState() => _FifthImageAddPropertyState();
+  State<FifthImageAddProperty> createState() => _FifthImageAddPropertyState();
 }
 
 class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
@@ -55,8 +55,6 @@ class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
   Future<void> _pickImages() async {
     final picker = ImagePicker();
     final pickedFiles = await picker.pickMultiImage();
-
-
 
     if (pickedFiles != null) {
       setState(() {
@@ -151,6 +149,7 @@ class _FifthImageAddPropertyState extends State<FifthImageAddProperty> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const OwnerRootScreen()));
     return true;
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

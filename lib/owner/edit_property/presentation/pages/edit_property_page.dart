@@ -4,18 +4,31 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/owner/edit_property/presentation/widgets/google_map_address.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/my_model_map.dart';
 import '../../../../features/client/alarm/data/models/attribute_alarm_model.dart';
+import '../../../../features/client/alarm/data/models/city_model.dart';
+import '../../../../features/client/alarm/data/models/country_model.dart';
+import '../../../../features/client/alarm/data/models/state_model.dart';
+import '../../../../features/client/alarm/presentation/manager/address/city/city_cubit.dart';
+import '../../../../features/client/alarm/presentation/manager/address/city/city_cubit_state.dart';
+import '../../../../features/client/alarm/presentation/manager/address/country/country_cubit.dart';
+import '../../../../features/client/alarm/presentation/manager/address/country/country_cubit_state.dart';
+import '../../../../features/client/alarm/presentation/manager/address/state/state_cubit.dart';
+import '../../../../features/client/alarm/presentation/manager/address/state/state_cubit_state.dart';
 import '../../../../features/client/alarm/presentation/manager/attribute/attribute_alarm_cubit.dart';
 import '../../../../features/client/alarm/presentation/manager/attribute/attribute_alarm_cubit_state.dart';
 import '../../../../features/client/alarm/presentation/manager/category/category_cubit.dart';
@@ -24,13 +37,14 @@ import '../../../../features/client/alarm/presentation/manager/category/subCateg
 import '../../../../features/client/alarm/presentation/manager/category/subCategory/subCategory_state.dart';
 import '../../../../features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import '../../../../features/client/alarm/presentation/widget/custom_attribute_int.dart';
+import '../../../../features/client/alarm/presentation/widget/custom_dropdown_field.dart';
 import '../../../../features/client/home/data/models/category/category_model.dart';
 import '../../../../features/client/home/widgets/chip_widget_home.dart';
 import '../../../../features/client/property_details/data/model/image_model.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_state.dart';
+import '../../../add_property/presentation/pages/fifth_images_add_property.dart';
 import '../../../add_property/presentation/widgets/dropDown_widget.dart';
-import '../widgets/delete_confirmation_dialog.dart';
 
 class EditPropertyPage extends StatefulWidget {
    const EditPropertyPage({super.key, required this.propertyId, required this.token});
@@ -76,16 +90,27 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   MyModel? _model;
   bool _loading = false;
   String? isDeleted;
-
-
-  /// image section api
-  int numberImages = 0;
-  final List<File> _images = [];
   double _uploadProgress = 0.0;
   bool _isUploading = false;
+  /// image section api
+  int numberImages = 0;
+  File? _image;
   bool isLoading = false;
-  List<String>? imagesAll;
   List<ImageModel2> imageList=[];
+  String? newImagePath;
+
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
   Future<void> _uploadSingleImage(File image) async {
     final url = Uri.parse('${AppConstants.baseUrl}api/image/property/create/');
 
@@ -96,37 +121,47 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     String fileName = image.path.split('/').last;
     request.files.add(await http.MultipartFile.fromPath('image', image.path));
 
-    request.headers['Authorization'] = 'token $userToken';
+    request.headers['Authorization'] = 'token ${widget.token}';
 
     setState(() {
       _isUploading = true;
       _uploadProgress = 0.0;
     });
-
-    // final client = ProgressClient(http.Client(), onProgress: (bytes, totalBytes) {
-    //   setState(() {
-    //     _uploadProgress = bytes / totalBytes;
-    //   });
-    // });
+    final client = await ProgressClient(http.Client(), onProgress: (bytes, totalBytes) {
+      setState(() {
+        _uploadProgress = bytes / totalBytes;
+      });
+    });
 
     try {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 201) {
-        print(await response.stream.bytesToString());
+        // print(await response.stream.bytesToString());
 
+        final responseBody = await response.stream.bytesToString();
+        final jsonResponse = jsonDecode(responseBody);
+        setState(() {
+          newImagePath = jsonResponse['image'];
+        });
+
+        Get.snackbar("Upload Successful", "Image URL: $newImagePath");
       } else {
         print(response.reasonPhrase);
         Get.snackbar("not uploaded", "try edit the property");
       }
     } finally {
-      // client.close();
-      // setState(() {
-      //   _isUploading = false;
-      //   _uploadProgress = 0.0;
-      // });
+      client.close();
+      setState(() {
+        _isUploading = false;
+        _uploadProgress = 0.0;
+      });
     }
   }
+
+
+  /// google map
+
 
   @override
   void initState() {
@@ -137,7 +172,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchData();
     });
-
 
 
     chipSelected = List.generate(10, (index) => false);
@@ -155,10 +189,15 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     final mainCategory = context.read<CategoryAlarmCubit>();
     final propertyDetails = context.read<PropertyDetailsCubit>();
     // final attributes = context.read<AttributeAlarmCubit>();
+    final country = context.read<CountryCubit>();
 
+    await Future.wait([
+
+    ]);
     await Future.wait([
       mainCategory.fetchMainCategory(),
       propertyDetails.getPropertyDetails(widget.propertyId, widget.token),
+      country.fetchCountries(),
       // attributes.fetchAttributesByCategory(
       //     categoryId: subCategoryId!),
     ]);
@@ -207,288 +246,416 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              right: 0,
-              child: SvgPicture.asset(Images.halfCircle),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
-                  child: BlocBuilder<PropertyDetailsCubit, PropertyDetailsState>(
-                    builder: (context, state) {
-                      if (state is PropertyDetailsLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is PropertyDetailsSuccess) {
-                        final propertyDetails = state.propertyDetails;
+    return RefreshIndicator(
+      onRefresh: () async{
+        _fetchData();
+      },
+      child: Scaffold(
+        body: SizedBox(
+          height: double.infinity,
+          width: double.infinity,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                right: 0,
+                child: SvgPicture.asset(Images.halfCircle),
+              ),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: BlocBuilder<PropertyDetailsCubit, PropertyDetailsState>(
+                      builder: (context, state) {
+                        if (state is PropertyDetailsLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is PropertyDetailsSuccess) {
+                          final propertyDetails = state.propertyDetails;
 
-                        propertyDetails.address!.line1.toString();
-                        imageList = state.propertyDetails.image!.map((imageModel) => ImageModel2(
-                          image: imageModel.image,
-                          id: imageModel.id,
-                        )).toList();
+                          propertyDetails.address!.line1.toString();
+                          imageList = state.propertyDetails.image!.map((imageModel) => ImageModel2(
+                            image: imageModel.image,
+                            id: imageModel.id,
+                          )).toList();
 
 
-                        print(jsonEncode(propertyDetails));
-                        categoryId = propertyDetails.category!.id;
+                          print(jsonEncode(propertyDetails));
+                          categoryId = propertyDetails.category!.id;
 
 
-                        /// for name and description
-                        propertyName.text = propertyDetails.name!;
-                        propertyDescription.text = propertyDetails.description!;
+                          /// for name and description
+                          propertyName.text = propertyDetails.name!;
+                          propertyDescription.text = propertyDetails.description!;
 
-                        /// for type list
-                        if(propertyDetails.forSale!){
-                          chipSelected3![0] = true;
-                        } else{
-                          chipSelected3![1] = true;
+                          /// for type list
+                          if(propertyDetails.forSale!){
+                            chipSelected3![0] = true;
+                          } else{
+                            chipSelected3![1] = true;
+                          }
+
+                          /// get attributes
+                          // subCategoryId = propertyDetails.category!.id;
+                          // context.read<AttributeAlarmCubit>().fetchAttributesByCategory(categoryId: subCategoryId!);
+
+
+                          /// image section
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// appbar
+                              const Text("تعديل العقار", style: fontMediumBold,),
+                              const SizedBox(height: 10.0,),
+                              /// Display property image and some details
+                              GestureDetector(
+                                onTap: () {
+                                  // Navigate to the edit page
+                                },
+                                child: _buildPropertyView(context,imageList ?? [], propertyDetails),
+
+                              ),
+                              const SizedBox(height: 16),
+                              TextField(
+                                controller: propertyName,
+                                decoration: InputDecoration(
+                                  labelText: 'اسم العقار',
+                                  prefixIcon: const Icon(Icons.home),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: propertyDescription,
+                                decoration: InputDecoration(
+                                  labelText: 'وصف العقار',
+                                  prefixIcon: Icon(Icons.description),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                maxLines: null, // Makes the TextField expandable
+                                minLines: 1, // Initial height of the TextField
+                                keyboardType: TextInputType.multiline, // Allows multiline input
+                              ),
+
+
+                              const SizedBox(height: 16),
+                              _categorySection(),
+                              const SizedBox(height: 16),
+                              BlocBuilder<CountryCubit, CountryCubitState>(
+                                builder: (context, state) {
+                                  if (state is CountryCubitLoading) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (state is CountryCubitLoaded) {
+                                    return CustomDropdownField<CountryModel>(
+                                      items: state.countries,
+                                      itemLabelBuilder: (CountryModel country) => country.name!,
+                                      value: selectedCountry,
+                                      hint: 'Select a country',
+                                      onChanged: (CountryModel? newValue) {
+                                        setState(() {
+                                          stateId = null;
+                                          selectedCountry = newValue;
+                                          realSelectedCity = selectedCity;
+                                          realSelectedState = selectedState;
+                                          selectedState = null;
+                                          selectedCity = null;
+                                          context.read<CityCubit>().fetchCities(countryId: selectedCountry!.id!);
+                                        });
+                                      },
+                                    );
+                                  } else if (state is CountryCubitFailure) {
+                                    return Center(child: Text('Error: ${state.error}'));
+                                  } else {
+                                    return const SizedBox();
+                                  }
+                                },
+                              ),
+
+
+                              const SizedBox(height: 20),
+                              BlocBuilder<CityCubit, CityCubitState>(
+                                builder: (context, state) {
+                                  if (state is CityCubitLoading) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (state is CityCubitLoaded) {
+                                    return CustomDropdownField<CityModel>(
+                                      items: state.countries,
+                                      itemLabelBuilder: (CityModel city) => city.name!,
+                                      value: selectedCity,
+                                      hint: 'Select a City',
+                                      onChanged: (CityModel? newValue) {
+                                        setState(() {
+                                          stateId = null;
+                                          selectedCity = newValue;
+                                          realSelectedState = selectedState;
+                                          selectedState = null;
+                                          context.read<StateCubit>().fetchStates(cityId: selectedCity!.id!);
+                                        });
+                                      },
+                                    );
+                                  } else if (state is CityCubitFailure) {
+                                    return Center(child: Text('Error: ${state.error}'));
+                                  } else {
+                                    return const SizedBox();
+                                  }
+                                },
+                              ),
+
+                              const SizedBox(height: 20),
+                              BlocBuilder<StateCubit, StateCubitState>(
+                                builder: (context, state) {
+                                  if (state is StateCubitLoading) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (state is StateCubitLoaded) {
+                                    return CustomDropdownField<StateModel>(
+                                      items: state.countries,
+                                      itemLabelBuilder: (StateModel state) => state.name!,
+                                      value: selectedState,
+                                      hint: 'Select a state',
+                                      onChanged: (StateModel? newValue) {
+                                        setState(() {
+                                          selectedState = newValue;
+                                          stateId = selectedState!.id;
+                                        });
+                                      },
+                                    );
+                                  } else if (state is StateCubitFailure) {
+                                    return Center(child: Text('Error: ${state.error}'));
+                                  } else {
+                                    return const SizedBox();
+                                  }
+                                },
+                              ),
+                              const Text(
+                                    'الموقع',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                              const SizedBox(height: 10),
+                              InkWell(
+                                onTap: (){
+                                  Get.to(()=> GoogleMapAddress(lat: propertyDetails.address!.latitude!, lon: propertyDetails.address!.longitude!,));
+                                },
+                                child: SizedBox(
+                                  height: 200,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 160,
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12.0),
+                                            topRight: Radius.circular(12.0)
+                                          ),
+                                          image: DecorationImage(
+                                            image: AssetImage(Images.googleMapImage),
+                                            fit: BoxFit.cover
+                                          )
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 40,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
+                                              bottomLeft: Radius.circular(12.0),
+                                              bottomRight: Radius.circular(12.0)
+                                          ),
+                                          color: Colors.grey[200],
+                                        ),
+                                        child: const Center(child: Text("تعديل الموقع")),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              const Text(
+                                'صور العقار',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8.0,
+                                children: [
+                                  ...imageList.asMap().entries.map((entry) {
+                                    int index = entry.key;
+                                    print(index);
+                                    ImageModel2 imageModel = entry.value;
+                                    return _buildPropertyImage(imageModel, index);
+                                  }),
+                                  _buildAddImageButton(),
+                                ],
+                              ),
+
+
+                              Text(jsonEncode(propertyDetails)),
+
+
+
+                              /// Displaying property rest details
+
+
+                              /// Displaying property Features and Attribute
+                              const SizedBox(height: 5.0,),
+
+                              const SizedBox(height: 5.0,),
+
+
+                              /// display property promoter details
+                              const SizedBox(height: 10.0,),
+
+
+                              /// display GoogleMap and address details
+                              const SizedBox(height: 10.0,),
+
+
+                              /// display reviews and Rating
+
+
+
+
+                            ],
+                          );
+                        } else if (state is PropertyDetailsError) {
+                          return Center(
+                            child: Text('Error: ${state.error}'),
+                          );
+                        } else {
+                          return const SizedBox(); // Return an empty widget if state is not recognized
                         }
-
-                        /// get attributes
-                        // subCategoryId = propertyDetails.category!.id;
-                        // context.read<AttributeAlarmCubit>().fetchAttributesByCategory(categoryId: subCategoryId!);
-
-
-                        /// image section
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// appbar
-                            const Text("تعديل العقار", style: fontMediumBold,),
-                            const SizedBox(height: 10.0,),
-                            /// Display property image and some details
-                            GestureDetector(
-                              onTap: () {
-                                // Navigate to the edit page
-                              },
-                              child: _buildPropertyView(context,imageList ?? [], propertyDetails),
-
-                            ),
-                            const SizedBox(height: 16),
-                            TextField(
-                              controller: propertyName,
-                              decoration: InputDecoration(
-                                labelText: 'اسم العقار',
-                                prefixIcon: const Icon(Icons.home),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              controller: propertyDescription,
-                              decoration: InputDecoration(
-                                labelText: 'وصف العقار',
-                                prefixIcon: Icon(Icons.description),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              maxLines: null, // Makes the TextField expandable
-                              minLines: 1, // Initial height of the TextField
-                              keyboardType: TextInputType.multiline, // Allows multiline input
-                            ),
-
-
-                            const SizedBox(height: 16),
-                            _categorySection(),
-                            SizedBox(height: 16),
-                            Container(
-                              height: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey[200],
-                              ),
-                              child: Center(child: Text('Map Placeholder')),
-                            ),
-                            SizedBox(height: 16),
-                            const Text(
-                              'صور العقار',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Wrap(
-                              spacing: 8.0,
-                              children: [
-                                ...imageList.asMap().entries.map((entry) {
-                                  int index = entry.key;
-                                  print(index);
-                                  ImageModel2 imageModel = entry.value;
-                                  return _buildPropertyImage(imageModel, index);
-                                }),
-                                _buildAddImageButton(),
-                              ],
-                            ),
-
-
-                            Text(jsonEncode(propertyDetails)),
-
-
-
-                            /// Displaying property rest details
-
-
-                            /// Displaying property Features and Attribute
-                            const SizedBox(height: 5.0,),
-
-                            const SizedBox(height: 5.0,),
-
-
-                            /// display property promoter details
-                            const SizedBox(height: 10.0,),
-
-
-                            /// display GoogleMap and address details
-                            const SizedBox(height: 10.0,),
-
-
-                            /// display reviews and Rating
-
-
-
-
-                          ],
-                        );
-                      } else if (state is PropertyDetailsError) {
-                        return Center(
-                          child: Text('Error: ${state.error}'),
-                        );
-                      } else {
-                        return const SizedBox(); // Return an empty widget if state is not recognized
-                      }
-                    },
+                      },
+                    ),
+                    // child: Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         // Navigate to the edit page
+                    //       },
+                    //       child: Row(
+                    //         children: [
+                    //           Expanded(
+                    //             child: _buildPropertyView()
+                    //           ),
+                    //           const SizedBox(width: 8),
+                    //           const Icon(Icons.arrow_forward),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     const SizedBox(height: 16),
+                    //     TextField(
+                    //       decoration: InputDecoration(
+                    //         labelText: 'عنوان العقار',
+                    //         prefixIcon: Icon(Icons.home),
+                    //         border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(12),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     const SizedBox(height: 16),
+                    //     const Text(
+                    //       'نوع العقار',
+                    //       style: TextStyle(
+                    //         fontSize: 16,
+                    //         fontWeight: FontWeight.bold,
+                    //       ),
+                    //     ),
+                    //     const SizedBox(height: 8),
+                    //     Row(
+                    //       children: [
+                    //         _buildChoiceChip('بيع', _selectedPropertyType, _selectPropertyType),
+                    //         SizedBox(width: 8),
+                    //         _buildChoiceChip('إيجار', _selectedPropertyType, _selectPropertyType),
+                    //       ],
+                    //     ),
+                    //     SizedBox(height: 16),
+                    //     Text(
+                    //       'فئة العقار',
+                    //       style: TextStyle(
+                    //         fontSize: 16,
+                    //         fontWeight: FontWeight.bold,
+                    //       ),
+                    //     ),
+                    //     SizedBox(height: 8),
+                    //     Row(
+                    //       children: [
+                    //         _buildChoiceChip('منزل', _selectedCategory, _selectCategory),
+                    //         SizedBox(width: 8),
+                    //         _buildChoiceChip('شقة', _selectedCategory, _selectCategory),
+                    //         SizedBox(width: 8),
+                    //         _buildChoiceChip('فيلا', _selectedCategory, _selectCategory),
+                    //         SizedBox(width: 8),
+                    //         _buildChoiceChip('أخرى', _selectedCategory, _selectCategory),
+                    //       ],
+                    //     ),
+                    //     SizedBox(height: 16),
+                    //     Text(
+                    //       'الموقع',
+                    //       style: TextStyle(
+                    //         fontSize: 16,
+                    //         fontWeight: FontWeight.bold,
+                    //       ),
+                    //     ),
+                    //     SizedBox(height: 8),
+                    //     TextField(
+                    //       decoration: InputDecoration(
+                    //         hintText: 'مسعد شارع رقم خمسين خلف الجامعة اللبنانية...',
+                    //         prefixIcon: Icon(Icons.location_pin),
+                    //         border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(12),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     SizedBox(height: 16),
+                    //     Container(
+                    //       height: 150,
+                    //       decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(12),
+                    //         color: Colors.grey[200],
+                    //       ),
+                    //       child: Center(child: Text('Map Placeholder')),
+                    //     ),
+                    //     SizedBox(height: 16),
+                    //     const Text(
+                    //       'صور العقار',
+                    //       style: TextStyle(
+                    //         fontSize: 16,
+                    //         fontWeight: FontWeight.bold,
+                    //       ),
+                    //     ),
+                    //     const SizedBox(height: 8),
+                    //     Wrap(
+                    //       children: [
+                    //         _buildPropertyImage(Images.noImageUrl),
+                    //         SizedBox(width: 8),
+                    //         _buildPropertyImage(Images.noImageUrl),
+                    //         SizedBox(width: 8),
+                    //         _buildPropertyImage(Images.noImageUrl),
+                    //         SizedBox(width: 8),
+                    //         _buildAddImageButton(),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
                   ),
-                  // child: Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     GestureDetector(
-                  //       onTap: () {
-                  //         // Navigate to the edit page
-                  //       },
-                  //       child: Row(
-                  //         children: [
-                  //           Expanded(
-                  //             child: _buildPropertyView()
-                  //           ),
-                  //           const SizedBox(width: 8),
-                  //           const Icon(Icons.arrow_forward),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //     const SizedBox(height: 16),
-                  //     TextField(
-                  //       decoration: InputDecoration(
-                  //         labelText: 'عنوان العقار',
-                  //         prefixIcon: Icon(Icons.home),
-                  //         border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(12),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     const SizedBox(height: 16),
-                  //     const Text(
-                  //       'نوع العقار',
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //     const SizedBox(height: 8),
-                  //     Row(
-                  //       children: [
-                  //         _buildChoiceChip('بيع', _selectedPropertyType, _selectPropertyType),
-                  //         SizedBox(width: 8),
-                  //         _buildChoiceChip('إيجار', _selectedPropertyType, _selectPropertyType),
-                  //       ],
-                  //     ),
-                  //     SizedBox(height: 16),
-                  //     Text(
-                  //       'فئة العقار',
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //     SizedBox(height: 8),
-                  //     Row(
-                  //       children: [
-                  //         _buildChoiceChip('منزل', _selectedCategory, _selectCategory),
-                  //         SizedBox(width: 8),
-                  //         _buildChoiceChip('شقة', _selectedCategory, _selectCategory),
-                  //         SizedBox(width: 8),
-                  //         _buildChoiceChip('فيلا', _selectedCategory, _selectCategory),
-                  //         SizedBox(width: 8),
-                  //         _buildChoiceChip('أخرى', _selectedCategory, _selectCategory),
-                  //       ],
-                  //     ),
-                  //     SizedBox(height: 16),
-                  //     Text(
-                  //       'الموقع',
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //     SizedBox(height: 8),
-                  //     TextField(
-                  //       decoration: InputDecoration(
-                  //         hintText: 'مسعد شارع رقم خمسين خلف الجامعة اللبنانية...',
-                  //         prefixIcon: Icon(Icons.location_pin),
-                  //         border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(12),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     SizedBox(height: 16),
-                  //     Container(
-                  //       height: 150,
-                  //       decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(12),
-                  //         color: Colors.grey[200],
-                  //       ),
-                  //       child: Center(child: Text('Map Placeholder')),
-                  //     ),
-                  //     SizedBox(height: 16),
-                  //     const Text(
-                  //       'صور العقار',
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //     const SizedBox(height: 8),
-                  //     Wrap(
-                  //       children: [
-                  //         _buildPropertyImage(Images.noImageUrl),
-                  //         SizedBox(width: 8),
-                  //         _buildPropertyImage(Images.noImageUrl),
-                  //         SizedBox(width: 8),
-                  //         _buildPropertyImage(Images.noImageUrl),
-                  //         SizedBox(width: 8),
-                  //         _buildAddImageButton(),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -501,8 +668,8 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       onSelected: (bool selected) {
         onSelect(label);
       },
-      selectedColor: Color(0xFF3E6B85),
-      backgroundColor: Color(0xFFEDEDED),
+      selectedColor: const Color(0xFF3E6B85),
+      backgroundColor: const Color(0xFFEDEDED),
       labelStyle: TextStyle(
         color: selected == label ? Colors.white : Colors.black,
         fontWeight: FontWeight.bold,
@@ -555,7 +722,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                     Navigator.of(context).pop();
                     setState(() {
                       _loading = false;
-                      imagesAll!.removeAt(index);
                     });
                     Get.snackbar("successfully deleted", "cool");
                     print(await response.stream.bytesToString());
@@ -589,8 +755,12 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
   Widget _buildAddImageButton() {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // Add image logic
+        await _pickImage();
+
+        await _uploadSingleImage(_image!);
+
       },
       child: Container(
         width: 100,
@@ -1141,24 +1311,29 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure to delete?'),
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure to delete?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: onConfirm,
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
       },
     );
   }
+
+
+  /// google map to edit address
+
+
 
 }
 

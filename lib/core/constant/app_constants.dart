@@ -47,4 +47,13 @@ class AppConstants {
   static const String propertyIsDeleted = 'is_deleted';
 
 
+
+  // static const String editPropertyAddress = 'editAddress';
+  static const String editLineOneAddress = 'LineOne';
+  static const String editLineTwoAddress = 'LineTwo';
+  static const String editLatAddress = 'latitude';
+  static const String editLonAddress = 'longitude';
+
+
+
 }
