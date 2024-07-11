@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:smart_real_estate/features/client/filter_screen/presentation/pages/filter_screen.dart';
 import 'package:smart_real_estate/features/client/search/presentation/widgets/search_appbar.dart';
 
 import '../../../../../core/utils/images.dart';
@@ -117,7 +118,12 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: AppBarSearch(
           onPressed: (){
-            const SizedBox(height: 50,);
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (builder) =>FilterScreen(),
+                  // _filterScreen(),
+            );
           },
           onTapBack: (){
             Navigator.pop(context);
@@ -290,6 +296,16 @@ class HitsPage {
     return HitsPage(items, response.page, nextPageKey);
   }
 }
+
+
+
+
+
+
+
+
+
+
 //
 // import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
 // import 'package:flutter/material.dart';

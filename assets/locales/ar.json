@@ -120,7 +120,10 @@
   "add_property":"أضافة عقار",
   "alarm_notification": "منبة عقاري",
   "alarm":"منبة",
-  "type_of_user": "حدد نوع المستخدم"
+  "type_of_user": "حدد نوع المستخدم",
+  "filter": "تصفية",
+  "reset": "اعادة ضبط"
+
 
 
 

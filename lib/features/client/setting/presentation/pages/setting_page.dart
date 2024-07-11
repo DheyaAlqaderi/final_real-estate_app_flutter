@@ -120,7 +120,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   } else{
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context)=> const BothAuthScreen(isOwner: true))
+                        MaterialPageRoute(builder: (context)=> const ModificationScreen())
                     );
                   }
 

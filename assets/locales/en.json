@@ -120,7 +120,10 @@
   "add_property":"Add Property",
   "alarm_notification": "notification alarm",
   "alarm":"alarm",
-  "type_of_user": "choose user type"
+  "type_of_user": "choose user type",
+  "filter": "filter",
+  "reset": "reset"
+
 
 
 
