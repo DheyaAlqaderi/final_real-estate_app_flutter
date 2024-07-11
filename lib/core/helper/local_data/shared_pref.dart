@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefManager {
@@ -21,5 +23,26 @@ class SharedPrefManager {
 
   static Future<void> deleteData(String key) async {
     await _prefs.remove(key);
+  }
+
+  static Future<void> saveMap(String key, Map<String, dynamic> value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonString = json.encode(value);
+    await prefs.setString(key, jsonString);
+  }
+
+  static Future<Map<String, dynamic>?> getMap(String key) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString(key);
+    if (jsonString == null) {
+      return null;
+    }
+    Map<String, dynamic> jsonMap = json.decode(jsonString);
+    return jsonMap;
+  }
+
+  static Future<void> deleteMap(String key) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(key);
   }
 }

@@ -12,13 +12,14 @@ class PropertyReviewAndRatingWidget extends StatefulWidget {
     required this.rating,
     required this.reviewModel,
     required this.index,
-    required this.propertyId,
+    required this.propertyId, required this.token,
   });
 
   final double rating;
   final int propertyId;
   final ReviewModel reviewModel;
   final int index;
+  final String token;
 
   @override
   State<PropertyReviewAndRatingWidget> createState() =>
@@ -262,6 +263,7 @@ class _PropertyReviewAndRatingWidgetState
           MaterialPageRoute(
             builder: (context) => ReviewsRatingScreen(
               propertyId: propertyId,
+              token: widget.token,
             ),
           ),
         );

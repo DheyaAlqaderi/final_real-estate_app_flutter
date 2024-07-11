@@ -20,9 +20,10 @@ import '../manager/reviews/reviews_state.dart';
 class ReviewsRatingScreen extends StatefulWidget {
   const ReviewsRatingScreen({
     super.key,
-    required this.propertyId,
+    required this.propertyId, required this.token,
   });
 
+  final String token;
   final int propertyId;
 
   @override
@@ -385,6 +386,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                         reviewModel: state.reviewModel,
                         index: index,
                         propertyId: widget.propertyId,
+                            token: widget.token,
                       ),
                     ),
                   ],
@@ -414,6 +416,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                         reviewModel: state.reviewModel!,
                         index: index,
                         propertyId: widget.propertyId,
+                            token: widget.token,
                       ),
                     ),
                   ],

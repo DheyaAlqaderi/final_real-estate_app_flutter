@@ -5,13 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
+import 'package:smart_real_estate/owner/edit_property/domain/update_address_repository_by_id.dart';
 
 
 class GoogleMapAddress extends StatefulWidget {
-   GoogleMapAddress({super.key, required this.lat, required this.lon});
+   GoogleMapAddress({super.key, required this.lat, required this.lon, required this.lineOnePass, required this.lineTwoPass});
 
-  double lat;
-  double lon;
+  double? lat;
+  double? lon;
+  String? lineOnePass;
+  String? lineTwoPass;
 
   @override
   State<GoogleMapAddress> createState() => _GoogleMapAddressState();
@@ -27,13 +30,25 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
   TextEditingController lineOne = TextEditingController();
   TextEditingController lineTwo = TextEditingController();
 
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
-    _currentLatLng = LatLng(widget.lat, widget.lon);
+    _currentLatLng = LatLng(widget.lat!, widget.lon!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       changeMapMode(_mapController!);
     });
+
+    if(widget.lineOnePass!.isNotEmpty){
+      lineOne.text = widget.lineOnePass!;
+    }
+
+    if(widget.lineTwoPass!.isNotEmpty){
+      lineTwo.text = widget.lineTwoPass!;
+    }
+
+
   }
 
   @override
@@ -46,14 +61,35 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
               target: _currentLatLng!,
-              zoom: 4,
+              zoom: 7,
             ),
             markers: _markers != null ? {_markers!} : {},
             onCameraMove: _onCameraMove,
           ),
 
           Positioned(
-            top: 40.0,
+            top: 40,
+            right: 16,
+            child: InkWell(
+              onTap: (){
+                Navigator.pop(context);
+              },
+              child: Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Theme.of(context).cardColor,
+                ),
+                child: const Center(
+                  child: Icon(Icons.arrow_back),
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 100.0,
             left: 16.0,
             right: 16.0,
             child: Column(
@@ -64,7 +100,7 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
                     labelText: 'عنوان أول',
                     filled: true,
                     hintText: 'مثلاً خلف الجامعه اللبنانية بجوار بهارت ياسين خلف مطعم القلعه',
-                    fillColor: Colors.white.withOpacity(0.9),
+                    fillColor: Colors.white.withOpacity(0.8),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                       borderSide: BorderSide.none,
@@ -78,7 +114,7 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
                     labelText: 'عنوان ثاني',
                     filled: true,
                     hintText: 'مثلاً خلف الجامعه اللبنانية بجوار بهارت ياسين خلف مطعم القلعه',
-                    fillColor: Colors.white.withOpacity(0.9),
+                    fillColor: Colors.white.withOpacity(0.8),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                       borderSide: BorderSide.none,
@@ -100,12 +136,27 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
                 Text("${_currentLatLng!.longitude} - ${_currentLatLng!.latitude}"),
                 InkWell(
                   onTap: () async {
+                    // if(lineOne.text.)
+                    //
                     await SharedPrefManager.saveData(AppConstants.editLineOneAddress, lineOne.text.toString());
                     await SharedPrefManager.saveData(AppConstants.editLineTwoAddress, lineTwo.text.toString());
                     await SharedPrefManager.saveData(AppConstants.editLatAddress, _currentLatLng!.latitude.toString());
                     await SharedPrefManager.saveData(AppConstants.editLineTwoAddress, _currentLatLng!.longitude.toString());
+
+                    setState(() {
+                      isLoading = true;
+                    });
+                    await UpdateAddressById.update(addressId: 10, body: {
+                      "line1":lineOne.text,
+                      "line2": lineTwo.text,
+                      "longitude": _currentLatLng!.longitude.toString(),
+                      "latitude": _currentLatLng!.latitude.toString()
+                    });
+                    setState(() {
+                      isLoading = false;
+                    });
+
                     Navigator.pop(context);
-                    print(lineOne.text);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -116,7 +167,11 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
                         borderRadius: BorderRadius.circular(25),
                         color: Theme.of(context).cardColor
                       ),
-                      child: const Center(child: Text("تأكيد"),),
+                      child: Center(
+                        child: isLoading
+                          ?const CircularProgressIndicator()
+                          :const Text("تأكيد"),
+                      ),
                     ),
                   ),
                 ),

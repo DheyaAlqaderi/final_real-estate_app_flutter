@@ -45,7 +45,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
       token = myToken ?? " ";
     });
 
-    print("my toooooooookennnnn $token");
+    print("my toonn $token");
   }
 
   @override
@@ -116,19 +116,30 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: List.generate(
-                          propertyDetails.propertyValue!.length ,
-                              (index) {
+                        propertyDetails.propertyValue!.length,
+                            (index) {
+                          var attribute = propertyDetails.propertyValue![index].value!;
+                          var attributeValue = attribute.value!;
+
+                          // Check if the value is a string and is not equal to "0"
+                          if (attributeValue != "0") {
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 7),
                               child: FeatureAttributeWidget(
-                                attributeName: propertyDetails.propertyValue![index].value!.attribute!.name!,
-                                attributeValue: propertyDetails.propertyValue![index].value!.value!,
+                                attributeName: attribute.attribute!.name!,
+                                attributeValue: attributeValue,
                               ),
                             );
+                          } else {
+                            // Always show the widget for non-string values or string values that are "0"
+                            return const SizedBox();
                           }
-                      ),
+                        },
+                      ).where((widget) => widget is! SizedBox).toList(), // Filter out SizedBox widgets
                     ),
                   ),
+
+
                   const SizedBox(height: 5.0,),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -266,6 +277,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                             rating: propertyDetails.rate!,
                             reviewModel: state.reviewModel,
                             propertyId: widget.id!,
+                            token: widget.token!,
                             index: 0,
                           );
                         }
