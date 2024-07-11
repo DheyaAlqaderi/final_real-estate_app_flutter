@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
@@ -12,6 +13,7 @@ import 'package:smart_real_estate/features/client/property_details/data/model/im
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/reviews/reviews_cubit.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/profile_owner_screen.dart';
+import 'package:smart_real_estate/features/client/property_details/presentation/widgets/feature_image_details.dart';
 
 import '../../../../../core/helper/local_data/shared_pref.dart';
 import '../../../home/widgets/high_places_widget.dart';
@@ -148,11 +150,20 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                           propertyDetails.featureProperty!.length ,
                               (index) {
                             return HighPlacesWidget(
-                              onTap: (){
-
-                              },
                               name: propertyDetails.featureProperty![index].feature!.name!,
-                              image:propertyDetails.featureProperty![index].image!.isNotEmpty? "${propertyDetails.featureProperty![index].image?.first.image}":AppConstants.noImageUrl,
+                              image:propertyDetails.featureProperty![index].image!.isNotEmpty? "${propertyDetails.featureProperty![index].image!.first.image}":AppConstants.noImageUrl,
+                              onTap: (){
+                                var fName= propertyDetails.featureProperty![index].feature!.name!;
+                                final List<ImageModel2> fImageList = state.propertyDetails.featureProperty![index].image!.map((imageModel) => ImageModel2(
+                                  image: imageModel.image,
+                                  // id: imageModel.id,
+                                )).toList();
+                                Get.to(()=>FeatureImageDetails(
+                                  featureName: fName,
+                                  images:fImageList,
+                                ));
+                              },
+
                             );
                           }
                       ),

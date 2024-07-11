@@ -4,10 +4,11 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 
 class HighPlacesWidget extends StatefulWidget {
+  const HighPlacesWidget({super.key, this.image, this.name, required this.onTap});
   final image;
   final name;
   final VoidCallback onTap;
-  const HighPlacesWidget({super.key, this.image, this.name, required this.onTap});
+
 
   @override
   State<HighPlacesWidget> createState() => _HighPlacesWidgetState();

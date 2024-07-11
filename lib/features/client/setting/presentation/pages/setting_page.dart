@@ -72,26 +72,26 @@ class _SettingScreenState extends State<SettingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // const SizedBox(height: 20,),
-
-              // SettingTemplete(
-              //   hamzah:'profile_title',
-              //   path: Images.profileIcon,
-              //   flag: true,
-              //   onTap: (){
-              //     if(checkIfLogIn()) {
-              //       Navigator.push(
-              //           context,
-              //           MaterialPageRoute(builder:
-              //               (context) => const ProfileScreen())
-              //       );
-              //     } else{
-              //       showLoginPopup(context);
-              //     }
-              //   },
-              // ),
-
               const SizedBox(height: 50,),
+
+              SettingTemplete(
+                hamzah:'profile_title',
+                path: Images.profileIcon,
+                flag: true,
+                onTap: (){
+                  if(checkIfLogIn()) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder:
+                            (context) => const ProfileScreen())
+                    );
+                  } else{
+                    showLoginPopup(context);
+                  }
+                },
+              ),
+
+              const SizedBox(height: 15,),
 
               SettingTemplete(
                 hamzah:'add_alarm_notification',
