@@ -274,4 +274,3 @@ class ProgressClient extends http.BaseClient {
     return _inner.send(httpRequest);
   }
 }
-

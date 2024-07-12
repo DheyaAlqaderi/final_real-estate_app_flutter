@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,17 +16,21 @@ import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
+import 'package:smart_real_estate/owner/edit_property/domain/test.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/widgets/address_section_edit.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/widgets/category_section_edit.dart';
+import 'package:smart_real_estate/owner/edit_property/presentation/widgets/chip_feature_widget.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../features/client/alarm/presentation/manager/category/category_cubit.dart';
 import '../../../../features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import '../../../../features/client/home/data/models/category/category_model.dart';
+import '../../../../features/client/home/widgets/chip_widget_home.dart';
 import '../../../../features/client/property_details/data/model/image_model.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_state.dart';
 import '../../../add_property/presentation/pages/fifth_images_add_property.dart';
+import '../../domain/get_features_repository.dart';
 
 class EditPropertyPage extends StatefulWidget {
    const EditPropertyPage({super.key, required this.propertyId, required this.token});
@@ -38,6 +43,7 @@ class EditPropertyPage extends StatefulWidget {
 
 class _EditPropertyPageState extends State<EditPropertyPage> {
 
+
   TextEditingController propertyName = TextEditingController();
   TextEditingController propertyDescription = TextEditingController();
   TextEditingController propertyPrice = TextEditingController();
@@ -49,13 +55,14 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   String? realName, realDescription, realPrice;
   double? realSize;
   int? realSubCategoryId;
+  List<Map<String, dynamic>> features = [];
+  List<bool> chipSelected2 = [];
   // String? clickedChip;
   // late List<bool> chipSelected;
-  // late List<bool> chipSelected2;
   // List<bool>? chipSelected3;
   // bool? chipSelected3First;
   // bool? chipSelected3Last;
-  // late List<bool> defaultChipSelected;
+  late List<bool> defaultChipSelected;
   // int? categoryId;
   // int? subCategoryId;
   // String? userId;
@@ -145,6 +152,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   }
 
 
+
   /// google map
 
 
@@ -152,15 +160,17 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   void initState() {
     super.initState();
     getToken();
+
+
     // _loadUserData();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchData();
     });
-
+    // fetchAndSetFeatures();
     //
     // chipSelected = List.generate(10, (index) => false);
-    // chipSelected2 = List.generate(30, (index) => false);
+    // chipSelected2 = List.generate(50, (index) => false);
     // chipSelected3 = List.generate(2, (index) => false);
     // defaultChipSelected = List.generate(1, (index) => false);
   }
@@ -169,6 +179,13 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
 
     /// fetch data from the server
+  Future<void> fetchAndSetFeatures() async {
+    var fetchedFeatures = await FeatureRepository.fetchFeatures(categoryId: 25); // Example category ID
+    setState(() {
+      features = fetchedFeatures;
+      chipSelected2 = List.filled(features.length, false);
+    });
+  }
   void _fetchData() async{
 
     final mainCategory = context.read<CategoryAlarmCubit>();
@@ -214,7 +231,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   //     _selectedCategory = category;
   //   });
   // }
-
+  List<int> selectedIds = [];
   Future<void> getToken() async {
     final myToken = await SharedPrefManager.getData(AppConstants.token);
 
@@ -224,7 +241,17 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
     print("my toooooooookennnnn $token");
   }
-
+  void onChipClick(int index) {
+    setState(() {
+      chipSelected2[index] = !chipSelected2[index];
+      if (chipSelected2[index]) {
+        selectedIds.add(features[index]['id']);
+      } else {
+        selectedIds.remove(features[index]['id']);
+      }
+      print('Selected IDs: $selectedIds');
+    });
+  }
 
 
 
@@ -274,7 +301,9 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                           // categoryId = propertyDetails.category!.id;
 
 
-                          propertyDetails.propertyValue![0].value!.value;
+                          // propertyDetails.featureProperty.
+
+                          // propertyDetails.propertyValue![0].value!.value;
                           /// for name and description
                           propertyName.text = propertyDetails.name! ?? "";
                           propertyDescription.text = propertyDetails.description!?? "";
@@ -301,6 +330,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                           // context.read<AttributeAlarmCubit>().fetchAttributesByCategory(categoryId: subCategoryId!);
 
 
+                          // propertyDetails.featureProperty![index].image!.first.image;
                           /// image section
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,7 +388,11 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
                               /// category section
                               const SizedBox(height: 16),
-                              CategorySectionEdit(selectedCategoryId: propertyDetails.category!.parent!, selectedSubCategoryId: propertyDetails.category!.id!,propertyDetails: propertyDetails,),
+                              CategorySectionEdit(
+                                selectedCategoryId: propertyDetails.category!.parent!,
+                                selectedSubCategoryId: propertyDetails.category!.id!,
+                                propertyDetails: propertyDetails,
+                              ),
                               const SizedBox(height: 16),
                               TextFormField(
                                 controller: propertySize,
@@ -394,10 +428,36 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                   _buildAddImageButton(),
                                 ],
                               ),
-
-
+                              const SizedBox(height: 16),
+                              const Text(
+                                'البيئة / المرافق',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                runSpacing: 10,
+                                spacing: 10,
+                                children: [
+                                  ...List.generate(
+                                    features.length,
+                                        (index) => Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                                      child: ChipFeatureWidget(
+                                        feature: features[index],
+                                        chipSelected: chipSelected2,
+                                        onChipClick: () => onChipClick(index),
+                                        index: index,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               Text(jsonEncode(propertyDetails)),
 
+                              const SizedBox(height: 100),
 
 
                               /// Displaying property rest details

@@ -290,6 +290,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                             propertyId: widget.id!,
                             token: widget.token!,
                             index: 0,
+                            propertyDetails: propertyDetails,
                           );
                         }
                       } else if (state is ReviewsPropertyError) {

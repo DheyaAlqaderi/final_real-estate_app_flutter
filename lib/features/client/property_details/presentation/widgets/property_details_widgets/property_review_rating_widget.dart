@@ -12,7 +12,7 @@ class PropertyReviewAndRatingWidget extends StatefulWidget {
     required this.rating,
     required this.reviewModel,
     required this.index,
-    required this.propertyId, required this.token,
+    required this.propertyId, required this.token, required this.propertyDetails,
   });
 
   final double rating;
@@ -20,6 +20,7 @@ class PropertyReviewAndRatingWidget extends StatefulWidget {
   final ReviewModel reviewModel;
   final int index;
   final String token;
+  final propertyDetails;
 
   @override
   State<PropertyReviewAndRatingWidget> createState() =>
@@ -57,7 +58,7 @@ class _PropertyReviewAndRatingWidgetState
                 name: widget.reviewModel.results![widget.index].user.toString(),
             ),
           if (widget.rating != -1) const SizedBox(height: 7.0),
-          if (widget.rating != -1) _buildDisplayAllReviews(widget.propertyId),
+          if (widget.rating != -1) _buildDisplayAllReviews(widget.propertyId, widget.propertyDetails),
         ],
       ),
     );
@@ -255,7 +256,7 @@ class _PropertyReviewAndRatingWidgetState
     );
   }
 
-  Widget _buildDisplayAllReviews(int propertyId) {
+  Widget _buildDisplayAllReviews(int propertyId, final propertyDetails) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -263,7 +264,7 @@ class _PropertyReviewAndRatingWidgetState
           MaterialPageRoute(
             builder: (context) => ReviewsRatingScreen(
               propertyId: propertyId,
-              token: widget.token,
+              token: widget.token, propertyDetails: propertyDetails,
             ),
           ),
         );

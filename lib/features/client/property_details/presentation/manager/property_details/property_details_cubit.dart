@@ -14,9 +14,9 @@ class PropertyDetailsCubit extends Cubit<PropertyDetailsState> {
     try {
       final propertyDetails = await _repository.getPropertyDetailsById(propertyId, token);
       emit(PropertyDetailsSuccess(propertyDetails));
-      if (kDebugMode) {
+
         print("success Property Details");
-      }
+
     } catch (error) {
       if (kDebugMode) {
         print("${error}success Property Details");

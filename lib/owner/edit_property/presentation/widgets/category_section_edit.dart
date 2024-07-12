@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
+import 'package:smart_real_estate/owner/edit_property/presentation/widgets/list_features_widget.dart';
 
 import '../../../../core/helper/my_model_map.dart';
 import '../../../../core/utils/styles.dart';
@@ -19,6 +20,7 @@ import '../../../../features/client/alarm/presentation/widget/custom_attribute_i
 import '../../../../features/client/home/data/models/category/category_model.dart';
 import '../../../../features/client/home/widgets/chip_widget_home.dart';
 import '../../../add_property/presentation/widgets/dropDown_widget.dart';
+import '../../domain/get_features_repository.dart';
 
 class CategorySectionEdit extends StatefulWidget {
   CategorySectionEdit({super.key ,required this.selectedCategoryId, required this.selectedSubCategoryId, this.propertyDetails});
@@ -78,6 +80,8 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
     chipSelected3 = List.generate(2, (index) => false);
     defaultChipSelected = List.generate(1, (index) => false);
   }
+
+
   void _fetchData() async{
 
     final mainCategory = context.read<CategoryAlarmCubit>();
@@ -573,6 +577,7 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
             }
           },
         ),
+        ListFeaturesWidget(propertyDetails: widget.propertyDetails, selectedSubCategoryId: subCategoryId!),
 
     ],
     );

@@ -20,10 +20,11 @@ import '../manager/reviews/reviews_state.dart';
 class ReviewsRatingScreen extends StatefulWidget {
   const ReviewsRatingScreen({
     super.key,
-    required this.propertyId, required this.token,
+    required this.propertyId, required this.token, required this.propertyDetails,
   });
 
   final String token;
+  final propertyDetails;
   final int propertyId;
 
   @override
@@ -54,12 +55,12 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
   void _fetchData() async {
     final getReviewsAll = context.read<ReviewsPropertyCubit>();
     final getReviewsById = context.read<ReviewsPropertyByRateNoCubit>();
-    final getPropertyDetails = context.read<PropertyDetailsCubit>();
+    // final getPropertyDetails = context.read<PropertyDetailsCubit>();
 
-    await Future.wait([
-      getPropertyDetails.getPropertyDetails(
-          widget.propertyId, "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
-    ]);
+    // await Future.wait([
+    //   getPropertyDetails.getPropertyDetails(
+    //       widget.propertyId, "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
+    // ]);
 
     if (rateNo == 0) {
       await Future.wait([
@@ -132,16 +133,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
   }
 
   Widget _buildPropertyView() {
-    return BlocBuilder<PropertyDetailsCubit, PropertyDetailsState>(
-      builder: (context, state) {
-        if (state is PropertyDetailsLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is PropertyDetailsSuccess) {
-          final propertyDetails = state.propertyDetails;
-
-          return Padding(
+    return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Container(
               height: 130.0,
@@ -166,7 +158,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                                 borderRadius: BorderRadius.circular(20.0),
                                 image: DecorationImage(
                                     image: CachedNetworkImageProvider(
-                                      propertyDetails.image![0].image != "null" ?"${AppConstants.baseUrl3}${propertyDetails.image![0].image}" : AppConstants.noImageUrl,
+                                      widget.propertyDetails.image![0].image != "null" ?"${AppConstants.baseUrl3}${widget.propertyDetails.image![0].image}" : AppConstants.noImageUrl,
                                     ),
                                     fit: BoxFit.cover)),
                           ),
@@ -201,7 +193,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            propertyDetails.name.toString(),
+                            widget.propertyDetails.name.toString(),
                             style: fontMediumBold,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -212,7 +204,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                               const Icon(Icons.star,
                                   color: Colors.yellow, size: 16),
                               const SizedBox(width: 4.0),
-                              Text(propertyDetails.rate.toString(),
+                              Text(widget.propertyDetails.rate.toString(),
                                   style: fontSmallBold),
                             ],
                           ),
@@ -224,7 +216,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                               const SizedBox(width: 4.0),
                               Expanded(
                                 child: Text(
-                                  propertyDetails.address!.line1.toString(),
+                                  widget.propertyDetails.address!.line1.toString(),
                                   style: fontSmallBold,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -240,15 +232,6 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
               ),
             ),
           );
-        } else if (state is PropertyDetailsError) {
-          return Center(
-            child: Text('Error: ${state.error}'),
-          );
-        } else {
-          return const SizedBox(); // Return an empty widget if state is not recognized
-        }
-      },
-    );
   }
 
   Widget _buildRateStar() {
@@ -387,6 +370,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                         index: index,
                         propertyId: widget.propertyId,
                             token: widget.token,
+                            propertyDetails: widget.propertyDetails,
                       ),
                     ),
                   ],
@@ -417,6 +401,7 @@ class _ReviewsRatingScreenState extends State<ReviewsRatingScreen> {
                         index: index,
                         propertyId: widget.propertyId,
                             token: widget.token,
+                            propertyDetails: widget.propertyDetails,
                       ),
                     ),
                   ],
