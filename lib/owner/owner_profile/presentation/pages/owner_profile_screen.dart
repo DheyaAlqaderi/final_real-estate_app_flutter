@@ -308,7 +308,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                   imagePath: data[index].image!.isEmpty ? " " : data[index].image!.first.image!,
                                   title: data[index].name!,
                                   price: data[index].price ?? "null",
-                                  address: data[index].address!,
+                                  address: data[index].address!['line1'],
                                   isFavorite: data[index].inFavorite!,
                                   rate: data[index].rate!,
                                   isActivate: data[index].isActive!,

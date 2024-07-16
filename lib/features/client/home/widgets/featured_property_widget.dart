@@ -228,7 +228,7 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
                                     child: SizedBox(
                                       width: 120,
                                       child: Text(
-                                        widget.propertyModel.results![widget.index].address.toString(),
+                                        widget.propertyModel.results![widget.index].address!['line1'].toString(),
                                         style: fontSmall,
                                         textDirection: TextDirection.rtl,
                                         maxLines: 2,
@@ -245,7 +245,7 @@ class _FeaturedPropertyWidgetState extends State<FeaturedPropertyWidget> {
                                   child: SizedBox(
                                     width: 120,
                                     child: Text(
-                                      widget.propertyModel.results![widget.index].address.toString(),
+                                      widget.propertyModel.results![widget.index].address!['line1'].toString(),
                                       style: fontSmall,
                                       maxLines: 2,
                                       textDirection: TextDirection.rtl,

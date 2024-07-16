@@ -7,11 +7,11 @@ import 'package:smart_real_estate/core/utils/styles.dart';
 import '../../../../../core/constant/app_constants.dart';
 
 class FavoriteWidget extends StatefulWidget {
-  const FavoriteWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.onTapDelete});
+   FavoriteWidget({super.key, required this.imagePath, required this.title, required this.price, required this.address, required this.isFavorite, required this.rate, required this.onTapDelete});
   final String imagePath;
   final String title;
   final String price;
-  final String address;
+   var address;
   final bool isFavorite;
   final double rate;
   final VoidCallback onTapDelete;

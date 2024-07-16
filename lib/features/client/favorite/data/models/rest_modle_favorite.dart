@@ -23,7 +23,7 @@ class PropertyModel {
   final double? rateReview;
   final bool? inFavorite;
   final List<ImageModel>? image;
-  final String? address;
+  final Map<String, dynamic>? address;
   final String? name;
   final String? description;
   final String? price;

@@ -56,6 +56,7 @@ import 'package:smart_real_estate/features/client/property_details/presentation/
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/user_profile/property_owner_profile_cubit.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
+import 'package:smart_real_estate/features/client/splash/screen/splash_screen.dart';
 import 'package:smart_real_estate/features/notification/notification_ws_repository.dart';
 import 'package:smart_real_estate/owner/add_property/domain/create_property_repository.dart';
 import 'package:smart_real_estate/owner/add_property/presentation/manager/create_property/create_property_cubit.dart';
@@ -219,18 +220,20 @@ void main() async {
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
-  // await SharedPrefManager.deleteData(AppConstants.userId);
-  // await SharedPrefManager.deleteData(AppConstants.token);
-  await SharedPrefManager.saveData(
-      AppConstants.token, '8c16156cf3bd29992e15374c457153855405a9ff');
-  await SharedPrefManager.saveData(AppConstants.userId, '27');
-
-  await SharedPrefManager.saveData(AppConstants.userType, AppConstants.owner);
-  String? token = await SharedPrefManager.getData(AppConstants.token);
-  String? id = await SharedPrefManager.getData(AppConstants.userId);
-
-  print('token is $token');
-  print('token is $id');
+  await SharedPrefManager.deleteData(AppConstants.userId);
+  await SharedPrefManager.deleteData(AppConstants.token);
+  await SharedPrefManager.deleteData(AppConstants.userType);
+  await SharedPrefManager.deleteData(AppConstants.firstTime);
+  // await SharedPrefManager.saveData(
+  //     AppConstants.token, '8c16156cf3bd29992e15374c457153855405a9ff');
+  // await SharedPrefManager.saveData(AppConstants.userId, '27');
+  //
+  // await SharedPrefManager.saveData(AppConstants.userType, AppConstants.owner);
+  // String? token = await SharedPrefManager.getData(AppConstants.token);
+  // String? id = await SharedPrefManager.getData(AppConstants.userId);
+  //
+  // print('token is $token');
+  // print('token is $id');
 
   runApp(const MyApp());
 }
@@ -395,8 +398,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          // home: const EditPropertyPage(propertyId: 1, token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
-          home:  SearchScreen(),
+          home: const EditPropertyPage(propertyId: 105, token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
+          // home:  RootScreen(),
         ),
       ),
     );

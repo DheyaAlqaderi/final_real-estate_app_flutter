@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/helper/my_model_map.dart';
 import 'package:smart_real_estate/features/client/filter_screen/presentation/pages/filter_screen.dart';
 import 'package:smart_real_estate/features/client/search/presentation/widgets/search_appbar.dart';
@@ -26,6 +28,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
    final int list=0;
    late FocusNode _focusNode;
+   String? token;
 
 
    /// algolia setup
@@ -53,6 +56,12 @@ class _SearchScreenState extends State<SearchScreen> {
      attribute: 'brand',
    );
 
+   Future<void> fetchToken()async{
+     final mToken = await SharedPrefManager.getData(AppConstants.token);
+     setState(() {
+       token = mToken;
+     });
+   }
    @override
    void initState() {
      super.initState();
@@ -61,6 +70,9 @@ class _SearchScreenState extends State<SearchScreen> {
      WidgetsBinding.instance.addPostFrameCallback((_) {
        FocusScope.of(context).requestFocus(_focusNode);
      });
+
+     fetchToken();
+
 
      Widget _hits(BuildContext context) => PagedListView<int, MyModel>(
          pagingController: _pagingController,
@@ -141,8 +153,10 @@ class _SearchScreenState extends State<SearchScreen> {
              color: Colors.white,
              height: 150,
              padding: const EdgeInsets.all(8),
-             child: ListPropertyWidget(address: item.data['address'],image: item.data['image_url'],name: item.data['name'],price: item.data['price'],rate: item.data['data_serializers']['rate_review'],)
-           )));
+             child: ListPropertyWidget(address: item.data['address'],image: item.data['image_url'],name: item.data['name'],price: item.data['price'],rate: item.data['data_serializers']['rate_review'],id: item.data['id'],token: token,)
+           )
+       )
+   );
 
   @override
   Widget build(BuildContext context) {

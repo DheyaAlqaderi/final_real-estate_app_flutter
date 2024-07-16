@@ -63,7 +63,7 @@ class NotificationWsRepository {
     WebSocketChannel channel = IOWebSocketChannel.connect(
         '${AppConstants.baseUrl4}/ws/notifications/',
         headers: {
-          'Authorization': "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4" ?? "",
+          'Authorization': "token 8c16156cf3bd29992e15374c457153855405a9ff" ?? "",
         });
 
     // Define the JSON body

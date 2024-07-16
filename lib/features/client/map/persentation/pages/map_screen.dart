@@ -2,7 +2,16 @@ import "dart:convert";
 
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:get/get.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
+import "package:smart_real_estate/core/constant/app_constants.dart";
+import "package:smart_real_estate/core/helper/local_data/shared_pref.dart";
+import "package:smart_real_estate/features/client/home/widgets/stand_property_widget.dart";
+import "package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart";
+
+import "../../../home/domain/manager/property_home_cubit/property_home_cubit.dart";
+import "../../../home/domain/manager/property_home_cubit/property_home_state.dart";
 
 
 
@@ -22,108 +31,6 @@ class CustomeMarkerWidgit extends StatelessWidget {
   }
 }
 
-List<Map<String, dynamic>> data = [
-  {
-    'id': '1',
-    'position': const LatLng(15.123456, 44.654321),
-    'price': 123.45,
-  },
-  {
-    'id': '2',
-    'position': const LatLng(16.987654, 45.876543),
-    'price': 678.90,
-  },
-  {
-    'id': '3',
-    'position': const LatLng(14.246810, 43.567890),
-    'price': 987.65,
-  },
-  {
-    'id': '4',
-    'position': const LatLng(15.135792, 44.975318),
-    'price': 543.21,
-  },
-  {
-    'id': '5',
-    'position': const LatLng(16.112233, 45.998877),
-    'price': 1234.56,
-  },
-  {
-    'id': '6',
-    'position': const LatLng(14.131415, 43.161718),
-    'price': 7890.12,
-  },
-  {
-    'id': '7',
-    'position': const LatLng(15.192837, 44.293801),
-    'price': 6543.21,
-  },
-  {
-    'id': '8',
-    'position': const LatLng(16.987654, 45.123456),
-    'price': 210.987,
-  },
-  {
-    'id': '9',
-    'position': const LatLng(14.567890, 43.987654),
-    'price': 8765.432,
-  },
-  {
-    'id': '10',
-    'position': const LatLng(15.112233, 44.876543),
-    'price': 9876.543,
-  },
-  {
-    'id': '11',
-    'position': const LatLng(16.223344, 45.765432),
-    'price': 345.678,
-  },
-  {
-    'id': '12',
-    'position': const LatLng(14.334455, 43.654321),
-    'price': 5678.901,
-  },
-  {
-    'id': '13',
-    'position': const LatLng(15.445566, 44.543210),
-    'price': 12345.678,
-  },
-  {
-    'id': '14',
-    'position': const LatLng(16.556677, 45.432109),
-    'price': 8765.4321,
-  },
-  {
-    'id': '15',
-    'position': const LatLng(14.667788, 43.321098),
-    'price': 98765.4321,
-  },
-  {
-    'id': '16',
-    'position': const LatLng(15.778899, 44.210987),
-    'price': 123456.789,
-  },
-  {
-    'id': '17',
-    'position': const LatLng(16.889900, 45.109876),
-    'price': 98765.43210,
-  },
-  {
-    'id': '18',
-    'position': const LatLng(14.998877, 43.098765),
-    'price': 87654.3210,
-  },
-  {
-    'id': '19',
-    'position': const LatLng(15.876543, 44.987654),
-    'price': 987654.3210,
-  },
-  {
-    'id': '20',
-    'position': const LatLng(16.765432, 45.876543),
-    'price': 1234567.890,
-  },
-];
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -136,23 +43,84 @@ class _MapScreenState extends State<MapScreen> {
   GoogleMapController? _controller;
   final Map<String, Marker> _markers = {};
   bool _isLoaded = false;
+  List<Map<String, dynamic>> data = [];
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onBuildCompleted());
-    super.initState();
+  void _fetchData() async {
+    final cubit = BlocProvider.of<PropertyHomeCubit>(context);
+    final state = cubit.state;
+    if (state is SuccessPropertyHomeState) {
+      var data1 = state.propertyModel.results;
+      if (data1 != null) {
+        setState(() {
+          data.clear();
+          data1.asMap().forEach((i, address) {
+            data.add({
+              'id': address.id.toString(),
+              'position': LatLng(address.address!['latitude'], address.address!['longitude']),
+              'price': address.price,
+              'propertyModel': state.propertyModel,
+              'index': i
+            });
+          });
+        });
+
+        WidgetsBinding.instance.addPostFrameCallback((_) => _onBuildCompleted(data));
+      }
+    }
+
+    // Listen to future state changes
+    cubit.stream.listen((state) {
+      if (state is SuccessPropertyHomeState) {
+        var data1 = state.propertyModel.results;
+        if (data1 != null) {
+          setState(() {
+            data.clear();
+            data1.asMap().forEach((i, address) {
+              data.add({
+                'id': address.id.toString(),
+                'position': LatLng(address.address!['latitude'], address.address!['longitude']),
+                'price': address.price,
+                'propertyModel': state.propertyModel,
+                'index': i
+              });
+            });
+          });
+
+          WidgetsBinding.instance.addPostFrameCallback((_) => _onBuildCompleted(data));
+        }
+      }
+    });
   }
 
   @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          buildContainerMap(),
-          buildPositionedBackIcon(),
-          buildPositionedSearchBar(),
-        ],
-      ),
+    return BlocBuilder<PropertyHomeCubit, PropertyHomeState>(
+        builder: (context, state){
+          if(state is LoadingPropertyHomeState){
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if(state is SuccessPropertyHomeState){
+            return Scaffold(
+                body: Stack(
+                  children: [
+                    buildContainerMap(),
+                    buildPositionedBackIcon(),
+                    buildPositionedSearchBar(),
+                  ],
+                ),
+              );
+          } else if(state is ErrorPropertyHomeState){
+            return ErrorWidget("error");
+          } else{
+            return const SizedBox();
+          }
+        }
     );
   }
 
@@ -180,7 +148,7 @@ class _MapScreenState extends State<MapScreen> {
               )
             ],
           ),
-          child: Center(
+          child: const Center(
             child: TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
@@ -240,7 +208,7 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Future<void> _onBuildCompleted() async {
+  Future<void> _onBuildCompleted(var data) async {
     data.forEach((value) {
       Marker marker = _generateMarkersFromWidgets(value);
       _markers[marker.markerId.value] = marker;
@@ -256,9 +224,8 @@ class _MapScreenState extends State<MapScreen> {
       position: data['position'],
       infoWindow: InfoWindow(
         title: '\$${data['price']}',
-        snippet: 'Rating: 4.5',
         onTap: () {
-          showBottomSheet(context, data['price'], 4.5);
+          showBottomSheet(context, double.parse(data['price']), data['propertyModel'], data['index']);
         },
       ),
     );
@@ -284,18 +251,19 @@ class _MapScreenState extends State<MapScreen> {
     return utf8.decode(list);
   }
 
-  void showBottomSheet(BuildContext context, double price, double rating) {
+  void showBottomSheet(BuildContext context, double price, var propertyModel, int index) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          width: 200,
-          color: Colors.red,
-          child: Center(
-            child: Text('Price: \$${price}\nRating: $rating'),
-          ),
-        );
+        return StandPropertyWidget(propertyModel: propertyModel, index: index, onTap: () async {
+
+          final userId = await SharedPrefManager.getData(AppConstants.userId);
+          final token = await SharedPrefManager.getData(AppConstants.token);
+
+          Get.to(()=> PropertyDetailsScreen(id: int.parse(userId!), token: token!));
+
+
+        });
       },
     );
   }

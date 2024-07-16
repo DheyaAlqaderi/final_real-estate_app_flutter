@@ -54,7 +54,7 @@ class PropertyResult {
   final bool? isFeatured;
   final int? user;
   final int? category;
-  final String? address;
+  final Map<String, dynamic>? address;
 
   PropertyResult({
     this.id,

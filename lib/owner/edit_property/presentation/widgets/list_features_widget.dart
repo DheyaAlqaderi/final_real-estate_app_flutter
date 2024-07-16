@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
+import 'package:smart_real_estate/owner/edit_property/domain/create_feature_property.dart';
 
 import '../../domain/get_features_repository.dart';
 import 'chip_feature_widget.dart';
@@ -46,7 +48,7 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
     });
   }
 
-  void onChipClick(int index) {
+  Future<void> onChipClick(int index) async {
     setState(() {
       chipSelected2[index] = !chipSelected2[index];
       if (chipSelected2[index]) {
@@ -59,17 +61,24 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
 
     // Show bottom sheet only if the chip is being selected
     if (chipSelected2[index]) {
-      Get.snackbar('Selected Feature', 'ID: ${features[index]['id']}, Name: ${features[index]['name']}');
-      showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return ImageBottomSheet(
-            featureId: features[index]['id'],
-            featureName: features[index]['name'],
-            propertyDetails: widget.propertyDetails,
-          );
-        },
-      );
+      var token = await SharedPrefManager.getData(AppConstants.token);
+      var response = await CreateFeaturePropertyRepository.createFeature(propertyId: widget.propertyDetails.id, featureId: features[index]['id'], token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4");
+      if(response == {}){
+        Get.snackbar('Error', 'check your internet connection');
+        return;
+      } else {
+        Get.snackbar('Selected Feature', 'ID: ${features[index]['id']}, Name: ${features[index]['name']}');
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return ImageBottomSheet(
+              featureId: response['id'],
+              featureName: features[index]['name'],
+              propertyDetails: widget.propertyDetails,
+            );
+          },
+        );
+      }
     } else {
       Get.snackbar('Confirmation', 'Are you sure to remove the selection for ${features[index]['name']}?',
           snackPosition: SnackPosition.BOTTOM,

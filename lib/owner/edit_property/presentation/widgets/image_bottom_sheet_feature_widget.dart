@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -35,17 +36,23 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
   void initState() {
     super.initState();
 
+
     if (widget.propertyDetails.featureProperty.isNotEmpty) {
-      print("feature property ${jsonDecode(widget.propertyDetails.featureProperty.toString())}");
-      featureProperty = widget.propertyDetails.featureProperty?.firstWhere(
-            (feature) => feature.id == widget.featureId,
-        orElse: () => null,
-      );
+      print("feature property ${jsonEncode(widget.propertyDetails)}");
+
+      for (var feature in widget.propertyDetails.featureProperty) {
+        if (widget.featureId == feature.id) {
+          featureProperty = feature;
+          break; // Optional: Break if you only need the first match
+        }
+      }
 
       if (featureProperty != null) {
-        savedImages = featureProperty.image?.map((img) => img.image).toList() ?? [];
+        savedImages = featureProperty?.image?.map((img) => img.image).toList() ?? [];
       }
     }
+
+
   }
 
   Future<void> _pickImages() async {
@@ -65,8 +72,9 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
     final request = http.MultipartRequest('POST', url);
     request.fields['object_id'] = featureId;
 
+
     request.files.add(await http.MultipartFile.fromPath('image', image.path));
-    request.headers['Authorization'] = 'token $userToken';
+    request.headers['Authorization'] = 'token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4';
 
     try {
       http.StreamedResponse response = await request.send();
@@ -98,13 +106,15 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
     String featureId = widget.featureId.toString();
     String? userToken = await SharedPrefManager.getData(AppConstants.token);
 
-    if (userToken != null) {
+    // if (userToken != null) {
       for (File image in _images) {
-        await _uploadSingleImage(image, featureId, userToken);
+        await _uploadSingleImage(image, widget.featureId.toString(), "userToken");
       }
-    } else {
-      Get.snackbar("Error", "Unable to fetch user token");
-    }
+      Navigator.pop(context);
+    Get.snackbar("done", "the images uploaded successfully", backgroundColor: Colors.green);
+    // } else {
+    //   Get.snackbar("Error", "Unable to fetch user token");
+    // }
 
     setState(() {
       _isUploading = false;
@@ -128,18 +138,18 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _pickImages,
-              child: Text('Add Image'),
+              child: const Text('أضافة صور'),
             ),
             const SizedBox(height: 10),
             if (_isUploading) ...[
               LinearProgressIndicator(value: _uploadProgress),
               const SizedBox(height: 10),
-              Text('Uploading...'),
+              const Text('Uploading...'),
             ],
             const SizedBox(height: 10),
             if (savedImages.isNotEmpty) ...[
-              Text(
-                'Saved Images:',
+              const Text(
+                'الصور المحفوظة:',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
@@ -152,7 +162,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     image: DecorationImage(
-                      image: NetworkImage(img),
+                      image: CachedNetworkImageProvider("${AppConstants.baseUrl3}$img"),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -178,7 +188,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _postFeatureProperty,
-              child: Text('Upload Images'),
+              child: const Text('Upload Images'),
             ),
           ],
         ),

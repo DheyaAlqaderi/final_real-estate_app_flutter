@@ -263,7 +263,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                   : data[index].prop!.image!.first.image!,
                               title: data[index].prop!.name!,
                               price: data[index].prop!.price!,
-                              address: data[index].prop!.address!,
+                              address: data[index].prop!.address!['line1'],
                               isFavorite: data[index].prop!.inFavorite!,
                               rate: data[index].prop!.rateReview!,
                               onTapDelete: () async {
@@ -294,7 +294,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                   : data[index].prop!.image!.first.image!,
                               title: data[index].prop!.name!,
                               price: data[index].prop!.price!,
-                              address: data[index].prop!.address!,
+                              address: data[index].prop!.address!['line1'],
                               isFavorite: data[index].prop!.inFavorite!,
                               rate: data[index].prop!.rateReview!,
                               onTapDelete: () async {

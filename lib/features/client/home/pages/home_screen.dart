@@ -21,6 +21,7 @@ import 'package:smart_real_estate/features/client/home/domain/manager/main_categ
 import 'package:smart_real_estate/features/client/home/domain/manager/main_category/main_category_state.dart';
 import 'package:smart_real_estate/features/client/home/domain/manager/property_home_cubit/property_home_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
+import 'package:smart_real_estate/features/client/map/persentation/pages/map_screen.dart';
 import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
@@ -82,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       userId = (await SharedPrefManager.getData(AppConstants.userId))!;
       if(userId != " " || userId != null){
         profileRepository = ProfileRepository(Dio());
-        print("id ${userId}");
+        print("id $userId");
 
         final response = await profileRepository.getProfile(int.parse(userId));
         if(response.image!.isEmpty){
@@ -277,7 +278,22 @@ class _HomeScreenState extends State<HomeScreen> {
             Locales.string(context, "welcome_home"),
             style: fontLargeBold,
           ),
-          const SizedBox(),
+          InkWell(
+            onTap: (){
+              Get.to(()=>const MapScreen());
+            },
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: Theme.of(context).cardColor,
+              ),
+              child: const Center(
+                child: Icon(Icons.map),
+              ),
+            ),
+          ),
         ],
       ),
     );
