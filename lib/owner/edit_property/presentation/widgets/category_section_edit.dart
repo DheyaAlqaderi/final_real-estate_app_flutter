@@ -23,10 +23,11 @@ import '../../../add_property/presentation/widgets/dropDown_widget.dart';
 import '../../domain/get_features_repository.dart';
 
 class CategorySectionEdit extends StatefulWidget {
-  CategorySectionEdit({super.key ,required this.selectedCategoryId, required this.selectedSubCategoryId, this.propertyDetails});
+  CategorySectionEdit({super.key ,required this.selectedCategoryId, required this.selectedSubCategoryId, this.propertyDetails, required this.token});
   int selectedCategoryId;
   int selectedSubCategoryId;
   final propertyDetails;
+  final String token;
 
 
   @override
@@ -577,7 +578,7 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
             }
           },
         ),
-        ListFeaturesWidget(propertyDetails: widget.propertyDetails, selectedSubCategoryId: subCategoryId!),
+        ListFeaturesWidget(propertyDetails: widget.propertyDetails, selectedSubCategoryId: subCategoryId!, token: widget.token,),
 
     ],
     );

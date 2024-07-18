@@ -363,7 +363,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                 controller: propertyDescription,
                                 decoration: InputDecoration(
                                   labelText: 'وصف العقار',
-                                  prefixIcon: Icon(Icons.description),
+                                  prefixIcon: const Icon(Icons.description),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -377,7 +377,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                 controller: propertyPrice,
                                 decoration: InputDecoration(
                                   labelText: 'السعر',
-                                  prefixIcon: Icon(Icons.attach_money),
+                                  prefixIcon: const Icon(Icons.attach_money),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -391,6 +391,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                               CategorySectionEdit(
                                 selectedCategoryId: propertyDetails.category!.parent!,
                                 selectedSubCategoryId: propertyDetails.category!.id!,
+                                token: widget.token,
                                 propertyDetails: propertyDetails,
                               ),
                               const SizedBox(height: 16),
@@ -398,7 +399,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                 controller: propertySize,
                                 decoration: InputDecoration(
                                   labelText: 'المساحة',
-                                  prefixIcon: Icon(Icons.square_foot),
+                                  prefixIcon: const Icon(Icons.square_foot),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),

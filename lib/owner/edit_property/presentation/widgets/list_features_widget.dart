@@ -10,9 +10,10 @@ import 'image_bottom_sheet_feature_widget.dart';
 
 
 class ListFeaturesWidget extends StatefulWidget {
-   ListFeaturesWidget({super.key, required this.propertyDetails, required this.selectedSubCategoryId});
+   ListFeaturesWidget({super.key, required this.propertyDetails, required this.selectedSubCategoryId, required this.token});
   int selectedSubCategoryId;
   final propertyDetails;
+  final String token;
 
 
 
@@ -63,9 +64,20 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
     if (chipSelected2[index]) {
       var token = await SharedPrefManager.getData(AppConstants.token);
       var response = await CreateFeaturePropertyRepository.createFeature(propertyId: widget.propertyDetails.id, featureId: features[index]['id'], token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4");
-      if(response == {}){
+      if(response == {} || response.isEmpty){
+
         Get.snackbar('Error', 'check your internet connection');
-        return;
+        return showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return ImageBottomSheet(
+                featureId: features[index]['id'],
+                featureName: features[index]['name'],
+                propertyDetails: widget.propertyDetails,
+                token: widget.token,
+              );
+            }
+            );
       } else {
         Get.snackbar('Selected Feature', 'ID: ${features[index]['id']}, Name: ${features[index]['name']}');
         showModalBottomSheet(
@@ -75,6 +87,7 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
               featureId: response['id'],
               featureName: features[index]['name'],
               propertyDetails: widget.propertyDetails,
+              token: widget.token,
             );
           },
         );

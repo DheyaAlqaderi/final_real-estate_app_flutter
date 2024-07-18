@@ -19,7 +19,6 @@ class FeatureRepository {
       if (response.statusCode == 200) {
         var responseBody = await response.stream.bytesToString();
         List<dynamic> decoded = json.decode(responseBody);
-        Get.snackbar("Success", "Features fetched successfully");
         return decoded.map((feature) => feature as Map<String, dynamic>).toList();
       } else {
         Get.snackbar("Error", "Failed to fetch features: ${response.reasonPhrase}");

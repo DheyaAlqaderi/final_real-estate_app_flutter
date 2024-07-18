@@ -192,7 +192,7 @@ Future<void> _firebaseForegroundMessage(RemoteMessage message) async {
   }
 }
 
-void main() async {
+Future<void> main() async {
 
   /// 1. for Localization and Languages
   WidgetsFlutterBinding.ensureInitialized();
@@ -220,17 +220,17 @@ void main() async {
 
   /// 4. Initialize SharedPreferences
   await SharedPrefManager.init();
-  await SharedPrefManager.deleteData(AppConstants.userId);
-  await SharedPrefManager.deleteData(AppConstants.token);
-  await SharedPrefManager.deleteData(AppConstants.userType);
-  await SharedPrefManager.deleteData(AppConstants.firstTime);
-  // await SharedPrefManager.saveData(
-  //     AppConstants.token, '8c16156cf3bd29992e15374c457153855405a9ff');
-  // await SharedPrefManager.saveData(AppConstants.userId, '27');
-  //
-  // await SharedPrefManager.saveData(AppConstants.userType, AppConstants.owner);
-  // String? token = await SharedPrefManager.getData(AppConstants.token);
-  // String? id = await SharedPrefManager.getData(AppConstants.userId);
+  // await SharedPrefManager.deleteData(AppConstants.userId);
+  // await SharedPrefManager.deleteData(AppConstants.token);
+  // await SharedPrefManager.deleteData(AppConstants.userType);
+  // await SharedPrefManager.deleteData(AppConstants.firstTime);
+  await SharedPrefManager.saveData(
+      AppConstants.token, '0a53a95704d2b4e2bf439563e02bd290c0fa0eb4');
+  await SharedPrefManager.saveData(AppConstants.userId, '1');
+
+  await SharedPrefManager.saveData(AppConstants.userType, AppConstants.owner);
+  String? token = await SharedPrefManager.getData(AppConstants.token);
+  String? id = await SharedPrefManager.getData(AppConstants.userId);
   //
   // print('token is $token');
   // print('token is $id');
@@ -398,7 +398,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const EditPropertyPage(propertyId: 105, token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
+          home: const EditPropertyPage(propertyId: 1, token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
           // home:  RootScreen(),
         ),
       ),

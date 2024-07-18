@@ -13,12 +13,13 @@ class ImageBottomSheet extends StatefulWidget {
   final int featureId;
   final String featureName;
   final dynamic propertyDetails;
+  final String token;
 
   const ImageBottomSheet({
     super.key,
     required this.featureId,
     required this.featureName,
-    required this.propertyDetails,
+    required this.propertyDetails, required this.token,
   });
 
   @override
@@ -29,8 +30,9 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
   final List<File> _images = [];
   bool _isUploading = false;
   double _uploadProgress = 0.0;
-  List<dynamic> savedImages = [];
+  List<Map<String, dynamic>> savedImages = [];
   var featureProperty;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -48,11 +50,78 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
       }
 
       if (featureProperty != null) {
-        savedImages = featureProperty?.image?.map((img) => img.image).toList() ?? [];
+        savedImages = featureProperty.image?.map<Map<String, dynamic>>((img) => {
+          'image': img.image,
+          'id': img.id
+        }).toList() ?? [];
       }
     }
 
 
+  }
+  void showDeleteConfirmationDialog(BuildContext context, VoidCallback onConfirm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure to delete?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: onConfirm,
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<void> _deleteImage(dynamic img) async{
+    showDeleteConfirmationDialog(
+        context, () async {
+      try{
+        setState(() {
+          _loading = true;
+        });
+        var headers = {'Authorization': 'token ${widget.token}'};
+        var request = http.Request(
+            'DELETE',
+            Uri.parse(
+                '${AppConstants.baseUrl}api/image/${img!}/delete/'));
+
+        request.headers.addAll(headers);
+
+        http.StreamedResponse response = await request.send();
+
+        if (response.statusCode == 204) {
+          Navigator.of(context).pop();
+          setState(() {
+            _loading = false;
+          });
+          Get.snackbar("successfully deleted", "cool");
+          print(await response.stream.bytesToString());
+
+        } else {
+          Get.snackbar("error to delete", "try again",colorText: Colors.red);
+          setState(() {
+            _loading = false;
+          });
+          print(response.reasonPhrase);
+        }
+      } catch(e){
+        setState(() {
+          _loading = false;
+        });
+
+        Get.snackbar("error to delete", "try again $e", colorText: Colors.red);
+      }
+    });
   }
 
   Future<void> _pickImages() async {
@@ -157,14 +226,46 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                 spacing: 10,
                 runSpacing: 10,
                 children: savedImages.map((img) => Container(
-                  width: 100,
                   height: 100,
+                  width: 100,
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider("${AppConstants.baseUrl3}$img"),
-                      fit: BoxFit.cover,
-                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider("${AppConstants.baseUrl3}${img['image']}"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: InkWell(
+                          onTap:(){
+                            _deleteImage(img['id']);
+                            },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: Theme.of(context).cardColor
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.delete, size: 10,),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )).toList(),
               ),
