@@ -25,7 +25,7 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
 
   Marker? _markers;
   LatLng? _currentLatLng;
-  GoogleMapController? _mapController;
+  late GoogleMapController _mapController;
 
   TextEditingController lineOne = TextEditingController();
   TextEditingController lineTwo = TextEditingController();
@@ -37,7 +37,7 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
     super.initState();
     _currentLatLng = LatLng(widget.lat!, widget.lon!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      changeMapMode(_mapController!);
+      changeMapMode(_mapController);
     });
 
     if(widget.lineOnePass!.isNotEmpty){

@@ -2,10 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -17,6 +14,8 @@ import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
 import 'package:smart_real_estate/owner/edit_property/domain/test.dart';
+import 'package:smart_real_estate/owner/edit_property/domain/update_list_attributes_repository.dart';
+import 'package:smart_real_estate/owner/edit_property/domain/update_property_repository.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/widgets/address_section_edit.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/widgets/category_section_edit.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/widgets/chip_feature_widget.dart';
@@ -52,22 +51,10 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   TextEditingController propertyAddressLineTwo = TextEditingController();
 
   /// first add property
-  String? realName, realDescription, realPrice;
-  double? realSize;
-  int? realSubCategoryId;
+
   List<Map<String, dynamic>> features = [];
   List<bool> chipSelected2 = [];
-  // String? clickedChip;
-  // late List<bool> chipSelected;
-  // List<bool>? chipSelected3;
-  // bool? chipSelected3First;
-  // bool? chipSelected3Last;
   late List<bool> defaultChipSelected;
-  // int? categoryId;
-  // int? subCategoryId;
-  // String? userId;
-  // String? userToken;
-  // var categoryModelList = CategoryModel.fromJson(categoryJson);
 
   CategoryModel? mainCategory;
   CategoryModel? subCategory;
@@ -75,18 +62,12 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
   var globalpropertyDetails;
   /// second api attributes
-  // List<Map<String, dynamic>> realAttributes = [];
-  // Map<String, dynamic> lastAttributes = {};
-  // int? sizeValue;
-  // int? initSizeValue;
-  // MyModel? _model;
   bool _loading = false;
-  // String? isDeleted;
   double _uploadProgress = 0.0;
   bool _isUploading = false;
   /// image section api
   int numberImages = 0;
-  File? _image;
+  List<File> _images = [];
   bool isLoading = false;
   List<ImageModel2> imageList=[];
   String? newImagePath;
@@ -94,11 +75,11 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFiles = await picker.pickMultiImage();
 
-    if (pickedFile != null) {
+    if (pickedFiles != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _images.addAll(pickedFiles.map((pickedFile) => File(pickedFile.path)));
       });
     }
   }
@@ -160,19 +141,9 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   void initState() {
     super.initState();
     getToken();
-
-
-    // _loadUserData();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchData();
     });
-    // fetchAndSetFeatures();
-    //
-    // chipSelected = List.generate(10, (index) => false);
-    // chipSelected2 = List.generate(50, (index) => false);
-    // chipSelected3 = List.generate(2, (index) => false);
-    // defaultChipSelected = List.generate(1, (index) => false);
   }
 
 
@@ -190,8 +161,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
     final mainCategory = context.read<CategoryAlarmCubit>();
     final propertyDetails = context.read<PropertyDetailsCubit>();
-    // final attributes = context.read<AttributeAlarmCubit>();
-    // final country = context.read<CountryCubit>();
 
     await Future.wait([
 
@@ -199,38 +168,15 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     await Future.wait([
       mainCategory.fetchMainCategory(),
       propertyDetails.getPropertyDetails(widget.propertyId, widget.token),
-      // country.fetchCountries(),
-      // attributes.fetchAttributesByCategory(
-      //     categoryId: subCategoryId!),
     ]);
 
 
   }
 
   /// function to get user id and token
-  // Future<void> _loadUserData() async {
-  //   final loadedUserId = await SharedPrefManager.getData(AppConstants.userId);
-  //   final loadedUserToken = await SharedPrefManager.getData(AppConstants.token);
-  //
-  //   print(loadedUserId.toString());
-  //   setState(() {
-  //     userId = loadedUserId ?? '';
-  //     userToken = loadedUserToken ?? '';
-  //   });
-  // }
+
   String? token;
-  //
-  // void _selectPropertyType(String type) {
-  //   setState(() {
-  //     _selectedPropertyType = type;
-  //   });
-  // }
-  //
-  // void _selectCategory(String category) {
-  //   setState(() {
-  //     _selectedCategory = category;
-  //   });
-  // }
+
   List<int> selectedIds = [];
   Future<void> getToken() async {
     final myToken = await SharedPrefManager.getData(AppConstants.token);
@@ -252,7 +198,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       print('Selected IDs: $selectedIds');
     });
   }
-
 
 
 
@@ -297,13 +242,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                           globalpropertyDetails = propertyDetails;
 
 
-                          print(jsonEncode(propertyDetails));
-                          // categoryId = propertyDetails.category!.id;
 
-
-                          // propertyDetails.featureProperty.
-
-                          // propertyDetails.propertyValue![0].value!.value;
                           /// for name and description
                           propertyName.text = propertyDetails.name! ?? "";
                           propertyDescription.text = propertyDetails.description!?? "";
@@ -311,26 +250,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                           propertySize.text = propertyDetails.size!.toString() ?? "";
 
                           /// for type list
-                          // if(propertyDetails.forSale!){
-                          //   chipSelected3![0] = true;
-                          // } else{
-                          //   chipSelected3![1] = true;
-                          // }
 
-                          propertyDetails.name;
-                          propertyDetails.description;
-                          propertyDetails.price;
-                          propertyDetails.size;
-                          propertyDetails.category!.id;
-                          propertyDetails.address!.state!.id;
-                          // propertyDetails.address!.state!.id;
-                          // propertyDetails.address!.
-                          /// get attributes
-                          // subCategoryId = propertyDetails.category!.id;
-                          // context.read<AttributeAlarmCubit>().fetchAttributesByCategory(categoryId: subCategoryId!);
-
-
-                          // propertyDetails.featureProperty![index].image!.first.image;
                           /// image section
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -422,7 +342,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                 children: [
                                   ...imageList.asMap().entries.map((entry) {
                                     int index = entry.key;
-                                    print(index);
                                     ImageModel2 imageModel = entry.value;
                                     return _buildPropertyImage(imageModel, index);
                                   }),
@@ -494,118 +413,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                         }
                       },
                     ),
-                    // child: Column(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     GestureDetector(
-                    //       onTap: () {
-                    //         // Navigate to the edit page
-                    //       },
-                    //       child: Row(
-                    //         children: [
-                    //           Expanded(
-                    //             child: _buildPropertyView()
-                    //           ),
-                    //           const SizedBox(width: 8),
-                    //           const Icon(Icons.arrow_forward),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //     const SizedBox(height: 16),
-                    //     TextField(
-                    //       decoration: InputDecoration(
-                    //         labelText: 'عنوان العقار',
-                    //         prefixIcon: Icon(Icons.home),
-                    //         border: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(12),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     const SizedBox(height: 16),
-                    //     const Text(
-                    //       'نوع العقار',
-                    //       style: TextStyle(
-                    //         fontSize: 16,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //     const SizedBox(height: 8),
-                    //     Row(
-                    //       children: [
-                    //         _buildChoiceChip('بيع', _selectedPropertyType, _selectPropertyType),
-                    //         SizedBox(width: 8),
-                    //         _buildChoiceChip('إيجار', _selectedPropertyType, _selectPropertyType),
-                    //       ],
-                    //     ),
-                    //     SizedBox(height: 16),
-                    //     Text(
-                    //       'فئة العقار',
-                    //       style: TextStyle(
-                    //         fontSize: 16,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //     SizedBox(height: 8),
-                    //     Row(
-                    //       children: [
-                    //         _buildChoiceChip('منزل', _selectedCategory, _selectCategory),
-                    //         SizedBox(width: 8),
-                    //         _buildChoiceChip('شقة', _selectedCategory, _selectCategory),
-                    //         SizedBox(width: 8),
-                    //         _buildChoiceChip('فيلا', _selectedCategory, _selectCategory),
-                    //         SizedBox(width: 8),
-                    //         _buildChoiceChip('أخرى', _selectedCategory, _selectCategory),
-                    //       ],
-                    //     ),
-                    //     SizedBox(height: 16),
-                    //     Text(
-                    //       'الموقع',
-                    //       style: TextStyle(
-                    //         fontSize: 16,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //     SizedBox(height: 8),
-                    //     TextField(
-                    //       decoration: InputDecoration(
-                    //         hintText: 'مسعد شارع رقم خمسين خلف الجامعة اللبنانية...',
-                    //         prefixIcon: Icon(Icons.location_pin),
-                    //         border: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(12),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     SizedBox(height: 16),
-                    //     Container(
-                    //       height: 150,
-                    //       decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.circular(12),
-                    //         color: Colors.grey[200],
-                    //       ),
-                    //       child: Center(child: Text('Map Placeholder')),
-                    //     ),
-                    //     SizedBox(height: 16),
-                    //     const Text(
-                    //       'صور العقار',
-                    //       style: TextStyle(
-                    //         fontSize: 16,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //     const SizedBox(height: 8),
-                    //     Wrap(
-                    //       children: [
-                    //         _buildPropertyImage(Images.noImageUrl),
-                    //         SizedBox(width: 8),
-                    //         _buildPropertyImage(Images.noImageUrl),
-                    //         SizedBox(width: 8),
-                    //         _buildPropertyImage(Images.noImageUrl),
-                    //         SizedBox(width: 8),
-                    //         _buildAddImageButton(),
-                    //       ],
-                    //     ),
-                    //   ],
-                    // ),
                   ),
                 ),
               ),
@@ -643,32 +450,76 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     );
   }
 
-  // Widget _buildChoiceChip(String label, String selected, Function(String) onSelect) {
-  //   return ChoiceChip(
-  //     label: Text(label),
-  //     selected: selected == label,
-  //     onSelected: (bool selected) {
-  //       onSelect(label);
-  //     },
-  //     selectedColor: const Color(0xFF3E6B85),
-  //     backgroundColor: const Color(0xFFEDEDED),
-  //     labelStyle: TextStyle(
-  //       color: selected == label ? Colors.white : Colors.black,
-  //       fontWeight: FontWeight.bold,
-  //     ),
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(20),
-  //     ),
-  //   );
-  // }
 
 
-  void _updateProperty() async{
-    // get data
-    // if(globalpropertyDetails.)
-    // check if something change from name , description, price, size
-    print(jsonEncode(globalpropertyDetails));
+  void _updateProperty() async {
+    // Get data from text fields
+    String realName = propertyName.text;
+    String realPrice = propertyPrice.text;
+    String realDescription = propertyDescription.text;
+    double realSize = double.parse(propertySize.text);
+    final realSubCategoryId = await SharedPrefManager.getData(AppConstants.editSubCategoryId);
+    Map<String, dynamic>? realAttributesValues = await SharedPrefManager.getMap(AppConstants.editPropertyAttributes);
+    // Map<String, dynamic>? realStateId = await SharedPrefManager.getMap(AppConstants.);
+
+
+
+
+    /// update the attributes
+    if (realAttributesValues != null && realAttributesValues.isNotEmpty) {
+      await SharedPrefManager.deleteData(AppConstants.editPropertyAttributes);
+
+      Map<String, dynamic> payload = {
+        "property_id": globalpropertyDetails.id,
+        "attributes_values": realAttributesValues
+      };
+
+      await UpdateListAttributesRepository.updatePropertyValue(payload, widget.token);
+    }
+
+
+    /// Create a map to store the changes
+    Map<String, dynamic> updates = {};
+
+    // Check if any of the properties have changed and add them to the updates map
+    if (globalpropertyDetails.name != realName) {
+      updates['name'] = realName;
+    }
+    if (realSubCategoryId != null && realSubCategoryId != globalpropertyDetails.category.id) {
+      await SharedPrefManager.deleteData(AppConstants.editSubCategoryId);
+      updates['category'] = realSubCategoryId;
+    }
+    if (globalpropertyDetails.price != realPrice) {
+      updates['price'] = realPrice.toString();
+    }
+    if (globalpropertyDetails.description != realDescription) {
+      updates['description'] = realDescription;
+    }
+    if (globalpropertyDetails.size != realSize) {
+      updates['size'] = realSize;
+    }
+
+
+    /// If there are any updates, make the API call
+    if (updates.isNotEmpty) {
+      setState(() {
+        _loading = true;
+      });
+      await UpdatePropertyRepository.update(
+        body: updates,
+        propertyId: globalpropertyDetails.id,
+        token: widget.token,
+      );
+      setState(() {
+        _loading = false;
+      });
+      print(updates);
+      // Handle response if necessary
+    }
+
+    // Print the updated property details
   }
+
   Widget _buildPropertyImage(ImageModel2 imageUrl, int index) {
     return Stack(
       children: [
@@ -686,22 +537,23 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
             ),
           ),
         ),
-         Positioned(
+        Positioned(
           right: 4,
           top: 4,
           child: InkWell(
-            onTap: (){
-              showDeleteConfirmationDialog(
-                  context, () async {
-                try{
+            onTap: () {
+              showDeleteConfirmationDialog(context, () async {
+                try {
                   setState(() {
                     _loading = true;
                   });
                   var headers = {'Authorization': 'token ${widget.token}'};
                   var request = http.Request(
-                      'DELETE',
-                      Uri.parse(
-                          '${AppConstants.baseUrl}api/image/${imageUrl.id!}/delete/'));
+                    'DELETE',
+                    Uri.parse(
+                      '${AppConstants.baseUrl}api/image/${imageUrl.id!}/delete/',
+                    ),
+                  );
 
                   request.headers.addAll(headers);
 
@@ -711,23 +563,23 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                     Navigator.of(context).pop();
                     setState(() {
                       _loading = false;
+                      imageList.removeAt(index); // Remove the image from the list
                     });
-                    Get.snackbar("successfully deleted", "cool");
+                    Get.snackbar("Successfully deleted", "Cool");
                     print(await response.stream.bytesToString());
-
                   } else {
-                    Get.snackbar("error to delete", "try again",colorText: Colors.red);
+                    Get.snackbar("Error to delete", "Try again", colorText: Colors.red);
                     setState(() {
                       _loading = false;
                     });
                     print(response.reasonPhrase);
                   }
-                } catch(e){
+                } catch (e) {
                   setState(() {
                     _loading = false;
                   });
 
-                  Get.snackbar("error to delete", "try again $e", colorText: Colors.red);
+                  Get.snackbar("Error to delete", "Try again $e", colorText: Colors.red);
                 }
               });
             },
@@ -748,7 +600,9 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
         // Add image logic
         await _pickImage();
 
-        await _uploadSingleImage(_image!);
+        for (File image in _images) {
+          await _uploadSingleImage(image);
+        }
 
       },
       child: Container(
@@ -763,487 +617,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     );
   }
 
-//   Widget _categorySection(){
-//     return
-//       Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//
-//           /// type of property
-//           const SizedBox(height: 10,),
-//           Align(
-//               alignment: Alignment.centerRight,
-//               child: RichText(
-//                 text:  TextSpan(
-//                   text: 'نوع القائمة',
-//                   style: fontMediumBold.copyWith(color: Theme.of(context).brightness == Brightness.dark
-//                       ? Colors.white // Set text color for dark mode
-//                       : Theme.of(context).primaryColor,),
-//                   children: const <TextSpan>[
-//                     TextSpan(
-//                       text: '*',
-//                       style: TextStyle(color: Colors.red),
-//                     ),
-//                   ],
-//                 ),
-//               )
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: Wrap(
-//               runSpacing: 10,
-//               spacing: 10,
-//               children: [
-//                 ...List.generate(
-//                   2,
-//                       (index) => Padding(
-//                     padding: const EdgeInsets.symmetric(horizontal: 2.5),
-//                     child: ChipWidgetHome(
-//                       chipSelected: chipSelected3!,
-//                       onChipClick: ()  {
-//
-//
-//
-//                         setState(() {
-//                           // Deselect all chips except the clicked chip
-//                           chipSelected3 = List.filled(chipSelected3!.length, false);
-//                           chipSelected3![index] = true;
-//                           if(index == 0){
-//                             chipSelected3First = true;
-//                             chipSelected3Last = false;
-//                           } else if(index == 1){
-//                             chipSelected3Last = true;
-//                             chipSelected3First = false;
-//                           }
-//                         });
-//
-//
-//                       },
-//                       categoryModel: categoryModelList,
-//                       index: index,
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           /// list type section
-//           const SizedBox(height: 10),
-//           Align(
-//             alignment: Alignment.centerRight,
-//             child: RichText(
-//               text:  TextSpan(
-//                 text: 'فئة العقار ',
-//                 style: fontMediumBold.copyWith(color: Theme.of(context).brightness == Brightness.dark
-//                     ? Colors.white // Set text color for dark mode
-//                     : Theme.of(context).primaryColor,),
-//                 children: const <TextSpan>[
-//                   TextSpan(
-//                     text: '*',
-//                     style: TextStyle(color: Colors.red),
-//                   ),
-//                 ],
-//               ),
-//             )
-//             ,
-//           ),
-//           const SizedBox(height: 10),
-//           BlocBuilder<CategoryAlarmCubit, CategoryAlarmState>(
-//             builder: (context, state) {
-//               if (state is CategoryAlarmLoading) {
-//                 return Padding(
-//                   padding: const EdgeInsets.all(8.0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     crossAxisAlignment: CrossAxisAlignment.center,
-//                     children: List.generate(
-//                       3 * 2, // Number of containers and SizedBox widgets multiplied by 2 (since there will be 10 width SizedBox between each container)
-//                           (index) {
-//                         if (index.isEven) {
-//                           // Even indexes represent containers
-//                           return Container(
-//                             height: 30,
-//                             width: 50,
-//                             decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.circular(30),
-//                               color: Theme.of(context).cardColor,
-//                               boxShadow: [
-//                                 BoxShadow(
-//                                   color: Theme.of(context).shadowColor.withOpacity(0.2),
-//                                   spreadRadius: 2,
-//                                   blurRadius: 4,
-//                                   offset: const Offset(0, 2),
-//                                 ),
-//                               ],
-//                             ),
-//                           );
-//                         } else {
-//                           // Odd indexes represent SizedBox widgets
-//                           return const SizedBox(width: 10);
-//                         }
-//                       },
-//                     ),
-//                   ),
-//                 );
-//               } else if (state is CategoryAlarmLoaded) {
-//                 return SingleChildScrollView(
-//                   scrollDirection: Axis.horizontal,
-//                   child: Row(
-//                     crossAxisAlignment: CrossAxisAlignment.center,
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: [
-//                       // Add default chip widget here
-//
-//                       // Generate chip widgets from the API response
-//                       ...List.generate(
-//                         state.category.results.length,
-//                             (index) => Padding(
-//                           padding: const EdgeInsets.symmetric(horizontal: 2.5),
-//                           child: ChipWidgetHome(
-//                             chipSelected: chipSelected,
-//                             onChipClick: ()  {
-//                               setState(() {
-//                                 categoryId = state.category.results[index].id;
-//                               });
-//                               // Check if the current chip is already selected
-//                               if (!chipSelected[index]) {
-//                                 context.read<SubCategoryAlarmCubit>().getSubCategory(parentId: categoryId!);
-//
-//                               }
-//
-//                               setState(() {
-//                                 // Deselect all chips except the clicked chip
-//                                 chipSelected = List.filled(chipSelected.length, false);
-//                                 chipSelected[index] = true;
-//                                 clickedChip = state.category.results[index].toString();
-//                                 if (kDebugMode) {
-//                                   print(state.category.results[index].id.toString());
-//                                 }
-//                                 // Deselect the default chip if any other chip is selected
-//                                 defaultChipSelected[0] = false;
-//                               });
-//
-//
-//                             },
-//                             categoryModel: state.category,
-//                             index: index,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               } else if (state is CategoryAlarmFailure) {
-//                 return const Text("failed to fetch data");
-//               } else {
-//                 return const SizedBox();
-//               }
-//             },
-//           ),
-//
-//           const SizedBox(height: 10),
-//           BlocBuilder<SubCategoryAlarmCubit, SubCategoryAlarmCubitState>(
-//             builder: (context, state) {
-//               if (state is LoadingSubCategoryState) {
-//                 return Padding(
-//                   padding: const EdgeInsets.all(8.0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     crossAxisAlignment: CrossAxisAlignment.center,
-//                     children: List.generate(
-//                       3 * 2, // Number of containers and SizedBox widgets multiplied by 2 (since there will be 10 width SizedBox between each container)
-//                           (index) {
-//                         if (index.isEven) {
-//                           // Even indexes represent containers
-//                           return Container(
-//                             height: 30,
-//                             width: 50,
-//                             decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.circular(30),
-//                               color: Theme.of(context).cardColor,
-//                               boxShadow: [
-//                                 BoxShadow(
-//                                   color: Theme.of(context).shadowColor.withOpacity(0.2),
-//                                   spreadRadius: 2,
-//                                   blurRadius: 4,
-//                                   offset: const Offset(0, 2),
-//                                 ),
-//                               ],
-//                             ),
-//                           );
-//                         } else {
-//                           // Odd indexes represent SizedBox widgets
-//                           return const SizedBox(width: 10);
-//                         }
-//                       },
-//                     ),
-//                   ),
-//                 );
-//               } else if (state is SuccessSubCategoryState) {
-//                 return Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     RichText(
-//                       text:  TextSpan(
-//                         text: 'أختر العقار ',
-//                         style: fontMediumBold.copyWith(color: Theme.of(context).brightness == Brightness.dark
-//                             ? Colors.white // Set text color for dark mode
-//                             : Theme.of(context).primaryColor,),
-//                         children: const <TextSpan>[
-//                           TextSpan(
-//                             text: '*',
-//                             style: TextStyle(color: Colors.red),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                     const SizedBox(height: 10),
-//                     Wrap(
-//                       runSpacing: 10,
-//                       spacing: 10,
-//                       children: [
-//                         ...List.generate(
-//                           state.categoryModel.results.length,
-//                               (index) => Padding(
-//                             padding: const EdgeInsets.symmetric(horizontal: 2.5),
-//                             child: ChipWidgetHome(
-//                               chipSelected: chipSelected2,
-//                               onChipClick: ()  {
-//                                 setState(() {
-//                                   subCategoryId = state.categoryModel.results[index].id;
-//
-//                                 });
-//
-//
-//                                 setState(() {
-//                                   // Deselect all chips except the clicked chip
-//                                   chipSelected2 = List.filled(chipSelected2.length, false);
-//                                   chipSelected2[index] = true;
-//                                   clickedChip = state.categoryModel.results[index].toString();
-//                                   if (kDebugMode) {
-//                                     print(state.categoryModel.results[index].id.toString());
-//                                   }
-//                                   context.read<AttributeAlarmCubit>().fetchAttributesByCategory(categoryId: subCategoryId!);
-//
-//                                 });
-//
-//
-//                               },
-//                               categoryModel: state.categoryModel,
-//                               index: index,
-//                             ),
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ],
-//                 );
-//               } else if (state is CategoryAlarmFailure) {
-//                 return const Text("faild to fetch data");
-//               } else {
-//                 return const SizedBox();
-//               }
-//             },
-//           ),
-//
-//
-//
-//           /// attributes
-//           BlocBuilder<AttributeAlarmCubit, AttributeAlarmState>(
-//             builder: (context, state) {
-//               if (state is AttributeAlarmLoading) {
-//                 return const Center(
-//                     child: CircularProgressIndicator());
-//               } else if (state is AttributeAlarmLoaded) {
-//                 // Function to filter data based on data_type
-//                 List<AttributesAlarmModel> filterDataByType(
-//                     List<AttributesAlarmModel> data,
-//                     String dataType) {
-//                   return data.where((item) =>
-//                   item.dataType == dataType).toList();
-//                 }
-//
-//                 // Convert state.attributes (list of AttributesAlarmModel) to List<Map<String, dynamic>>
-//                 List<AttributesAlarmModel> data = state.attributes;
-//
-//                 // values = filterDataByType(data, "int").att;
-//                 return Column(
-//                   children: [
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         const SizedBox(height: 9),
-//                         const Text("خصائص العقار", style: TextStyle(
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.bold)),
-//                         const SizedBox(height: 6),
-//                         // Example: Build CustomAttributeInt widgets for int data
-//                         ...filterDataByType(data, 'int').map((
-//                             attribute) {
-//                           return CustomAttributeInt(
-//                             initialValue: 0,
-//                             label: attribute.name ?? '',
-//                             onChanged: (value) {
-//                               print(value);
-//                               // Find if the attribute already exists in realAttributes
-//                               var existingAttribute = realAttributes
-//                                   .firstWhere(
-//                                     (element) =>
-//                                 element['attribute_id'] ==
-//                                     attribute.id.toString(),
-//                                 orElse: () =>
-//                                 {
-//                                   'attribute_id': null,
-//                                   'value': null
-//                                 }, // Return a placeholder map
-//                               );
-//
-//                               if (existingAttribute['attribute_id'] !=
-//                                   null) {
-//                                 // If the attribute exists, update its value or remove it if the value is zero
-//                                 if (value == 0) {
-//                                   realAttributes.removeWhere((
-//                                       element) =>
-//                                   element['attribute_id'] ==
-//                                       attribute.id.toString());
-//                                 } else {
-//                                   existingAttribute['value'] =
-//                                       value.toString();
-//                                 }
-//                               } else if (value != 0) {
-//                                 // If the attribute does not exist and the value is not zero, add a new one
-//                                 realAttributes.add({
-//                                   'attribute_id': attribute.id
-//                                       .toString(),
-//                                   'value': value.toString(),
-//                                 });
-//                               }
-//
-//                               // Print the updated realAttributes list
-//                               print(
-//                                   'Updated realAttributes: $realAttributes');
-//                             },
-//                           );
-//                         }),
-//
-//                       ],
-//                     ),
-//                   ],
-//                 );
-//               } else if (state is AttributeAlarmFailure) {
-//                 return Center(child: Text('Error: ${state.error}'));
-//               } else {
-//                 return const SizedBox();
-//               }
-//             },
-//           ),
-//
-//
-//           /// fetch attributes string
-//           BlocBuilder<AttributeAlarmCubit, AttributeAlarmState>(
-//             builder: (context, state) {
-//               if (state is AttributeAlarmLoading) {
-//                 return const Center(
-//                     child: CircularProgressIndicator());
-//               } else if (state is AttributeAlarmLoaded) {
-//                 // Function to filter data based on data_type
-//                 List<AttributesAlarmModel> filterDataByType(
-//                     List<AttributesAlarmModel> data,
-//                     String dataType) {
-//                   return data.where((item) =>
-//                   item.dataType == dataType).toList();
-//                 }
-//
-//                 // Convert state.attributes (list of AttributesAlarmModel) to List<Map<String, dynamic>>
-//                 List<AttributesAlarmModel> data = state.attributes;
-//
-//
-//                 List<Map<String, dynamic>> transformToMap(
-//                     List<ValueAttributeModel>? attributes) {
-//                   if (attributes == null) {
-//                     return [];
-//                   }
-//                   return attributes.map((attribute) {
-//                     return {
-//                       'id': attribute.id,
-//                       'value': attribute.value,
-//                       'attribute': attribute.attribute,
-//                     };
-//                   }).toList();
-//                 }
-//
-//
-//                 // values = filterDataByType(data, "int").att;
-//                 return Column(
-//                   children: [
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         const SizedBox(height: 6),
-//                         // Example: Build CustomAttributeInt widgets for int data
-//                         ...filterDataByType(data, 'string').map((
-//                             attribute) {
-//                           return CustomDropdownButton(
-//                             options: transformToMap(
-//                                 attribute.valueAttribute),
-//                             lable: attribute.name ?? " ",
-//                             onChanged: (String id, String value) {
-//                               print(
-//                                   'Selected ID: $id, Selected Value: $value');
-//                               int intValue = int.tryParse(value) ??
-//                                   0;
-//
-//                               // Find if the attribute already exists in realAttributes
-//                               var existingAttribute = realAttributes
-//                                   .firstWhere(
-//                                     (element) =>
-//                                 element['attribute_id'] == id,
-//                                 orElse: () =>
-//                                 {
-//                                   'attribute_id': null,
-//                                   'value': null
-//                                 }, // Return a placeholder map
-//                               );
-//
-//
-//                               realAttributes.add({
-//                                 'attribute_id': attribute.id,
-//                                 'value': value,
-//                               });
-//
-//
-//                               // Update lastAttributes map
-//                               lastAttributes.clear();
-//                               for (var attr in realAttributes) {
-//                                 lastAttributes[attr['attribute_id']
-//                                     .toString()] =
-//                                     attr['value'].toString();
-//                               }
-//
-//                               // Print the updated realAttributes list
-//                               print(
-//                                   'Updated realAttributes: $realAttributes');
-//                               print(
-//                                   'Updated lastAttributes: $lastAttributes');
-//                             },
-//                           );
-//                         }).toList(),
-//
-//                       ],
-//                     ),
-//                   ],
-//                 );
-//               } else if (state is AttributeAlarmFailure) {
-//                 return Center(child: Text('Error: ${state.error}'));
-//               } else {
-//                 return const SizedBox();
-//               }
-//             },
-//           ),
-//
-//         ],
-//       );
-// }
 
   Widget _buildPropertyView(BuildContext context, List<ImageModel2> imageList, final propertyDetails) {
     return Padding(

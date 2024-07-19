@@ -12,7 +12,7 @@ class UpdatePropertyRepository{
         'Authorization': 'token $token',
         'Content-Type': 'application/json'
       };
-      var request = http.Request('PATCH', Uri.parse('${AppConstants.baseUrl}api/address/$propertyId/update/'));
+      var request = http.Request('PATCH', Uri.parse('${AppConstants.baseUrl}api/property/$propertyId/update/'));
       request.body = json.encode(body);
       request.headers.addAll(headers);
 
@@ -20,10 +20,8 @@ class UpdatePropertyRepository{
 
       if (response.statusCode == 200) {
         Get.snackbar("Success", "property updated successfully");
-        print(await response.stream.bytesToString());
       } else {
         Get.snackbar("bad request", "error");
-        print(response.reasonPhrase);
       }
     } catch(e){
       Get.snackbar("something wrong", "error");

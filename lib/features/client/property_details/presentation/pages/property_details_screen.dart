@@ -113,7 +113,20 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                   ),
 
                   /// Displaying property Features and Attribute
-                  const SizedBox(height: 5.0,),
+                  const SizedBox(height: 7.0,),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Size", style: fontMediumBold,),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(propertyDetails.size.toString(), style: fontMedium,),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Attributes and Features", style: fontMediumBold,),
+                  ),
+                  const SizedBox(height: 10.0,),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(

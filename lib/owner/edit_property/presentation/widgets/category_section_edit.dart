@@ -6,7 +6,6 @@ import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/widgets/list_features_widget.dart';
 
-import '../../../../core/helper/my_model_map.dart';
 import '../../../../core/utils/styles.dart';
 import '../../../../features/client/alarm/data/models/attribute_alarm_model.dart';
 import '../../../../features/client/alarm/presentation/manager/attribute/attribute_alarm_cubit.dart';
@@ -20,7 +19,7 @@ import '../../../../features/client/alarm/presentation/widget/custom_attribute_i
 import '../../../../features/client/home/data/models/category/category_model.dart';
 import '../../../../features/client/home/widgets/chip_widget_home.dart';
 import '../../../add_property/presentation/widgets/dropDown_widget.dart';
-import '../../domain/get_features_repository.dart';
+
 
 class CategorySectionEdit extends StatefulWidget {
   CategorySectionEdit({super.key ,required this.selectedCategoryId, required this.selectedSubCategoryId, this.propertyDetails, required this.token});
@@ -56,19 +55,12 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
   Map<String, dynamic> lastAttributes = {};
   int? sizeValue;
   int? initSizeValue;
-  MyModel? _model;
-  bool _loading = false;
   String? isDeleted;
-  double _uploadProgress = 0.0;
-  bool _isUploading = false;
 
 
   @override
   void initState() {
     super.initState();
-
-
-
     subCategoryId = widget.selectedSubCategoryId;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -352,7 +344,7 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
                               });
 
                               await SharedPrefManager.saveData(AppConstants.editSubCategoryId, subCategoryId.toString());
-                              print(" sub $subCategoryId");
+                              print("local sub $subCategoryId");
                               setState(() {
                                 // Deselect all chips except the clicked chip
                                 chipSelected2 = List.filled(chipSelected2.length, false);
