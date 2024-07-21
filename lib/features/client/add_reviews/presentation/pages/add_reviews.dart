@@ -7,8 +7,9 @@ import 'package:smart_real_estate/features/client/add_reviews/domain/repositorie
 import 'package:smart_real_estate/features/client/feedback/presentation/widgets/appBar.dart';
 
 class AddReview extends StatefulWidget {
-  const AddReview({super.key, required this.propertyId});
+  const AddReview({super.key, required this.propertyId, required this.token});
   final int propertyId;
+  final String token;
 
   @override
   State<AddReview> createState() => _AddReviewState();
@@ -34,7 +35,7 @@ class _AddReviewState extends State<AddReview> {
               review: _controller.text,
               rateReview: rating,
               prop: widget.propertyId),
-          "token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"
+          "token ${widget.token}"
       );
       setState(() {
         isLoading = false;

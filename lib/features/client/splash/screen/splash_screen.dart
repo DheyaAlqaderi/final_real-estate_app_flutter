@@ -7,6 +7,7 @@ import 'package:smart_real_estate/features/client/onBoarding/pages/onBoarding_sc
 import 'package:smart_real_estate/features/client/welcome/pages/welcome_select_screen.dart';
 
 import '../../../../core/helper/local_data/shared_pref.dart';
+import '../../root/pages/root_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -55,15 +56,15 @@ class _SplashScreenState extends State<SplashScreen> {
           MaterialPageRoute(builder: (context) => const WelcomeSelectScreen()),
         );
       } else if(userType == "owner" && token.isNotEmpty && firstTime.isNotEmpty){
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const RootScreen()),
-        // );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RootScreen()),
+        );
       } else {
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const RootScreen()),
-        // );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RootScreen()),
+        );
       }
     } catch (e) {
       // Handle error

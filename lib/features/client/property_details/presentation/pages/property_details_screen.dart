@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
+import 'package:smart_real_estate/features/auth/presentation/pages/both_auth_screen.dart';
 import 'package:smart_real_estate/features/client/add_reviews/presentation/pages/add_reviews.dart';
 import 'package:smart_real_estate/features/client/property_details/data/model/image_model.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
@@ -265,7 +266,19 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                         Text(Locales.string(context, "review"), style: fontMediumBold,),
                         InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> AddReview(propertyId: widget.id!.toInt())));
+
+                              if (widget.token == " " || widget.token == null) {
+                                _showLoginDialog(context);
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddReview(propertyId: widget.id!.toInt(), token: widget.token!),
+                                  ),
+                                );
+                              }
+
+
                           },
                           child: Container(
                             height: 29.0,
@@ -331,4 +344,33 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
       ),
     );
   }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Login Required'),
+          content: const Text('You need to be logged in to perform this action.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                // Navigate to the login page (replace with your login page)
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const BothAuthScreen(isOwner: false)));
+              },
+              child: Text('Login'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

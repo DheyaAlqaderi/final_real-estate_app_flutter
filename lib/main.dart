@@ -78,8 +78,7 @@ import 'features/client/home/domain/manager/main_category/main_category_cubit.da
 import 'firebase_options.dart';
 import 'owner/add_property/data/models/create_property_request.dart';
 import 'owner/add_property/data/remote_api/add_property_api.dart';
-import 'owner/add_property/presentation/pages/forth_price_add_property.dart';
-import 'owner/add_property/presentation/pages/third_attribute_add_property.dart';
+
 
 Future<void> uploadProperty(BuildContext context, List<File> featureImageFiles, List<File> imageDataFiles) async {
   final dio = Dio();
@@ -224,16 +223,16 @@ Future<void> main() async {
   // await SharedPrefManager.deleteData(AppConstants.token);
   // await SharedPrefManager.deleteData(AppConstants.userType);
   // await SharedPrefManager.deleteData(AppConstants.firstTime);
-  await SharedPrefManager.saveData(
-      AppConstants.token, '0a53a95704d2b4e2bf439563e02bd290c0fa0eb4');
-  await SharedPrefManager.saveData(AppConstants.userId, '1');
-
-  await SharedPrefManager.saveData(AppConstants.userType, AppConstants.owner);
-  String? token = await SharedPrefManager.getData(AppConstants.token);
-  String? id = await SharedPrefManager.getData(AppConstants.userId);
+  // await SharedPrefManager.saveData(
+  //     AppConstants.token, '0a53a95704d2b4e2bf439563e02bd290c0fa0eb4');
+  // await SharedPrefManager.saveData(AppConstants.userId, '1');
   //
-  // print('token is $token');
-  // print('token is $id');
+  // await SharedPrefManager.saveData(AppConstants.userType, AppConstants.owner);
+  // String? token = await SharedPrefManager.getData(AppConstants.token);
+  // String? id = await SharedPrefManager.getData(AppConstants.userId);
+  // //
+  // // print('token is $token');
+  // // print('token is $id');
 
   runApp(const MyApp());
 }
@@ -398,8 +397,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
-          home: const EditPropertyPage(propertyId: 1, token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
-          // home:  RootScreen(),
+          // home: const EditPropertyPage(propertyId: 1, token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
+          home:  SplashScreen(),
         ),
       ),
     );

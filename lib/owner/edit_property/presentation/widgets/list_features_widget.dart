@@ -45,6 +45,7 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
     var fetchedFeatures = await FeatureRepository.fetchFeatures(categoryId: categoryId);
     setState(() {
       features = fetchedFeatures;
+
       chipSelected2 = List.filled(features.length, false);
     });
   }
@@ -93,22 +94,57 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
         );
       }
     } else {
-      Get.snackbar('Confirmation', 'Are you sure to remove the selection for ${features[index]['name']}?',
-          snackPosition: SnackPosition.BOTTOM,
-          mainButton: TextButton(
-            onPressed: () {
-              // Handle removal confirmation logic here
-              setState(() {
-                // Deselect the chip
-                chipSelected2[index] = false;
-                selectedIds.remove(features[index]['id']);
-              });
-              Get.back(); // Close the snackbar
+      showConfirmationDialog(context, index, features, chipSelected2);
+    }
+  }
+  void showConfirmationDialog(BuildContext context, int index, List features, List<bool> chipSelected2) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Confirmation'),
+        content: Text('Are you sure you want to remove the selection for ${features[index]['name']}?'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+
+              Get.back(); // Close the dialog without making changes
+              int? featureId;
+
+              for (var featureProperty in widget.propertyDetails.featureProperty) {
+                if (features[index]['id'] == featureProperty.feature.id) {
+                  featureId = featureProperty.id;
+                  break;
+                }
+              }
+
+              if (featureId != null) {
+                await CreateFeaturePropertyRepository.deleteFeature(featureId, widget.token);
+                setState(() {
+                  // Deselect the chip
+                  chipSelected2[index] = false;
+                  selectedIds.remove(features[index]['id']);
+
+                });
+              } else {
+                Get.snackbar("Error", "Feature ID not found",
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white);
+              }
+
+
+
             },
             child: const Text('Confirm'),
-          )
-      );
-    }
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(); // Close the dialog without making changes
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
   }
 
   // Future<void> _postFeatureProperty() async {

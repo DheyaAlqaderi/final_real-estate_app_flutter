@@ -23,7 +23,7 @@
 <!--            android:foregroundServiceType="WhatForegroundServiceTypeDoYouWant"-->
 <!--            />-->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC4lXK37eiOfikKx9uHtqi9qxArsZS_J5Y"/>
+            android:value="AIzaSyBYzn32nMjbehMhfD0bbZxoi3un6FRvodA"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -6,6 +6,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
+import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -58,12 +59,21 @@ class NotificationWsRepository {
     getMessage();
   }
 
-  static void getMessage(){
+  static Future<String?> getToken()async{
+    await SharedPrefManager.init();
+    final token = await SharedPrefManager.getData(AppConstants.token);
+    return  token;
+  }
 
+  static Future<void> getMessage()  async {
+
+
+    final token = await getToken();
+    print("from web socket the token is $token");
     WebSocketChannel channel = IOWebSocketChannel.connect(
         '${AppConstants.baseUrl4}/ws/notifications/',
         headers: {
-          'Authorization': "token 8c16156cf3bd29992e15374c457153855405a9ff" ?? "",
+          'Authorization': (token == null || token == " ")? "":"token $token",
         });
 
     // Define the JSON body

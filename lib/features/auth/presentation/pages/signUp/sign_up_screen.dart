@@ -232,6 +232,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
 
+                  const SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: (){
+
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
+                    },
+                    child: const Text(
+                      "الدخول كازائر   ",
+                      style: fontMediumBold,
+
+                    ),
+                  ),
                   const SizedBox(height: 30.0),
                   Text(
                       Locales.string(context, "or"),

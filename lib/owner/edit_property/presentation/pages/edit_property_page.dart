@@ -348,59 +348,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                   _buildAddImageButton(),
                                 ],
                               ),
-                              const SizedBox(height: 16),
-                              const Text(
-                                'البيئة / المرافق',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...List.generate(
-                                    features.length,
-                                        (index) => Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
-                                      child: ChipFeatureWidget(
-                                        feature: features[index],
-                                        chipSelected: chipSelected2,
-                                        onChipClick: () => onChipClick(index),
-                                        index: index,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(jsonEncode(propertyDetails)),
-
                               const SizedBox(height: 100),
-
-
-                              /// Displaying property rest details
-
-
-                              /// Displaying property Features and Attribute
-                              const SizedBox(height: 5.0,),
-
-                              const SizedBox(height: 5.0,),
-
-
-                              /// display property promoter details
-                              const SizedBox(height: 10.0,),
-
-
-                              /// display GoogleMap and address details
-                              const SizedBox(height: 10.0,),
-
-
-                              /// display reviews and Rating
-
-
-
 
                             ],
                           );
@@ -460,10 +408,12 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     double realSize = double.parse(propertySize.text);
     final realSubCategoryId = await SharedPrefManager.getData(AppConstants.editSubCategoryId);
     Map<String, dynamic>? realAttributesValues = await SharedPrefManager.getMap(AppConstants.editPropertyAttributes);
-    // Map<String, dynamic>? realStateId = await SharedPrefManager.getMap(AppConstants.);
+    final realForSale = await SharedPrefManager.getData(AppConstants.editForSale);
+    final realForRent = await SharedPrefManager.getData(AppConstants.editForRent);
 
 
 
+    Map<String, dynamic> updates = {};
 
     /// update the attributes
     if (realAttributesValues != null && realAttributesValues.isNotEmpty) {
@@ -477,9 +427,20 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       await UpdateListAttributesRepository.updatePropertyValue(payload, widget.token);
     }
 
+    /// update type list
+    if(realForRent != null && bool.parse(realForRent)){
+      updates['for_sale'] = false;
+      updates['for_rent'] = true;
+    }
+
+    if(realForSale != null && bool.parse(realForSale)){
+      updates['for_sale'] = true;
+      updates['for_rent'] = false;
+    }
+
 
     /// Create a map to store the changes
-    Map<String, dynamic> updates = {};
+
 
     // Check if any of the properties have changed and add them to the updates map
     if (globalpropertyDetails.name != realName) {
@@ -513,6 +474,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       setState(() {
         _loading = false;
       });
+      Navigator.pop(context);
       print(updates);
       // Handle response if necessary
     }

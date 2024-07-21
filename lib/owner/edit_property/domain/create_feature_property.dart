@@ -1,6 +1,8 @@
 
 
 import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -37,6 +39,54 @@ class CreateFeaturePropertyRepository {
     } catch (e) {
       Get.snackbar("Error", "An error occurred: $e");
       return {};
+    }
+  }
+
+
+  /// delete the feature from category
+  static Future<void> deleteFeature(int featureId, String token) async {
+    var headers = {
+      'Authorization': 'token $token',
+    };
+    var dio = Dio();
+
+    try {
+      var response = await dio.request(
+        '${AppConstants.baseUrl}api/property/feature/$featureId/delete/',
+        options: Options(
+          method: 'DELETE',
+          headers: headers,
+          validateStatus: (status) {
+            return status! < 500; // Accept status codes less than 500
+          },
+        ),
+      );
+
+      if (response.statusCode == 204) {
+        Get.snackbar("Success", "Feature deleted successfully",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
+        print(json.encode(response.data));
+      } else if (response.statusCode == 404) {
+        Get.snackbar("Error", "Feature not found: ${response.statusMessage}",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+        print(response.statusMessage);
+      } else {
+        Get.snackbar("Error", "Failed to delete feature: ${response.statusMessage}",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+        print(response.statusMessage);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Failed to delete feature: $e",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
+      print(e);
     }
   }
 

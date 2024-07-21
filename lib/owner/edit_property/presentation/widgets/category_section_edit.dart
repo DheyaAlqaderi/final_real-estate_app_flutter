@@ -131,11 +131,25 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
                   padding: const EdgeInsets.symmetric(horizontal: 2.5),
                   child: ChipWidgetHome(
                     chipSelected: chipSelected3!,
-                    onChipClick: ()  {
-                      setState(() {
+                    onChipClick: ()  async{
+                      if(index == 0) {
+                        await SharedPrefManager.saveData(
+                            AppConstants.editForSale, "true");
+                        await SharedPrefManager.saveData(
+                            AppConstants.editForRent, "false");
+                        print('for sale');
+                      } else {
+                        await SharedPrefManager.saveData(
+                            AppConstants.editForRent, "true");
+                        await SharedPrefManager.saveData(
+                            AppConstants.editForSale, "false");
+                        print('for rent');
+                      }
+                      setState(()  {
                         // Deselect all chips except the clicked chip
                         chipSelected3 = List.filled(chipSelected3!.length, false);
                         chipSelected3![index] = true;
+
                         if(index == 0){
                           chipSelected3First = true;
                           chipSelected3Last = false;
@@ -229,7 +243,7 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
                         padding: const EdgeInsets.symmetric(horizontal: 2.5),
                         child: ChipWidgetHome(
                           chipSelected: chipSelected,
-                          onChipClick: ()  {
+                          onChipClick: ()  async {
                             setState(() {
                               categoryId = state.category.results[index].id;
                             });
@@ -238,6 +252,8 @@ class _CategorySectionEditState extends State<CategorySectionEdit> {
                               context.read<SubCategoryAlarmCubit>().getSubCategory(parentId: categoryId!);
 
                             }
+
+
 
                             setState(() {
                               // Deselect all chips except the clicked chip

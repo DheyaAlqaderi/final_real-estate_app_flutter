@@ -16,7 +16,12 @@ class PropertyDetailsRepository {
   /// to get property details
   Future<PropertyDetailsModel> getPropertyDetailsById(int propertyId, String token) async {
     try {
-      return await _api.getPropertyDetailsById(propertyId, "token $token");
+      if(token == " " || token == null){
+        return await _api.getPropertyDetailsById(propertyId, "");
+      }else{
+        return await _api.getPropertyDetailsById(propertyId, "token $token");
+      }
+      
     } catch (error) {
       throw Exception('Failed to fetch property details: $error');
     }

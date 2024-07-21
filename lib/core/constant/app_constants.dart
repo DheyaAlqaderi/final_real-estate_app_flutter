@@ -55,6 +55,8 @@ class AppConstants {
   static const String editPropertyAttributes = 'edit_attributes';
   static const String editPropertyAddress = 'edit_address';
   static const String editSubCategoryId = 'edit_subCategory_id';
+  static const String editForSale = 'edit_for_sale';
+  static const String editForRent = 'edit_for_rent';
 
 
 

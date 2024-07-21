@@ -23,6 +23,7 @@ import 'package:smart_real_estate/features/client/home/domain/manager/property_h
 import 'package:smart_real_estate/features/client/home/widgets/subcategory_section_widget.dart';
 import 'package:smart_real_estate/features/client/map/persentation/pages/map_screen.dart';
 import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
+import 'package:smart_real_estate/owner/notification/presentation/pages/notification_screen.dart';
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../profile/domain/repositories/profile_repository.dart';
@@ -246,9 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: AppBarHomeWidget(
         image: image,
         onAvatarTap: () async{
-          // setState(() {
-          //   Locales.change(context, "en");
-          // });
+
 
           String? id = await SharedPrefManager.getData(AppConstants.userId);
           if(id == null){
@@ -263,6 +262,10 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         onBillTap: () {
           // Handle bill tap
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context)=> NotificationScreen(token: token!))
+          );
         },
       ),
     );
