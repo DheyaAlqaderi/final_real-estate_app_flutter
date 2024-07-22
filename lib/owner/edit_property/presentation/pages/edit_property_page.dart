@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +14,7 @@ import 'package:smart_real_estate/core/helper/local_data/shared_pref.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/property_details/presentation/pages/property_details_screen.dart';
-import 'package:smart_real_estate/owner/edit_property/domain/test.dart';
+import 'package:smart_real_estate/owner/edit_property/domain/machine_learning_optimize.dart';
 import 'package:smart_real_estate/owner/edit_property/domain/update_list_attributes_repository.dart';
 import 'package:smart_real_estate/owner/edit_property/domain/update_property_repository.dart';
 import 'package:smart_real_estate/owner/edit_property/presentation/widgets/address_section_edit.dart';
@@ -22,9 +23,7 @@ import 'package:smart_real_estate/owner/edit_property/presentation/widgets/chip_
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../features/client/alarm/presentation/manager/category/category_cubit.dart';
-import '../../../../features/client/alarm/presentation/pages/add_alarm_screen.dart';
 import '../../../../features/client/home/data/models/category/category_model.dart';
-import '../../../../features/client/home/widgets/chip_widget_home.dart';
 import '../../../../features/client/property_details/data/model/image_model.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_cubit.dart';
 import '../../../../features/client/property_details/presentation/manager/property_details/property_details_state.dart';
@@ -199,7 +198,15 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     });
   }
 
+/// machine learning
+  String _response = '';
 
+  Future<void> _getResponse(String text) async {
+    final response = await MachineLearningOptimize.generateContent(text);
+    setState(() {
+      _response = response;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,14 +257,46 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                           propertySize.text = propertyDetails.size!.toString() ?? "";
 
                           /// for type list
-
+                          final propertyDetailsJson = jsonEncode(propertyDetails.toJson());
                           /// image section
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               /// appbar
-                              const Text("تعديل العقار", style: fontMediumBold,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("تعديل العقار", style: fontMediumBold,),
+                                  Wrap(
+                                    children: [
+
+                                      ElevatedButton(
+                                        onPressed: () {},
+                                        style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                                        ),
+                                        child: const Icon(Icons.delete),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                               const SizedBox(height: 10.0,),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    _isUploading = true;
+
+                                  });
+                                  await _getResponse(propertyDetailsJson);
+                                  setState(() {
+                                    _isUploading = false;
+
+                                  });
+                                  _showResponseBottomSheet(context, _response);
+                                },
+                                child: _isUploading?const CircularProgressIndicator(color: Colors.white,): const Text('اقتراح الذكى الاصتناعي'),
+                              ),
                               /// Display property image and some details
                               GestureDetector(
                                 onTap: () {
@@ -348,7 +387,59 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                   _buildAddImageButton(),
                                 ],
                               ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'البيئة / المرافق',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                runSpacing: 10,
+                                spacing: 10,
+                                children: [
+                                  ...List.generate(
+                                    features.length,
+                                        (index) => Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                                      child: ChipFeatureWidget(
+                                        feature: features[index],
+                                        chipSelected: chipSelected2,
+                                        onChipClick: () => onChipClick(index),
+                                        index: index,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(jsonEncode(propertyDetails)),
+
                               const SizedBox(height: 100),
+
+
+                              /// Displaying property rest details
+
+
+                              /// Displaying property Features and Attribute
+                              const SizedBox(height: 5.0,),
+
+                              const SizedBox(height: 5.0,),
+
+
+                              /// display property promoter details
+                              const SizedBox(height: 10.0,),
+
+
+                              /// display GoogleMap and address details
+                              const SizedBox(height: 10.0,),
+
+
+                              /// display reviews and Rating
+
+
+
 
                             ],
                           );
@@ -408,12 +499,10 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     double realSize = double.parse(propertySize.text);
     final realSubCategoryId = await SharedPrefManager.getData(AppConstants.editSubCategoryId);
     Map<String, dynamic>? realAttributesValues = await SharedPrefManager.getMap(AppConstants.editPropertyAttributes);
-    final realForSale = await SharedPrefManager.getData(AppConstants.editForSale);
-    final realForRent = await SharedPrefManager.getData(AppConstants.editForRent);
+    // Map<String, dynamic>? realStateId = await SharedPrefManager.getMap(AppConstants.);
 
 
 
-    Map<String, dynamic> updates = {};
 
     /// update the attributes
     if (realAttributesValues != null && realAttributesValues.isNotEmpty) {
@@ -427,20 +516,9 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       await UpdateListAttributesRepository.updatePropertyValue(payload, widget.token);
     }
 
-    /// update type list
-    if(realForRent != null && bool.parse(realForRent)){
-      updates['for_sale'] = false;
-      updates['for_rent'] = true;
-    }
-
-    if(realForSale != null && bool.parse(realForSale)){
-      updates['for_sale'] = true;
-      updates['for_rent'] = false;
-    }
-
 
     /// Create a map to store the changes
-
+    Map<String, dynamic> updates = {};
 
     // Check if any of the properties have changed and add them to the updates map
     if (globalpropertyDetails.name != realName) {
@@ -474,7 +552,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       setState(() {
         _loading = false;
       });
-      Navigator.pop(context);
       print(updates);
       // Handle response if necessary
     }
@@ -657,7 +734,38 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   }
 
 
-  /// google map to edit address
+  /// Ai response
+  void _showResponseBottomSheet(BuildContext context, String response) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'AI Response',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  response,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
 
 

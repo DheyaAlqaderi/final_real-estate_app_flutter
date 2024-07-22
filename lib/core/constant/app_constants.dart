@@ -4,10 +4,10 @@ class AppConstants {
   static const String appName = 'Smart Real-estate';
   static const double appVersion = 0.1;
   static const String fontFamily = 'Lato';
-  static const String baseUrl = "http://192.168.0.23:8000/";
-  static const String baseUrl4 = "ws://192.168.0.23:8000";
-  static const String baseUrl3 = "http://192.168.0.23:8000";
-  static const String baseUrl2 = "http://192.168.0.23:8000/";
+  static const String baseUrl = "http://192.168.0.53:8000/";
+  static const String baseUrl4 = "ws://192.168.0.53:8000";
+  static const String baseUrl3 = "http://192.168.0.53:8000";
+  static const String baseUrl2 = "http://192.168.0.53:8000/";
   static const String noImageUrl = "https://as1.ftcdn.net/v2/jpg/05/04/28/96/1000_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg";
 
   static const String userIdFake = "45";
@@ -57,8 +57,5 @@ class AppConstants {
   static const String editSubCategoryId = 'edit_subCategory_id';
   static const String editForSale = 'edit_for_sale';
   static const String editForRent = 'edit_for_rent';
-
-
-
 
 }

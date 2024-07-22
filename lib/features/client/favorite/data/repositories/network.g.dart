@@ -13,7 +13,7 @@ class _FavoriteRepository implements FavoriteRepository {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.0.23:8000/';
+    baseUrl ??= 'http://192.168.0.53:8000/';
   }
 
   final Dio _dio;
