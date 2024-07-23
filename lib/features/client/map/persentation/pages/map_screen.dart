@@ -47,12 +47,12 @@ class _MapScreenState extends State<MapScreen> {
 
   void _fetchData() async {
     final cubit = BlocProvider.of<PropertyHomeCubit>(context);
+    final state1 = cubit.getPropertyByMainCategory(mainCategory: 11);
     final state = cubit.state;
     if (state is SuccessPropertyHomeState) {
       var data1 = state.propertyModel.results;
       if (data1 != null) {
         setState(() {
-          data.clear();
           data1.asMap().forEach((i, address) {
             data.add({
               'id': address.id.toString(),
@@ -74,7 +74,6 @@ class _MapScreenState extends State<MapScreen> {
         var data1 = state.propertyModel.results;
         if (data1 != null) {
           setState(() {
-            data.clear();
             data1.asMap().forEach((i, address) {
               data.add({
                 'id': address.id.toString(),
@@ -257,10 +256,10 @@ class _MapScreenState extends State<MapScreen> {
       builder: (BuildContext context) {
         return StandPropertyWidget(propertyModel: propertyModel, index: index, onTap: () async {
 
-          final userId = await SharedPrefManager.getData(AppConstants.userId);
+
           final token = await SharedPrefManager.getData(AppConstants.token);
 
-          Get.to(()=> PropertyDetailsScreen(id: int.parse(userId!), token: token!));
+          Get.to(()=> PropertyDetailsScreen(id: propertyModel.results[index].id!, token: token!));
 
 
         });

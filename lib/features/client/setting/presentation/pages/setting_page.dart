@@ -13,6 +13,7 @@ import 'package:smart_real_estate/features/common_widget/pop_up_massage.dart';
 import 'package:smart_real_estate/owner/owner_root_screen/presentation/pages/owner_root_screen.dart';
 import '../../../../../core/constant/app_constants.dart';
 import '../../../../../core/helper/local_data/shared_pref.dart';
+import '../../../../../owner/notification/presentation/pages/notification_screen.dart';
 import '../../../feedback/presentation/widgets/appBar.dart';
 import '../../../profile/presentation/pages/profile_screen.dart';
 import '../widgets/profile.dart';
@@ -144,7 +145,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 hamzah:'notification',
                 path: Images.notification,
                 flag: true,
-                onTap: (){
+                onTap: () async {
+                  final token = await SharedPrefManager.getData(AppConstants.token);
+                  if(token != null){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context)=> NotificationScreen(token: token))
+                    );
+                  }
 
                 },
               ),
@@ -281,16 +289,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 },
               ),
 
-              const SizedBox(height: 15,),
-
-              SettingTemplete(
-                hamzah:'notification',
-                path: Images.notification,
-                flag: true,
-                onTap: (){
-
-                },
-              ),
 
               const SizedBox(height: 15,),
 

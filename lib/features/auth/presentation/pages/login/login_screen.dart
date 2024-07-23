@@ -87,9 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                         SharedPrefManager.saveData(AppConstants.token, response.token.toString());
                         SharedPrefManager.saveData(AppConstants.userId, response.userId.toString());
-                        SharedPrefManager.saveData(AppConstants.userType, widget.isOwner?AppConstants.promoter:AppConstants.customer);
+                        SharedPrefManager.saveData(AppConstants.userType, response.userType.toString());
 
-                        if(!widget.isOwner){
+                        if(!widget.isOwner && response.userType.toString() == "customer"){
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RootScreen()));
                         } else{
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OwnerRootScreen()));

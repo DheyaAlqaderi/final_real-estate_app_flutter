@@ -68,7 +68,7 @@ class _OwnerHomeScreenState extends State<OwnerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: OwnerHomeAppbar(token: token,),
+        appBar: OwnerHomeAppbar(token: token,imagePath: AppConstants.noImageUrl,),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 13.0),
         child: RefreshIndicator(

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -62,6 +61,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   var globalpropertyDetails;
   /// second api attributes
   bool _loading = false;
+  bool _loading2 = false;
   double _uploadProgress = 0.0;
   bool _isUploading = false;
   /// image section api
@@ -70,7 +70,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   bool isLoading = false;
   List<ImageModel2> imageList=[];
   String? newImagePath;
-
+  String pricePredict = "";
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -147,6 +147,47 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
 
 
 
+  /// predict the price Api AI
+  Future<void> _predictBestPrice() async {
+    if (propertySize.text.isEmpty) {
+      Get.snackbar("Validation Error", "You should write a price");
+    } else {
+      setState(() {
+        _loading2 = true;
+      });
+
+      try {
+        var request = http.Request('POST', Uri.parse('${AppConstants.baseUrl}api/ml/property-price/'));
+        request.body = jsonEncode({"query": double.parse(propertySize.text)});
+        request.headers.addAll({'Content-Type': 'application/json'});
+
+        http.StreamedResponse response = await request.send();
+
+        if (response.statusCode == 200) {
+          String responseBody = await response.stream.bytesToString();
+          var jsonResponse = jsonDecode(responseBody);
+          double predictedPrice = jsonResponse['price']; // Assuming your API returns a key 'predicted_price'
+
+          setState(() {
+            pricePredict = predictedPrice.toStringAsFixed(2).toString();
+            _loading2 = false;
+          });
+
+          Get.snackbar("Price Prediction", "The best predicted price is \$${pricePredict}");
+        } else {
+          setState(() {
+            _loading2 = false;
+          });
+          Get.snackbar("Error", "Failed to get prediction: ${response.reasonPhrase}");
+        }
+      } catch (e) {
+        setState(() {
+          _loading2 = false;
+        });
+        Get.snackbar("Error", "An error occurred: $e");
+      }
+    }
+  }
 
     /// fetch data from the server
   Future<void> fetchAndSetFeatures() async {
@@ -295,7 +336,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                   });
                                   _showResponseBottomSheet(context, _response);
                                 },
-                                child: _isUploading?const CircularProgressIndicator(color: Colors.white,): const Text('اقتراح الذكى الاصتناعي'),
+                                child: _isUploading?const CircularProgressIndicator(color: Colors.white,): const Text('اقتراح الذكى الاصطناعي'),
                               ),
                               /// Display property image and some details
                               GestureDetector(
@@ -344,16 +385,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                 keyboardType: TextInputType.number, // Ensures the keyboard is numeric
                               ),
                               const SizedBox(height: 16),
-
-                              /// category section
-                              const SizedBox(height: 16),
-                              CategorySectionEdit(
-                                selectedCategoryId: propertyDetails.category!.parent!,
-                                selectedSubCategoryId: propertyDetails.category!.id!,
-                                token: widget.token,
-                                propertyDetails: propertyDetails,
-                              ),
-                              const SizedBox(height: 16),
                               TextFormField(
                                 controller: propertySize,
                                 decoration: InputDecoration(
@@ -364,6 +395,51 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                   ),
                                 ),
                                 keyboardType: TextInputType.number, // Ensures the keyboard is numeric
+                              ),
+                              const SizedBox(height: 16),
+                              Container(
+                                height: 50,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: InkWell(
+                                  onTap: _predictBestPrice,
+                                  child: Center(
+                                    child: _loading2
+                                        ? const CircularProgressIndicator(color: Colors.white)
+                                        : const Text(
+                                      'تحسين السعر',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (pricePredict.isNotEmpty) ...[
+                                SizedBox(height: 20),
+
+                                Text.rich(
+                                  TextSpan(
+                                    text: 'The best predicted price is ',
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: '\$${pricePredict}',
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                              ],
+
+                              /// category section
+                              const SizedBox(height: 16),
+                              CategorySectionEdit(
+                                selectedCategoryId: propertyDetails.category!.parent!,
+                                selectedSubCategoryId: propertyDetails.category!.id!,
+                                token: widget.token,
+                                propertyDetails: propertyDetails,
                               ),
                               const SizedBox(height: 16),
                               AddressSectionEdit(propertyDetails: propertyDetails,),
@@ -388,33 +464,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                                 ],
                               ),
                               const SizedBox(height: 16),
-                              const Text(
-                                'البيئة / المرافق',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...List.generate(
-                                    features.length,
-                                        (index) => Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 2.5),
-                                      child: ChipFeatureWidget(
-                                        feature: features[index],
-                                        chipSelected: chipSelected2,
-                                        onChipClick: () => onChipClick(index),
-                                        index: index,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(jsonEncode(propertyDetails)),
 
                               const SizedBox(height: 100),
 
@@ -500,9 +549,30 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     final realSubCategoryId = await SharedPrefManager.getData(AppConstants.editSubCategoryId);
     Map<String, dynamic>? realAttributesValues = await SharedPrefManager.getMap(AppConstants.editPropertyAttributes);
     // Map<String, dynamic>? realStateId = await SharedPrefManager.getMap(AppConstants.);
+    final realForSale = await SharedPrefManager.getData(AppConstants.editForSale);
+    final realForRent = await SharedPrefManager.getData(AppConstants.editForRent);
+    /// Create a map to store the changes
+    Map<String, dynamic> updates = {};
 
 
+    /// check if for rent or for sale
+    if(realForRent != null){
+      if(bool.parse(realForRent)){
+        updates['for_sale'] = false;
+        updates['for_rent'] = true;
+        await SharedPrefManager.deleteData(AppConstants.editForSale);
+        await SharedPrefManager.deleteData(AppConstants.editForRent);
+      }
+    }
 
+    if(realForSale != null){
+      if(bool.parse(realForSale)){
+        updates['for_sale'] = true;
+        updates['for_rent'] = false;
+        await SharedPrefManager.deleteData(AppConstants.editForSale);
+        await SharedPrefManager.deleteData(AppConstants.editForRent);
+      }
+    }
 
     /// update the attributes
     if (realAttributesValues != null && realAttributesValues.isNotEmpty) {
@@ -517,8 +587,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     }
 
 
-    /// Create a map to store the changes
-    Map<String, dynamic> updates = {};
+
 
     // Check if any of the properties have changed and add them to the updates map
     if (globalpropertyDetails.name != realName) {

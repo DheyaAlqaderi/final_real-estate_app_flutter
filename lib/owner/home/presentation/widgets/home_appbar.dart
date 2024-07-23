@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:get/get.dart';
@@ -8,9 +9,10 @@ import '../../../../features/common_widget/circle_button_widget_icon.dart';
 import '../../../notification/presentation/pages/notification_screen.dart';
 
 class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
-  const OwnerHomeAppbar({super.key, required this.token,});
+  const OwnerHomeAppbar({super.key, required this.token, required this.imagePath,});
 
   final String token;
+  final String imagePath;
 
 
 
@@ -33,7 +35,12 @@ class OwnerHomeAppbar extends StatelessWidget implements PreferredSizeWidget{
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 7),
           child: ClipOval(
-            child: Image.asset(Images.mePicture),
+            child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(imagePath)
+                  )
+                )),
           )
           ),
 

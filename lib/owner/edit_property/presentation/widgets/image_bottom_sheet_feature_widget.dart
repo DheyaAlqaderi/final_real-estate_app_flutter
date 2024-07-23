@@ -43,8 +43,9 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
       print("feature property ${jsonEncode(widget.propertyDetails)}");
 
       for (var feature in widget.propertyDetails.featureProperty) {
-        if (widget.featureId == feature.id) {
+        if (widget.featureId == feature.feature.id) {
           featureProperty = feature;
+          // print(jsonDecode(featureProperty));
           break; // Optional: Break if you only need the first match
         }
       }
@@ -143,7 +144,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
 
 
     request.files.add(await http.MultipartFile.fromPath('image', image.path));
-    request.headers['Authorization'] = 'token 0a53a95704d2b4e2bf439563e02bd290c0fa0eb4';
+    request.headers['Authorization'] = 'token $userToken';
 
     try {
       http.StreamedResponse response = await request.send();
@@ -177,7 +178,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
 
     // if (userToken != null) {
       for (File image in _images) {
-        await _uploadSingleImage(image, widget.featureId.toString(), "userToken");
+        await _uploadSingleImage(image, featureProperty.id.toString(), "$userToken");
       }
       Navigator.pop(context);
     Get.snackbar("done", "the images uploaded successfully", backgroundColor: Colors.green);

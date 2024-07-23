@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_real_estate/core/constant/app_constants.dart';
@@ -66,6 +68,7 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
       var token = await SharedPrefManager.getData(AppConstants.token);
       var response = await CreateFeaturePropertyRepository.createFeature(propertyId: widget.propertyDetails.id, featureId: features[index]['id'], token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4");
       if(response == {} || response.isEmpty){
+
 
         Get.snackbar('Error', 'check your internet connection');
         return showModalBottomSheet(

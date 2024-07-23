@@ -9,12 +9,13 @@ import 'package:smart_real_estate/owner/edit_property/domain/update_address_repo
 
 
 class GoogleMapAddress extends StatefulWidget {
-   GoogleMapAddress({super.key, required this.lat, required this.lon, required this.lineOnePass, required this.lineTwoPass});
+   GoogleMapAddress({super.key, required this.lat, required this.lon, required this.lineOnePass, required this.lineTwoPass, required this.addressId});
 
   double? lat;
   double? lon;
   String? lineOnePass;
   String? lineTwoPass;
+  int? addressId;
 
   @override
   State<GoogleMapAddress> createState() => _GoogleMapAddressState();
@@ -146,7 +147,7 @@ class _GoogleMapAddressState extends State<GoogleMapAddress> {
                     setState(() {
                       isLoading = true;
                     });
-                    await UpdateAddressById.update(addressId: 10, body: {
+                    await UpdateAddressById.update(addressId: widget.addressId! , body: {
                       "line1":lineOne.text,
                       "line2": lineTwo.text,
                       "longitude": _currentLatLng!.longitude.toString(),

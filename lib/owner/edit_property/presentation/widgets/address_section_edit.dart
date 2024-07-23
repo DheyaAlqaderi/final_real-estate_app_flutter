@@ -170,7 +170,7 @@ class _AddressSectionEditState extends State<AddressSectionEdit> {
         const SizedBox(height: 20),
         InkWell(
           onTap: (){
-            Get.to(()=> GoogleMapAddress(lat: widget.propertyDetails.address!.latitude!, lon: widget.propertyDetails.address!.longitude!,lineOnePass: widget.propertyDetails.address!.line1!, lineTwoPass: widget.propertyDetails.address!.line2!,));
+            Get.to(()=> GoogleMapAddress(addressId: widget.propertyDetails.address!.id,lat: widget.propertyDetails.address!.latitude!, lon: widget.propertyDetails.address!.longitude!,lineOnePass: widget.propertyDetails.address!.line1!, lineTwoPass: widget.propertyDetails.address!.line2!,));
           },
           child: SizedBox(
             height: 200,

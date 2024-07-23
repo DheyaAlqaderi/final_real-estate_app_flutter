@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/owner/add_property/presentation/pages/fifth_images_add_property.dart';
@@ -126,29 +127,43 @@ class _ForthPriceAddPropertyState extends State<ForthPriceAddProperty> {
 
 
   Future<void> _predictBestPrice() async {
-    if (_priceController.text.isEmpty) {
+    if (propertySize == null || propertySize!.isEmpty) {
       Get.snackbar("Validation Error", "You should write a price");
     } else {
       setState(() {
         _loading = true;
       });
 
-      await Future.delayed(const Duration(seconds: 2)); // Simulate a delay for the loading process
+      try {
+        var request = http.Request('POST', Uri.parse('${AppConstants.baseUrl}api/ml/property-price/'));
+        request.body = jsonEncode({"query": double.parse(propertySize!)});
+        request.headers.addAll({'Content-Type': 'application/json'});
 
-      double enteredPrice = double.parse(_priceController.text);
-      Random random = Random();
-      bool shouldIncrease = random.nextBool();
-      double changeFactor = 0.05 + random.nextDouble() * 0.05; // Random change factor between 5% and 10%
-      double predictedPrice = shouldIncrease
-          ? enteredPrice * (1 + changeFactor)
-          : enteredPrice * (1 - changeFactor);
+        http.StreamedResponse response = await request.send();
 
-      setState(() {
-        pricePredict = predictedPrice.toStringAsFixed(2);
-        _loading = false;
-      });
+        if (response.statusCode == 200) {
+          String responseBody = await response.stream.bytesToString();
+          var jsonResponse = jsonDecode(responseBody);
+          double predictedPrice = jsonResponse['price']; // Assuming your API returns a key 'predicted_price'
 
-      Get.snackbar("Price Prediction", "The best predicted price is \$${pricePredict}");
+          setState(() {
+            pricePredict = predictedPrice.toStringAsFixed(2);
+            _loading = false;
+          });
+
+          Get.snackbar("Price Prediction", "The best predicted price is \$${pricePredict}");
+        } else {
+          setState(() {
+            _loading = false;
+          });
+          Get.snackbar("Error", "Failed to get prediction: ${response.reasonPhrase}");
+        }
+      } catch (e) {
+        setState(() {
+          _loading = false;
+        });
+        Get.snackbar("Error", "An error occurred: $e");
+      }
     }
   }
 
