@@ -622,6 +622,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
         _loading = false;
       });
       print(updates);
+      Navigator.pop(context);
       // Handle response if necessary
     }
 

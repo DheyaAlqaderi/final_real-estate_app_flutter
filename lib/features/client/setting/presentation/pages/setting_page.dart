@@ -68,7 +68,7 @@ class _SettingScreenState extends State<SettingScreen> {
         scrollDirection: Axis.vertical,
         child: Padding(
           padding: const EdgeInsets.all(25.0),
-          child: userId!.isNotEmpty
+          child: userId != ""
               ?Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -114,7 +114,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 flag: false,
                 onTap: (){
                   if(userType == AppConstants.promoter || userType == AppConstants.agent || userType == AppConstants.admin|| userType == AppConstants.owner){
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context)=> const OwnerRootScreen())
                     );

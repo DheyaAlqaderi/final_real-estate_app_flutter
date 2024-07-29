@@ -13,25 +13,6 @@ import "package:smart_real_estate/features/client/property_details/presentation/
 import "../../../home/domain/manager/property_home_cubit/property_home_cubit.dart";
 import "../../../home/domain/manager/property_home_cubit/property_home_state.dart";
 
-
-
-class CustomeMarkerWidgit extends StatelessWidget {
-  final double price;
-
-  const CustomeMarkerWidgit({super.key, required this.price});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      child: Center(
-        child: Text('\$$price', style: const TextStyle(color: Colors.white)),
-      ),
-    );
-  }
-}
-
-
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
@@ -47,7 +28,7 @@ class _MapScreenState extends State<MapScreen> {
 
   void _fetchData() async {
     final cubit = BlocProvider.of<PropertyHomeCubit>(context);
-    final state1 = cubit.getPropertyByMainCategory(mainCategory: 11);
+    // final state1 = cubit.getPropertyByMainCategory(mainCategory: 11);
     final state = cubit.state;
     if (state is SuccessPropertyHomeState) {
       var data1 = state.propertyModel.results;
@@ -73,7 +54,7 @@ class _MapScreenState extends State<MapScreen> {
       if (state is SuccessPropertyHomeState) {
         var data1 = state.propertyModel.results;
         if (data1 != null) {
-          setState(() {
+
             data1.asMap().forEach((i, address) {
               data.add({
                 'id': address.id.toString(),
@@ -83,7 +64,7 @@ class _MapScreenState extends State<MapScreen> {
                 'index': i
               });
             });
-          });
+
 
           WidgetsBinding.instance.addPostFrameCallback((_) => _onBuildCompleted(data));
         }
@@ -264,6 +245,23 @@ class _MapScreenState extends State<MapScreen> {
 
         });
       },
+    );
+  }
+}
+
+
+class CustomeMarkerWidgit extends StatelessWidget {
+  final double price;
+
+  const CustomeMarkerWidgit({super.key, required this.price});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+      child: Center(
+        child: Text('\$$price', style: const TextStyle(color: Colors.white)),
+      ),
     );
   }
 }

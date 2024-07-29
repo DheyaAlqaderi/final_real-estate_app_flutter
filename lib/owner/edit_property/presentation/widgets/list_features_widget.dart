@@ -66,7 +66,7 @@ class _ListFeaturesWidgetState extends State<ListFeaturesWidget> {
     // Show bottom sheet only if the chip is being selected
     if (chipSelected2[index]) {
       var token = await SharedPrefManager.getData(AppConstants.token);
-      var response = await CreateFeaturePropertyRepository.createFeature(propertyId: widget.propertyDetails.id, featureId: features[index]['id'], token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4");
+      var response = await CreateFeaturePropertyRepository.createFeature(propertyId: widget.propertyDetails.id, featureId: features[index]['id'], token: widget.token);
       if(response == {} || response.isEmpty){
 
 

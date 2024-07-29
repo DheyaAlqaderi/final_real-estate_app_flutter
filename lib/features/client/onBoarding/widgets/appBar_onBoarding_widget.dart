@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:retrofit/http.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/features/client/root/pages/root_screen.dart';
 
+import '../../../../core/helper/local_data/shared_pref.dart';
 import '../../../../core/utils/styles.dart';
 
 class AppBarOnBoardingWidget extends StatefulWidget {
@@ -24,8 +24,12 @@ class _AppBarOnBoardingWidgetState extends State<AppBarOnBoardingWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           OutlinedButton(
-              onPressed: (){
-                Get.to(()=> RootScreen());
+              onPressed: () async{
+                final checkIfFirstTime = await SharedPrefManager.getData("FirstTime");
+                if(checkIfFirstTime == null) {
+                  await SharedPrefManager.saveData("FirstTime", "yes");
+                }
+                Get.to(()=> const RootScreen());
               },
               child: SizedBox(
                 height: 38.0,

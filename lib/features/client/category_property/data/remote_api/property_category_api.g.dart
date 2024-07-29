@@ -13,7 +13,7 @@ class _PropertyCategoryApi implements PropertyCategoryApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.0.53:8000/';
+    baseUrl ??= 'http://192.168.0.244:8005/';
   }
 
   final Dio _dio;

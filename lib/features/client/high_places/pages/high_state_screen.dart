@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:smart_real_estate/core/utils/images.dart';
 import 'package:smart_real_estate/core/utils/styles.dart';
 import 'package:smart_real_estate/features/client/high_places/domain/manager/property_state_cubit/property_state_state.dart';
 import 'package:smart_real_estate/features/client/home/widgets/featured_property_widget.dart';
+import 'package:smart_real_estate/features/client/search/presentation/pages/search_screen.dart';
 
 import '../../../../core/constant/app_constants.dart';
 import '../../../../core/helper/local_data/shared_pref.dart';
@@ -73,40 +75,44 @@ class _HighStateScreenState extends State<HighStateScreen> {
                     InkWell(
                       onTap: (){
 
+                        Get.to(()=> const SearchScreen());
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                        child: Container(
-                          height: 70.0,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Theme.of(context).cardColor,
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //     color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
-                            //     spreadRadius: 2, // Spread radius of the shadow
-                            //     blurRadius: 4, // Blur radius of the shadow
-                            //     offset: const Offset(0, 2), // Offset of the shadow
-                            //   ),
-                            // ],
-                          ),
+                        child: Hero(
+                          tag: 'search',
+                          child: Container(
+                            height: 70.0,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Theme.of(context).cardColor,
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: Theme.of(context).shadowColor.withOpacity(0.2), // Use shadowColor from the theme with opacity
+                              //     spreadRadius: 2, // Spread radius of the shadow
+                              //     blurRadius: 4, // Blur radius of the shadow
+                              //     offset: const Offset(0, 2), // Offset of the shadow
+                              //   ),
+                              // ],
+                            ),
 
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Icon(Icons.search),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  Locales.string(context, "search_state"),
-                                  style: fontMedium.copyWith(color: Colors.grey),
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Icon(Icons.search),
                                 ),
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    Locales.string(context, "search_state"),
+                                    style: fontMedium.copyWith(color: Colors.grey),
+                                  ),
+                                ),
 
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

@@ -401,6 +401,86 @@ class _ThirdAttributeAddPropertyState extends State<ThirdAttributeAddProperty> {
                           }
                         },
                       ),
+
+
+                      /// fetch attributes date
+                      BlocBuilder<AttributeAlarmCubit, AttributeAlarmState>(
+                        builder: (context, state) {
+                          if (state is AttributeAlarmLoading) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (state is AttributeAlarmLoaded) {
+                            // Function to filter data based on data_type
+                            List<AttributesAlarmModel> filterDataByType(List<AttributesAlarmModel> data, String dataType) {
+                              return data.where((item) => item.dataType == dataType).toList();
+                            }
+
+                            // Convert state.attributes (list of AttributesAlarmModel) to List<Map<String, dynamic>>
+                            List<AttributesAlarmModel> data = state.attributes;
+
+                            List<Map<String, dynamic>> transformToMap(List<ValueAttributeModel>? attributes) {
+                              if (attributes == null) {
+                                return [];
+                              }
+                              return attributes.map((attribute) {
+                                return {
+                                  'id': attribute.id,
+                                  'value': attribute.value,
+                                  'attribute': attribute.attribute,
+                                };
+                              }).toList();
+                            }
+
+                            return Column(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 6),
+                                    ...filterDataByType(data, 'date').map((attribute) {
+                                      return CustomDatePicker(
+                                        label: attribute.name ?? " ",
+                                        onDateChanged: (DateTime selectedDate) {
+                                          String formattedDate = selectedDate.toIso8601String();
+
+                                          // Find if the attribute already exists in realAttributes
+                                          var existingAttribute = realAttributes.firstWhere(
+                                                (element) => element['attribute_id'] == attribute.id,
+                                            orElse: () => {'attribute_id': null, 'value': null}, // Return a placeholder map
+                                          );
+
+                                          // Add or update the attribute in realAttributes
+                                          if (existingAttribute['attribute_id'] != null) {
+                                            existingAttribute['value'] = formattedDate;
+                                          } else {
+                                            realAttributes.add({
+                                              'attribute_id': attribute.id,
+                                              'value': formattedDate,
+                                            });
+                                          }
+
+                                          // Update lastAttributes map
+                                          lastAttributes.clear();
+                                          for (var attr in realAttributes) {
+                                            lastAttributes[attr['attribute_id'].toString()] = attr['value'].toString();
+                                          }
+
+                                          // Print the updated realAttributes list
+                                          print('Updated realAttributes: $realAttributes');
+                                          print('Updated lastAttributes: $lastAttributes');
+                                        },
+                                      );
+                                    }).toList(),
+                                  ],
+                                ),
+                              ],
+                            );
+                          } else if (state is AttributeAlarmFailure) {
+                            return Center(child: Text('Error: ${state.error}'));
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -466,4 +546,41 @@ Future<MyModel?> getAddressModel() async {
   }
   Map<String, dynamic> jsonMap = jsonDecode(modelJson);
   return MyModel.fromJson(jsonMap);
+}
+
+// CustomDatePicker widget
+class CustomDatePicker extends StatelessWidget {
+  final String label;
+  final ValueChanged<DateTime> onDateChanged;
+
+  const CustomDatePicker({
+    required this.label,
+    required this.onDateChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label),
+        const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+            );
+
+            if (pickedDate != null) {
+              onDateChanged(pickedDate);
+            }
+          },
+          child: const Text('Select Date'),
+        ),
+      ],
+    );
+  }
 }

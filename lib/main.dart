@@ -398,7 +398,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: Locales.supportedLocales,
           locale: locale,
           // home: const EditPropertyPage(propertyId: 1, token: "0a53a95704d2b4e2bf439563e02bd290c0fa0eb4"),
-          home:  SplashScreen(),
+          home:  const SplashScreen(),
         ),
       ),
     );
